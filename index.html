@@ -682,9 +682,10 @@ textarea.code{font:13px/1.45 ui-monospace,Menlo,monospace;width:100%;min-height:
 .confirm .row{display:flex;justify-content:flex-end;gap:8px}
 .newwrap{position:relative}
 .newmenu{position:absolute;right:0;top:calc(100% + 8px);background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-pop);padding:6px;min-width:260px;z-index:50}
-.newmenu button{display:flex;width:100%;text-align:left;border:0;background:none;padding:9px 12px;border-radius:10px;cursor:pointer;font-size:14.5px;justify-content:space-between;align-items:center}
-.newmenu button span{display:inline-flex;align-items:center;gap:10px}
-.newmenu button:hover{background:var(--surface-2)}
+.newmenu button,.newmenu a{display:flex;width:100%;text-align:left;border:0;background:none;padding:9px 12px;border-radius:10px;cursor:pointer;font-size:14.5px;justify-content:space-between;align-items:center}
+.newmenu button span,.newmenu a{color:inherit;text-decoration:none;box-sizing:border-box}
+.newmenu a span{display:inline-flex;align-items:center;gap:10px}
+.newmenu button:hover,.newmenu a:hover{background:var(--surface-2)}
 .newmenu .ic{width:17px;height:17px;color:var(--muted)}
 .newmenu hr{border:0;border-top:1px solid var(--border);margin:6px 4px}
 .newmenu small{color:var(--muted)}
@@ -945,6 +946,46 @@ body.auth-open .app{visibility:hidden}
 .ob-ielts>b{display:inline-flex;align-items:center;gap:6px;font-size:14px}
 .ob-ielts>b .ic{width:15px;height:15px;color:var(--primary)}
 @media (max-width:480px){.avpick{flex-direction:column}.ob-goals{grid-template-columns:1fr}}
+
+
+/* grammar + structure libraries */
+.tgroup{margin-bottom:22px}
+.tgroup .sub-h{display:flex;align-items:center;gap:8px}
+.tgroup .sub-h .link{margin-left:auto;font-size:13.5px;display:inline-flex;align-items:center;gap:2px}
+.tlist{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--surface)}
+.trow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;border-top:1px solid var(--border);color:inherit;text-decoration:none}
+.trow:first-child{border-top:0}
+.trow:hover{background:var(--surface-2)}
+.tmain{display:flex;flex-direction:column;min-width:0}
+.tmain b{font-weight:650}
+.tmain small{color:var(--muted);font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tmeta{display:flex;align-items:center;gap:8px}
+.tsaved .ic{width:17px;height:17px;color:var(--primary)}
+.lvl{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.lvl-basic{background:color-mix(in srgb,#1F9D74 14%,transparent);color:#147a5a}
+.lvl-intermediate{background:color-mix(in srgb,#D99A00 16%,transparent);color:#8a6200}
+.lvl-advanced{background:color-mix(in srgb,#B4469B 14%,transparent);color:#8e2f78}
+[data-theme=dark] .lvl-basic{color:#6fd3ad}[data-theme=dark] .lvl-intermediate{color:#f0c55a}[data-theme=dark] .lvl-advanced{color:#e79bd6}
+.tphead{display:flex;align-items:center;gap:10px;margin:4px 0 12px}
+.tpbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 6px}
+.tpbar .btn.on{border-color:var(--primary);color:var(--primary-ink);background:var(--primary-soft)}
+.vi-exp{background:var(--surface-2);border-radius:14px;padding:4px 16px}
+.relchips{display:flex;flex-wrap:wrap;gap:8px}
+.relchips .chip{text-decoration:none}
+.pats{display:flex;flex-direction:column;gap:12px}
+.pat{border:1px solid var(--border);border-radius:16px;padding:14px 16px;background:var(--surface)}
+.pat-h b{font-size:15.5px}
+.pat-f{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;background:var(--primary-soft);color:var(--primary-ink);border-radius:9px;padding:7px 10px;margin:8px 0}
+.pat-u{margin:0 0 6px;color:var(--text-2);font-size:14.5px}
+.pat .exlist{margin:0}
+.tpnotes{max-width:720px}
+.lib-own{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px}
+.lib-own .ic{width:15px;height:15px}
+.lib-more{margin:12px 0 0}
+.saved-lib{margin-bottom:6px}
+.saved-lib .sub-h{display:flex;align-items:center;gap:8px}
+.saved-lib .sub-h .link{margin-left:auto;font-size:13.5px}
+@media (max-width:700px){.trow{grid-template-columns:auto minmax(0,1fr)}.tmeta{grid-column:2;flex-wrap:wrap}}
 
 /* ---------- responsive */
 @media (max-width:1180px){
@@ -1517,7 +1558,7 @@ function applyRating(r, g){
    State & routing
    ========================================================= */
 const S = {
-  view:'dashboard', kCol:'all', kQ:'', kStatus:'all', kTag:'', kSort:'new', kLink:'any', kLimit:150,
+  view:'dashboard', glQ:'', glLevel:'all', glStatus:'all', structId:'', kCol:'all', kQ:'', kStatus:'all', kTag:'', kSort:'new', kLink:'any', kLimit:150,
   skill:'writing2', skillTab:null, topic:'',
   rv:{reverse:false, queue:null, idx:0, flipped:false, tally:[0,0,0,0], label:''},
   jSel:null, search:'', libCat:'', colId:null, cFilter:'all', cQ:'', lessonId:null, lq:null, rFilter:'active', artId:null, ui:{}, summary:null,
@@ -1530,6 +1571,7 @@ function route(){
   else if (v === 'library') { S.view = 'library'; S.libCat = CATS.find(c => c.id === sub) ? sub : ''; }
   else if (v === 'collection' && COLL[sub]) { S.view = 'collection'; if (S.colId !== sub) { S.colId = sub; S.cFilter = 'all'; S.cQ = ''; } touchCol(sub); }
   else if (v === 'lesson' && LESSONS[sub]) { S.view = 'lesson'; S.lessonId = sub; openLesson(sub); }
+  else if (v === 'structure' && STRUCTS[sub]) { S.view = 'structure'; S.structId = sub; openStructure(sub); }
   else if (v === 'article') { S.view = 'article'; S.artId = sub; openArticle(sub); }
   else if (['dashboard','review','journal','preferences','reading','study'].includes(v)) S.view = v;
   else S.view = 'dashboard';
@@ -1550,7 +1592,7 @@ function render(){
   const a = document.activeElement, id = a && a.id && $('#view').contains(a) ? a.id : null;
   let ss = null, se = null; try { ss = a.selectionStart; se = a.selectionEnd; } catch {}
   renderNav();
-  const v = S.search ? vSearch() : ({dashboard:vDashboard, library:vLibrary, collection:vCollection, lesson:vLesson, reading:vReading, article:vArticle, study:vStudy, knowledge:vKnowledge, ielts:vIelts, review:vReview, journal:vJournal, preferences:vPrefs}[S.view] || vDashboard)();
+  const v = S.search ? vSearch() : ({dashboard:vDashboard, library:vLibrary, collection:vCollection, lesson:vLesson, structure:vStructure, reading:vReading, article:vArticle, study:vStudy, knowledge:vKnowledge, ielts:vIelts, review:vReview, journal:vJournal, preferences:vPrefs}[S.view] || vDashboard)();
   $('#view').innerHTML = v;
   const nm = settings().name; $('#brand-sub').textContent = nm ? nm + '’s language universe' : 'Your language universe';
   if (id) { const n = document.getElementById(id); if (n) { n.focus(); try { if (ss !== null) n.setSelectionRange(ss, se); } catch {} } }
@@ -1564,7 +1606,7 @@ function renderNav(){
   const its = items();
   const groups = [[null, [['dashboard','Dashboard','layout-dashboard']]], ['Learn', [['library','Library','library'],['review','Review','repeat-2']]],
     ['My notes', [['knowledge','My Knowledge','book-a'],['reading','Reading list','newspaper'],['ielts','IELTS Workspace','graduation-cap'],['journal','Learning Journal','notebook-pen']]]];
-  const active = {collection:'library', lesson:'library', article:'reading', study:'review'}[S.view] || S.view;
+  const active = {collection:'library', lesson:'library', structure:'library', article:'reading', study:'review'}[S.view] || S.view;
   let h = '';
   groups.forEach(([g, list]) => {
     if (g) h += `<div class="navgroup">${g}</div>`;
@@ -1613,7 +1655,7 @@ function miniRow(r, right){
 /* ---------- Built-in content */
 const CONTENT = window.HUB_CONTENT || {collections:[], lessons:{}};
 const slug = s => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60) || 'x';
-const WORDS = {}, COLL = {}, LESSONS = CONTENT.lessons || {};
+const WORDS = {}, COLL = {}, LESSONS = CONTENT.lessons || {}, STRUCTS = CONTENT.structures || {};
 CONTENT.collections.forEach(c => {
   COLL[c.id] = c;
   if (c.words) {
@@ -1629,9 +1671,9 @@ CONTENT.collections.forEach(c => {
 });
 const CATS = [
   {id:'ielts', name:'IELTS vocabulary', icon:'book-a', desc:'Academic word lists and topic vocabulary for Reading, Writing and Speaking.'},
-  {id:'grammar', name:'Grammar', icon:'languages', desc:'Short lessons with examples, common mistakes and a practice quiz.'},
+  {id:'grammar', name:'Grammar', icon:'languages', desc:'A complete grammar library from the basics to advanced structures, with Vietnamese explanations, common mistakes and practice.'},
   {id:'phrases', name:'Collocations & phrasal verbs', icon:'network', desc:'Words that go together, learned as whole chunks.'},
-  {id:'structures', name:'Sentence structures & expressions', icon:'quote', desc:'Patterns for essays and natural phrases for speaking.'},
+  {id:'structures', name:'Sentence structures', icon:'quote', desc:'Ready-to-use sentence patterns with formulas and examples, plus phrase banks for writing and speaking.'},
   {id:'mine', name:'My collections', icon:'bookmark', desc:'Everything you have saved yourself.'},
 ];
 const CAT_TONE = {ielts:'blue', grammar:'indigo', phrases:'teal', structures:'amber', mine:'coral'};
@@ -1959,7 +2001,7 @@ function vDashboard(){
       <h3>Quick access</h3>
       <div class="quick2">
         <button class="qbtn" data-act="new" data-type="item" data-col="vocabulary">${ic('plus')} Add vocabulary</button>
-        <button class="qbtn" data-act="new" data-type="item" data-col="structures">${ic('plus')} Add sentence structure</button>
+        <a class="qbtn" href="#library-structures">${ic('quote')} Browse sentence structures</a>
         <button class="qbtn" data-act="new" data-type="article">${ic('bookmark-plus')} Save reading article</button>
         <button class="qbtn" data-act="start-review" data-deck="due">${ic('repeat-2')} Review vocabulary</button>
       </div>
@@ -2171,12 +2213,18 @@ function vLibrary(){
         <a class="coll compact" href="#reading"><span class="tile t-coral">${ic('newspaper')}</span><div class="cbody"><b>Reading list</b><p>Articles saved for later, with the words you collected from each one.</p><div class="cmeta"><span>${ic('layers')} ${plural(arts.length,'article')}</span><span>${ic('bookmark')} ${arts.filter(a=>a.status!=='done').length} to read</span></div></div></a>
         <a class="coll compact" href="#knowledge-mistakes"><span class="tile t-coral">${ic('triangle-alert')}</span><div class="cbody"><b>My mistakes</b><p>Corrections of your own errors — review them often.</p><div class="cmeta"><span>${ic('layers')} ${plural(items('mistakes').length,'mistake')}</span></div></div></a>
       </div>`;
+    } else if (c.id === 'grammar') {
+      body = cat === 'grammar' ? grammarLibraryHTML() : `<div class="colls">${list.map(x => collCard(x)).join('')}</div><p class="lib-more"><a class="btn" href="#library-grammar">${ic('search')} Browse and search all ${Object.keys(LESSONS).length} grammar topics</a></p>`;
+    } else if (c.id === 'structures') {
+      body = cat === 'structures' ? structureLibraryHTML(list) : `<div class="colls">
+        <a class="coll" href="#library-structures"><span class="tile t-amber">${ic('quote')}</span><div class="cbody"><b>Sentence Structure Library</b><p>${Object.keys(STRUCTS).length} topics of ready-to-use patterns, from basic sentence types to inversion, cleft sentences and IELTS frames.</p><div class="cmeta"><span>${ic('layers')} ${Object.values(STRUCTS).reduce((n, t) => n + t.patterns.length, 0)} patterns</span><span>${ic('bookmark')} ${Object.keys(STRUCTS).filter(id => structState(id).saved).length} saved</span></div></div></a>
+        ${list.map(x => collCard(x)).join('')}</div>`;
     } else body = `<div class="colls">${list.map(x => collCard(x)).join('')}</div>`;
     return `<section class="lib-sec" id="cat-${c.id}"><h2><span class="tile sm t-${CAT_TONE[c.id]}">${ic(c.icon)}</span>${c.name}</h2><p>${c.desc}</p>${body}</section>`;
   };
   const totalWords = Object.keys(WORDS).length;
   return `<h1 class="page">Library</h1>
-  <p class="lede">Ready-made collections: ${totalWords} words and phrases and ${Object.keys(LESSONS).length} grammar lessons. Open one, learn a few items a day, and the review schedule takes care of the rest.</p>
+  <p class="lede">Ready-made collections: ${totalWords} words and phrases, ${Object.keys(LESSONS).length} grammar topics and ${Object.keys(STRUCTS).length} sentence-structure topics. Open one, learn a few items a day, and the review schedule takes care of the rest.</p>
   <div class="tabs" role="tablist"><a class="tab ${!cat?'on':''}" href="#library">${ic('library')} All</a>${CATS.map(c => `<a class="tab ${cat===c.id?'on':''}" href="#library-${c.id}">${ic(c.icon)} ${c.name}</a>`).join('')}</div>
   ${CATS.filter(c => !cat || c.id === cat).map(sec).join('')}`;
 }
@@ -2260,6 +2308,133 @@ function newCard(wid, known, dueNow){
     : {id:'c-' + wid, kind:'card', wid, status:'learning', srs:{ease:2.5, interval:0, reps:0, lapses:0, due:now + 3600e3}, reviews:0, learnedAt:now, createdAt:now, addedAt:now, firstStudiedAt:now};
 }
 
+
+/* =========================================================
+   Built-in grammar and sentence-structure libraries.
+   The educational content (content.js) is read-only; the person's layer
+   (status, saved, notes, own examples) lives in one progress record per
+   topic: lp-<lesson> for grammar (existing), sp-<topic> for structures.
+   ========================================================= */
+const TLEVEL = {basic:'Basic', intermediate:'Intermediate', advanced:'Advanced'};
+const TSTAT = {new:['circle-dashed','Not started'], learning:['clock','Learning'], reviewed:['eye','Reviewed'], mastered:['circle-check','Mastered']};
+const GGROUPS = [['fund','Grammar fundamentals','blocks'],['tenses','Verb tenses','clock'],['inter','Intermediate grammar','layers'],['adv','Advanced grammar','sparkles']];
+const SGROUPS = [['Foundations','blocks'],['Clause patterns','git-merge'],['Advanced patterns','sparkles'],['Expressive patterns','megaphone'],['IELTS patterns','graduation-cap']];
+const structState = id => Store.get('sp-' + id) || {status:'new'};
+const topicRec = (kind, id) => kind === 'g' ? lessonState(id) : structState(id);
+const topicStatus = s => s.mark || (s.status === 'done' ? 'reviewed' : s.status === 'started' ? 'learning' : 'new');
+const topicHref = (kind, id) => kind === 'g' ? '#lesson-' + id : '#structure-' + id;
+const topicTitle = (kind, id) => (kind === 'g' ? LESSONS[id] : STRUCTS[id] || {}).title || id;
+function topicUpdate(kind, id, fn){
+  const pid = (kind === 'g' ? 'lp-' : 'sp-') + id;
+  const r = clone(Store.get(pid) || (kind === 'g' ? {id:pid, kind:'lesson', lid:id, createdAt:Date.now()} : {id:pid, kind:'structure', sid:id, createdAt:Date.now()}));
+  fn(r); Store.put(r);
+}
+function openStructure(id){
+  const s = Store.get('sp-' + id);
+  if (!s) Store.put({id:'sp-' + id, kind:'structure', sid:id, status:'started', createdAt:Date.now(), lastOpened:Date.now()});
+  else touch('sp-' + id, () => s);
+}
+const lvlPill = l => l ? `<span class="lvl lvl-${l}">${TLEVEL[l]}</span>` : '';
+const statChip = st => st === 'new' ? '' : `<span class="wst ${st === 'mastered' ? 'mastered' : 'learning'}">${ic(TSTAT[st][0])} ${TSTAT[st][1]}</span>`;
+function topicMatches(kind, t){
+  const q = S.glQ.trim().toLowerCase(), r = topicRec(kind, t.id), st = topicStatus(r);
+  if (S.glLevel !== 'all' && t.level !== S.glLevel) return false;
+  if (S.glStatus === 'saved' && !r.saved) return false;
+  if (!['all','saved'].includes(S.glStatus) && st !== S.glStatus) return false;
+  if (q) {
+    const hay = kind === 'g' ? [t.title, t.summary, t.vi, ...(t.explain || []), ...(t.form || []).flat(), ...(t.examples || [])] : [t.title, t.summary, t.explain, t.vi, ...t.patterns.flat(2)];
+    if (!hay.join(' ').toLowerCase().includes(q)) return false;
+  }
+  return true;
+}
+function topicRow(kind, t){
+  const r = topicRec(kind, t.id), st = topicStatus(r);
+  return `<a class="trow" href="${topicHref(kind, t.id)}"><span class="tile sm t-${kind === 'g' ? 'indigo' : 'amber'}">${ic(kind === 'g' ? 'book-open' : 'quote')}</span>
+    <span class="tmain"><b>${esc(t.title)}</b><small>${esc(t.summary)}</small></span>
+    <span class="tmeta">${lvlPill(t.level)}${statChip(st)}${r.saved ? `<span class="tsaved" title="Saved">${ic('bookmark-check')}</span>` : ''}</span></a>`;
+}
+function libFilters(kind){
+  const lbl = kind === 'g' ? 'grammar topics' : 'sentence structures';
+  return `<div class="toolbar">
+    <label class="sbox">${ic('search')}<input class="fsearch" id="glq" type="search" placeholder="Search ${lbl}, e.g. ${kind === 'g' ? 'conditionals' : 'inversion'}" value="${esc(S.glQ)}" data-input="glQ" aria-label="Search ${lbl}"></label>
+    <div class="seg" role="group" aria-label="Level">${[['all','All levels'],['basic','Basic'],['intermediate','Intermediate'],['advanced','Advanced']].map(([v,l]) => `<button class="${S.glLevel===v?'on':''}" data-act="gl-level" data-v="${v}">${l}</button>`).join('')}</div>
+    <span class="sel">${ic('list-filter')}<select data-change="glStatus" aria-label="Status">${[['all','Any status'],['saved','Saved'],['new','Not started'],['learning','Learning'],['reviewed','Reviewed'],['mastered','Mastered']].map(([v,l]) => `<option value="${v}" ${S.glStatus===v?'selected':''}>${l}</option>`).join('')}</select></span>
+  </div>`;
+}
+function grammarLibraryHTML(){
+  const all = Object.values(LESSONS);
+  const sections = GGROUPS.map(([g, name, icn]) => {
+    const list = all.filter(t => t.group === g).sort((a, b) => COLL[a.col].lessons.indexOf(a.id) - COLL[b.col].lessons.indexOf(b.id)).filter(t => topicMatches('g', t));
+    const colId = (all.find(t => t.group === g) || {}).col;
+    return list.length ? `<div class="tgroup"><h3 class="sub-h">${ic(icn)} ${name} <span class="muted">${list.length}</span>${colId ? `<a class="link" href="#collection-${colId}">Study in order ${ic('chevron-right')}</a>` : ''}</h3><div class="tlist">${list.map(t => topicRow('g', t)).join('')}</div></div>` : '';
+  }).join('');
+  return libFilters('g') + (sections || `<div class="empty">${ic('search-x')}<h3>No grammar topics match</h3><button class="btn" data-act="gl-clear">Clear filters</button></div>`)
+    + `<p class="muted lib-own">${ic('pencil-line')} Found a rule that isn’t here? <button class="link" data-act="new" data-type="item" data-col="grammar">Create a custom grammar note</button></p>`;
+}
+function structureLibraryHTML(banks){
+  const all = Object.values(STRUCTS);
+  const sections = SGROUPS.map(([g, icn]) => {
+    const list = all.filter(t => t.group === g && topicMatches('s', t));
+    return list.length ? `<div class="tgroup"><h3 class="sub-h">${ic(icn)} ${g} <span class="muted">${list.length}</span></h3><div class="tlist">${list.map(t => topicRow('s', t)).join('')}</div></div>` : '';
+  }).join('');
+  return libFilters('s') + (sections || `<div class="empty">${ic('search-x')}<h3>No sentence structures match</h3><button class="btn" data-act="gl-clear">Clear filters</button></div>`)
+    + `<h3 class="sub-h">${ic('library')} Phrase banks <span class="muted">learn and review as flashcards</span></h3><div class="colls">${banks.map(x => collCard(x)).join('')}</div>`
+    + `<p class="muted lib-own">${ic('pencil-line')} Have your own pattern? <button class="link" data-act="new" data-type="item" data-col="structures">Create a custom sentence structure</button></p>`;
+}
+/* the person's layer on a built-in topic: status, saved, notes, own examples */
+function topicPersonalTop(kind, id){
+  const r = topicRec(kind, id), st = topicStatus(r);
+  return `<div class="tpbar">
+    <div class="seg" role="radiogroup" aria-label="Your status">${['learning','reviewed','mastered'].map(v => `<button class="${st===v?'on':''}" role="radio" aria-checked="${st===v}" data-act="tp-mark" data-k="${kind}" data-id="${id}" data-v="${v}">${ic(TSTAT[v][0])} ${TSTAT[v][1]}</button>`).join('')}</div>
+    <button class="btn ${r.saved ? 'on' : ''}" data-act="tp-save" data-k="${kind}" data-id="${id}" aria-pressed="${!!r.saved}">${ic(r.saved ? 'bookmark-check' : 'bookmark-plus')} ${r.saved ? 'Saved to My Knowledge' : 'Save to My Knowledge'}</button>
+  </div>`;
+}
+function topicPersonalNotes(kind, id){
+  const r = topicRec(kind, id);
+  return `<h2 class="si">${ic('notebook-pen')} My notes and examples</h2>
+  <form class="tpnotes stack" id="tp-form" data-k="${kind}" data-id="${id}">
+    <label class="fld"><span>Notes <em>only you see these; the lesson itself stays unchanged</em></span><textarea name="notes" rows="3" placeholder="Memory tricks, things your teacher said, questions to check…">${esc(r.notes || '')}</textarea></label>
+    <label class="fld"><span>My own examples <em>one per line</em></span><textarea name="myExamples" rows="3" placeholder="Write a few sentences of your own using this pattern">${esc(r.myExamples || '')}</textarea></label>
+    <div><button class="btn primary">${ic('check')} Save notes</button>${r.notesAt ? `<span class="muted" style="font-size:13px;margin-left:10px">Last saved ${new Date(r.notesAt).toLocaleDateString()}</span>` : ''}</div>
+  </form>`;
+}
+const relChips = (kind, ids) => (ids || []).filter(x => kind === 'g' ? LESSONS[x] : STRUCTS[x]).map(x => `<a class="chip" href="${topicHref(kind, x)}">${ic(kind === 'g' ? 'book-open' : 'quote')} ${esc(topicTitle(kind, x))}</a>`).join('');
+const relatedStructs = lid => [...new Set([...(LESSONS[lid].rel || []), ...Object.values(STRUCTS).filter(t => (t.rel || []).includes(lid)).map(t => t.id)])];
+const relatedLessons = sid => [...new Set([...(STRUCTS[sid].rel || []), ...Object.values(LESSONS).filter(l => (l.rel || []).includes(sid)).map(l => l.id)])];
+
+function vStructure(){
+  const t = STRUCTS[S.structId];
+  if (!t) return `<div class="empty">${ic('quote')}<h3>Structure not found</h3><a class="btn" href="#library-structures">Back to sentence structures</a></div>`;
+  const ids = Object.keys(STRUCTS), i = ids.indexOf(t.id), prev = ids[i-1], next = ids[i+1];
+  const rel = relatedLessons(t.id);
+  return `<div class="lesson">
+  <div class="crumb"><a href="#library">Library</a>${ic('chevron-right')}<a href="#library-structures">Sentence structures</a>${ic('chevron-right')}<span>${esc(t.group)}</span></div>
+  <h1 class="page">${esc(t.title)}</h1>
+  <p class="lede" style="margin-bottom:8px">${esc(t.summary)}</p>
+  <div class="tphead">${lvlPill(t.level)}<span class="muted">${plural(t.patterns.length, 'pattern')}</span></div>
+  ${topicPersonalTop('s', t.id)}
+  <h2 class="si">${ic('lightbulb')} Overview</h2><div class="txt"><p>${fmt(t.explain)}</p></div>
+  <h2 class="si">${ic('table')} Patterns</h2>
+  <div class="pats">${t.patterns.map(([name, formula, use, exs]) => `<div class="pat">
+    <div class="pat-h"><b>${esc(name)}</b></div>
+    <div class="pat-f">${esc(formula)}</div>
+    <p class="pat-u">${esc(use)}</p>
+    <ul class="exlist">${exs.map(e => `<li><button class="icon-btn" data-act="speak" data-t="${esc(e)}" aria-label="Listen">${ic('volume-2')}</button>${esc(e)}</li>`).join('')}</ul></div>`).join('')}</div>
+  <h2 class="si">${ic('languages')} Giải thích tiếng Việt</h2><div class="txt vi-exp"><p>${fmt(t.vi)}</p></div>
+  ${rel.length ? `<h2 class="si">${ic('link')} Grammar behind it</h2><div class="relchips">${relChips('g', rel)}</div>` : ''}
+  ${topicPersonalNotes('s', t.id)}
+  <div class="lnav">${prev ? `<a class="btn ghost" href="#structure-${prev}">${ic('chevron-left')} ${esc(STRUCTS[prev].title)}</a>` : '<span></span>'}${next ? `<a class="btn ghost" href="#structure-${next}">${esc(STRUCTS[next].title)} ${ic('chevron-right')}</a>` : '<span></span>'}</div>
+  </div>`;
+}
+
+function savedTopicsHTML(kind){
+  const ids = kind === 'g' ? Object.keys(LESSONS).filter(id => lessonState(id).saved) : Object.keys(STRUCTS).filter(id => structState(id).saved);
+  const lib = kind === 'g' ? '#library-grammar' : '#library-structures';
+  return `<section class="saved-lib"><h3 class="sub-h">${ic('bookmark-check')} Saved from the library <span class="muted">${ids.length}</span><a class="link" href="${lib}">Browse the library ${ic('chevron-right')}</a></h3>
+    ${ids.length ? `<div class="tlist">${ids.map(id => topicRow(kind, kind === 'g' ? LESSONS[id] : STRUCTS[id])).join('')}</div>` : `<p class="muted" style="margin:0">Save topics from the ${kind === 'g' ? 'grammar' : 'sentence structure'} library and they appear here, alongside your own notes below.</p>`}
+    <h3 class="sub-h" style="margin-top:18px">${ic('pencil-line')} My own ${kind === 'g' ? 'grammar notes' : 'sentence structures'}</h3></section>`;
+}
+
 /* ---------- Grammar lesson */
 function vLesson(){
   const l = LESSONS[S.lessonId];
@@ -2270,13 +2445,15 @@ function vLesson(){
   const ans = S.lq.answers, answered = Object.keys(ans).length, score = l.quiz.filter((q,i) => ans[i] === q[2]).length;
   const need = Math.ceil(l.quiz.length * .75);
   return `<div class="lesson">
-  <div class="crumb"><a href="#library">Library</a>${ic('chevron-right')}<a href="#collection-${c.id}">${esc(c.name)}</a>${ic('chevron-right')}<span>Lesson ${idx+1} of ${c.lessons.length}</span></div>
+  <div class="crumb"><a href="#library">Library</a>${ic('chevron-right')}<a href="#library-grammar">Grammar</a>${ic('chevron-right')}<a href="#collection-${c.id}">${esc(c.name)}</a>${ic('chevron-right')}<span>${idx+1} of ${c.lessons.length}</span></div>
   <h1 class="page">${esc(l.title)}</h1>
   <p class="lede" style="margin-bottom:8px">${esc(l.summary)}</p>
-  <span class="wst ${s.status==='done'?'mastered':'learning'}">${ic(s.status==='done'?'circle-check':'clock')} ${s.status==='done'?'Complete':'In progress'}${s.best!==undefined?` · best ${s.best}/${l.quiz.length}`:''}</span>
+  <div class="tphead">${lvlPill(l.level)}<span class="muted">${s.status==='done'?'Practice passed':'Practice not passed yet'}${s.best!==undefined?` · best ${s.best}/${l.quiz.length}`:''}</span></div>
+  ${topicPersonalTop('g', l.id)}
   <h2 class="si">${ic('lightbulb')} How it works</h2><div class="txt">${l.explain.map(p => `<p>${fmt(p)}</p>`).join('')}</div>
   <h2 class="si">${ic('table')} Form</h2><table class="formt"><tbody>${l.form.map(([a,b]) => `<tr><td>${esc(a)}</td><td>${esc(b)}</td></tr>`).join('')}</tbody></table>
   <h2 class="si">${ic('quote')} Examples</h2><ul class="exlist">${l.examples.map(e => `<li><button class="icon-btn" data-act="speak" data-t="${esc(e)}" aria-label="Listen">${ic('volume-2')}</button>${esc(e)}</li>`).join('')}</ul>
+  ${l.vi ? `<h2 class="si">${ic('languages')} Giải thích tiếng Việt</h2><div class="txt vi-exp"><p>${fmt(l.vi)}</p></div>` : ''}
   <h2 class="si">${ic('triangle-alert')} Common mistakes</h2><div class="mist">${l.mistakes.map(([w,r,why]) => `<div><span class="w">${esc(w)}</span><br><span class="r">${ic('check')} ${esc(r)}</span><small>${esc(why)}</small></div>`).join('')}</div>
   <h2 class="si">${ic('list-checks')} Practice</h2>
   ${l.quiz.map((q,i) => { const a = ans[i];
@@ -2284,6 +2461,8 @@ function vLesson(){
     ${a!==undefined ? `<div class="qfb">${a===q[2] ? '<b style="color:var(--leaf)">Correct.</b>' : '<b style="color:var(--pen)">Not quite.</b>'} ${esc(q[3])}</div>` : ''}</div>`; }).join('')}
   ${answered === l.quiz.length ? `<div class="score"><div><b style="font:600 20px var(--f-serif)">${score} of ${l.quiz.length} correct</b><div style="font-size:14.5px">${score >= need ? 'Lesson complete. Come back in a few days and try the practice again.' : `Get ${need} right to complete the lesson.`}</div></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="lq-reset">${ic('rotate-ccw')} Try again</button>${next ? `<a class="btn primary" href="#lesson-${next}">Next lesson ${ic('chevron-right')}</a>` : `<a class="btn primary" href="#collection-${c.id}">Back to ${esc(c.name)}</a>`}</div></div>` : ''}
+  ${relatedStructs(l.id).length ? `<h2 class="si">${ic('link')} Related sentence patterns</h2><div class="relchips">${relChips('s', relatedStructs(l.id))}</div>` : ''}
+  ${topicPersonalNotes('g', l.id)}
   <div class="lnav">${prev ? `<a class="btn ghost" href="#lesson-${prev}">${ic('chevron-left')} ${esc(LESSONS[prev].title)}</a>` : '<span></span>'}${s.status !== 'done' ? `<button class="btn ghost" data-act="lesson-done" data-id="${l.id}">${ic('check')} Mark as complete</button>` : ''}${next ? `<a class="btn ghost" href="#lesson-${next}">${esc(LESSONS[next].title)} ${ic('chevron-right')}</a>` : '<span></span>'}</div>
   </div>`;
 }
@@ -2301,7 +2480,7 @@ function answerLesson(qi, oi){
     const s = clone(Store.get('lp-' + l.id) || {id:'lp-' + l.id, kind:'lesson', lid:l.id, createdAt:Date.now()});
     const was = s.status;
     s.best = Math.max(s.best || 0, score); s.last = score; s.lastOpened = Date.now();
-    if (score >= Math.ceil(l.quiz.length * .75)) s.status = 'done'; else if (s.status !== 'done') s.status = 'started';
+    if (score >= Math.ceil(l.quiz.length * .75)) { s.status = 'done'; if (s.mark !== 'mastered') s.mark = 'reviewed'; } else if (s.status !== 'done') s.status = 'started';
     if (s.status === 'done' && was !== 'done') { s.completedAt = Date.now(); toast('Lesson complete'); }
     Store.put(s); bump('n');
   } else render();
@@ -2423,6 +2602,7 @@ function vKnowledge(){
     </select></span>
     <button class="btn primary" data-act="new" data-type="item" data-col="${col==='all'?'vocabulary':col}">${ic('plus')} Add ${col==='all'?'entry':COLS[col].one}</button>
   </div>
+  ${['grammar','structures'].includes(col) ? savedTopicsHTML(col === 'grammar' ? 'g' : 's') : ''}
   ${tags.length ? `<div class="tagcloud">${tags.map(([t,n]) => `<button class="chip tag ${S.kTag===t?'on':''}" data-act="k-tag" data-v="${esc(t)}">${ic('tag')} ${esc(t)} <span class="muted">${n}</span></button>`).join('')}</div>` : ''}
   ${list.length ? `<div class="dict">${shown.map(r => entryRow(r, col==='all')).join('')}</div>
     ${list.length > shown.length ? `<div class="more"><button class="btn" data-act="k-more">Show ${Math.min(150, list.length - shown.length)} more</button></div>` : ''}
@@ -3777,7 +3957,9 @@ function journalToVocab(id){
 function newMenu(open){
   const m = $('#newmenu');
   if (open === false || (!m.hidden && open === undefined)) { m.hidden = true; return; }
-  m.innerHTML = Object.entries(COLS).map(([k,o]) => `<button data-act="new" data-type="item" data-col="${k}"><span>${ic(COLIC[k])} ${o.label}</span>${k==='vocabulary'?'<small>N</small>':''}</button>`).join('') +
+  const lbl = {grammar:'Custom grammar note', structures:'Custom sentence structure'};
+  m.innerHTML = Object.entries(COLS).map(([k,o]) => `<button data-act="new" data-type="item" data-col="${k}"><span>${ic(COLIC[k])} ${lbl[k] || o.label}</span>${k==='vocabulary'?'<small>N</small>':''}</button>`).join('') +
+    `<hr><a href="#library-grammar" data-act="menu-nav"><span>${ic('languages')} Browse grammar library</span></a><a href="#library-structures" data-act="menu-nav"><span>${ic('quote')} Browse sentence structures</span></a>` +
     `<hr><button data-act="new" data-type="article"><span>${ic('newspaper')} Reading article</span></button><button data-act="new" data-type="note"><span>${ic('graduation-cap')} IELTS note</span></button><button data-act="new" data-type="score" data-main="${S.view==='ielts'?SK[S.skill].main:'listening'}"><span>${ic('chart-no-axes-combined')} IELTS band score</span></button><button data-act="new" data-type="journal"><span>${ic('notebook-pen')} Journal entry</span></button>`;
   drawIcons();
   m.hidden = false;
@@ -3901,6 +4083,11 @@ const ACT = {
   'k-status': el => { S.kStatus = el.dataset.v; render(); },
   'k-tag': el => { S.kTag = S.kTag === el.dataset.v ? '' : el.dataset.v; render(); },
   'k-more': () => { S.kLimit += 150; render(); },
+  'menu-nav': el => { newMenu(false); location.hash = el.getAttribute('href'); },
+  'gl-level': el => { S.glLevel = el.dataset.v; render(); },
+  'gl-clear': () => { S.glQ = ''; S.glLevel = 'all'; S.glStatus = 'all'; render(); },
+  'tp-mark': el => topicUpdate(el.dataset.k, el.dataset.id, r => { const v = el.dataset.v; r.mark = v; r.markedAt = Date.now(); if (v === 'learning') { if (r.status !== 'done') r.status = 'started'; } else { if (r.status !== 'done') r.completedAt = Date.now(); r.status = 'done'; } }),
+  'tp-save': el => { let on; topicUpdate(el.dataset.k, el.dataset.id, r => { r.saved = on = !r.saved; r.savedAt = Date.now(); }); toast(on ? 'Saved to My Knowledge' : 'Removed from My Knowledge'); },
   'k-clear': () => { Object.assign(S, {kQ:'', kStatus:'all', kTag:'', kLink:'any'}); render(); },
   'sk-tab': el => { S.skillTab = el.dataset.v; S.topic = ''; render(); },
   topic: el => { S.topic = el.dataset.v; render(); },
@@ -3994,6 +4181,7 @@ document.addEventListener('change', e => {
   if (k) { S[k] = e.target.value; render(); }
 });
 document.addEventListener('submit', e => {
+  if (e.target.id === 'tp-form') { e.preventDefault(); const f = e.target, v = Object.fromEntries(new FormData(f)); topicUpdate(f.dataset.k, f.dataset.id, r => { r.notes = String(v.notes || '').trim(); r.myExamples = String(v.myExamples || '').trim(); r.notesAt = Date.now(); }); toast('Notes saved'); return; }
   if (e.target.id === 'tg-form') { e.preventDefault(); const t = tgFromForm(e.target); S.tgEdit = false; Store.put({...clone(settings()), ieltsTargets:t}); toast('IELTS targets saved'); return; }
   if (e.target.id === 'dict-form') { e.preventDefault(); const k = new FormData(e.target).get('mwKey') || ''; Store.put({...clone(settings()), mwKey:String(k).trim()}); toast(k ? 'Key saved' : 'Key removed'); return; }
   if (e.target.id !== 'pref-form') return;
