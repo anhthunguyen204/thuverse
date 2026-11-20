@@ -910,6 +910,42 @@ body.auth-open .app{visibility:hidden}
 .ob .tg-ov-v{font-size:24px}
 .ob-skip{font-size:13.5px;align-self:center}
 
+
+/* avatars + profile */
+.avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.avatar .ic{width:55%;height:55%;color:#fff}
+.avatar{overflow:hidden}
+.avpick{display:flex;gap:14px;align-items:flex-start}
+.avpick-prev{width:64px !important;height:64px !important;font-size:24px;flex:none}
+.avpick-opts{display:flex;flex-direction:column;gap:10px;min-width:0}
+.avpick-grid{display:flex;flex-wrap:wrap;gap:6px}
+.avpick-o{border:2px solid transparent;border-radius:50%;padding:2px;background:none;cursor:pointer;line-height:0}
+.avpick-o .avatar{width:34px;height:34px;font-size:14px}
+.avpick-o.on{border-color:var(--primary)}
+.avpick-o:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.avpick-acts{display:flex;align-items:center;gap:12px}
+.avpick-acts label.btn{cursor:pointer}
+/* onboarding steps */
+.ob-dots{display:flex;gap:6px;justify-content:center;margin-bottom:2px}
+.ob-dots i{width:22px;height:4px;border-radius:4px;background:var(--border)}
+.ob-dots i.on{background:var(--primary)}.ob-dots i.done{background:color-mix(in srgb,var(--primary) 45%,var(--border))}
+.ob .ob-ic .mark{width:46px;height:46px}.ob .ob-ic .mark svg{width:46px;height:46px}
+.ob .ob-ic:has(.mark){background:none}
+.ob-l{text-align:left}
+.ob .avpick{text-align:left}
+.ob-nav{display:flex;justify-content:space-between;gap:10px;margin-top:4px}
+.ob-goals{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:left}
+.ob-goal input{position:absolute;opacity:0;pointer-events:none}
+.ob-goal span{display:flex;align-items:center;gap:8px;border:1.5px solid var(--border);border-radius:12px;padding:10px 12px;font-weight:600;font-size:14px;cursor:pointer}
+.ob-goal span .ic{width:16px;height:16px;color:var(--muted)}
+.ob-goal input:checked+span{border-color:var(--primary);background:var(--primary-soft);color:var(--primary-ink)}
+.ob-goal input:checked+span .ic{color:var(--primary)}
+.ob-goal input:focus-visible+span{outline:2px solid var(--primary);outline-offset:2px}
+.ob-ielts{display:flex;flex-direction:column;gap:8px;text-align:left}
+.ob-ielts>b{display:inline-flex;align-items:center;gap:6px;font-size:14px}
+.ob-ielts>b .ic{width:15px;height:15px;color:var(--primary)}
+@media (max-width:480px){.avpick{flex-direction:column}.ob-goals{grid-template-columns:1fr}}
+
 /* ---------- responsive */
 @media (max-width:1180px){
   .d3{grid-template-columns:minmax(0,1fr)}
@@ -954,7 +990,7 @@ body.auth-open .app{visibility:hidden}
 <body>
 <div class="app">
   <aside class="side" id="side" aria-label="Main navigation">
-    <div class="brand"><div class="mark" aria-hidden="true"><svg viewBox="0 0 36 36" width="36" height="36"><rect width="36" height="36" rx="10" class="mk-bg"/><rect x="9" y="9.5" width="18" height="4.4" rx="2.2" class="mk-t"/><rect x="15.8" y="9.5" width="4.4" height="17.5" rx="2.2" class="mk-t"/><circle cx="27.2" cy="25.2" r="2.6" class="mk-dot"/></svg></div><div><div class="brand-name">Thuverse</div><div class="brand-sub" id="brand-sub">Your English universe</div></div></div>
+    <div class="brand"><div class="mark" aria-hidden="true"><svg viewBox="0 0 36 36" width="36" height="36"><rect width="36" height="36" rx="10" class="mk-bg"/><rect x="9" y="9.5" width="18" height="4.4" rx="2.2" class="mk-t"/><rect x="15.8" y="9.5" width="4.4" height="17.5" rx="2.2" class="mk-t"/><circle cx="27.2" cy="25.2" r="2.6" class="mk-dot"/></svg></div><div><div class="brand-name">Thuverse</div><div class="brand-sub" id="brand-sub">Your language universe</div></div></div>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
       <div class="side-row">
@@ -987,11 +1023,11 @@ body.auth-open .app{visibility:hidden}
    Config
    ========================================================= */
 const COLS = {
-  vocabulary:  {label:'Vocabulary', one:'word', short:'word', term:'Word or phrase', def:'English definition', ph:'e.g. mitigate'},
+  vocabulary:  {label:'Vocabulary', one:'word', short:'word', term:'Word or phrase', def:'Definition', ph:'e.g. mitigate'},
   structures:  {label:'Sentence Structures', one:'structure', short:'structure', term:'Structure or pattern', def:'How and when to use it', ph:'e.g. Not only … but also …'},
   grammar:     {label:'Grammar', one:'grammar point', short:'grammar', term:'Grammar point', def:'Rule or explanation', ph:'e.g. Present perfect vs past simple'},
-  idioms:      {label:'Idioms & Expressions', one:'idiom', short:'idiom', term:'Idiom or expression', def:'English meaning', ph:'e.g. a double-edged sword'},
-  collocations:{label:'Collocations & Phrasal Verbs', one:'collocation', short:'collocation', term:'Collocation or phrasal verb', def:'English meaning', ph:'e.g. pose a threat to'},
+  idioms:      {label:'Idioms & Expressions', one:'idiom', short:'idiom', term:'Idiom or expression', def:'Meaning', ph:'e.g. a double-edged sword'},
+  collocations:{label:'Collocations & Phrasal Verbs', one:'collocation', short:'collocation', term:'Collocation or phrasal verb', def:'Meaning', ph:'e.g. pose a threat to'},
   mistakes:    {label:'Common Mistakes', one:'mistake', short:'mistake', term:'What I wrote or said (wrong)', def:'Correct version', ph:'e.g. I am agree with this view.'},
 };
 const STATUSES = ['new','learning','mastered'];
@@ -1516,7 +1552,7 @@ function render(){
   renderNav();
   const v = S.search ? vSearch() : ({dashboard:vDashboard, library:vLibrary, collection:vCollection, lesson:vLesson, reading:vReading, article:vArticle, study:vStudy, knowledge:vKnowledge, ielts:vIelts, review:vReview, journal:vJournal, preferences:vPrefs}[S.view] || vDashboard)();
   $('#view').innerHTML = v;
-  const nm = settings().name; $('#brand-sub').textContent = nm ? nm + '’s English universe' : 'Your English universe';
+  const nm = settings().name; $('#brand-sub').textContent = nm ? nm + '’s language universe' : 'Your language universe';
   if (id) { const n = document.getElementById(id); if (n) { n.focus(); try { if (ss !== null) n.setSelectionRange(ss, se); } catch {} } }
   else if (S.view === 'study' && !S.search && !$('#modal-root').firstElementChild) { const f = $('#typein:not([disabled])') || $('#s-focus'); if (f) f.focus({preventScroll:true}); }
   mountCharts();
@@ -1543,7 +1579,7 @@ function renderNav(){
   $('#nav').innerHTML = h;
   $('#pref-link').classList.toggle('on', S.view === 'preferences' && !S.search);
   const sk = streaks(dayCounts()), nm = (settings().name || '').trim();
-  $('#topstats').innerHTML = `<a class="tstat" href="#dashboard" title="Learning streak">${ic('zap','t-zap')}<b>${sk.cur}</b></a><a class="tstat" href="#review" title="Words due for review">${ic('repeat-2','t-due')}<b>${due}</b></a><a class="avatar" href="#preferences" title="Preferences">${esc(nm ? nm[0].toUpperCase() : 'T')}</a>`;
+  $('#topstats').innerHTML = `<a class="tstat" href="#dashboard" title="Learning streak">${ic('zap','t-zap')}<b>${sk.cur}</b></a><a class="tstat" href="#review" title="Words due for review">${ic('repeat-2','t-due')}<b>${due}</b></a><a class="avatar" href="#preferences" title="${esc(nm ? nm + ' · Profile and preferences' : 'Profile and preferences')}" style="${avatarStyle(settings())}">${avatarInner(settings())}</a>`;
   const tb = $('#theme-btn'); const dark = document.documentElement.dataset.theme === 'dark';
   if (tb && tb.dataset.mode !== String(dark)) { tb.dataset.mode = String(dark); tb.innerHTML = ic(dark ? 'sun' : 'moon'); }
 }
@@ -1969,28 +2005,139 @@ document.addEventListener('change', e => {
   if (out) { out.innerHTML = tgOverallHTML(tgFromForm(form), out.id === 'tg-ov'); drawIcons(); }
 });
 
+
+/* ---------- Profile avatar: stored in the settings record as '' (initial),
+   'p:<id>' (built-in) or a small data:image/jpeg URL (upload, 160px). */
+const AVATARS = [['cat','#E8578A'],['bird','#4B3BE6'],['rabbit','#1F9D74'],['fish','#2B8AC6'],['flower-2','#C2410C'],['leaf','#3F8F3A'],['sun','#D99A00'],['moon','#5B5BD6'],['star','#B4469B'],['rocket','#0E7C86'],['mountain-snow','#475569']];
+function avatarInner(st){
+  const a = (st && st.avatar) || '', nm = ((st && st.name) || '').trim();
+  if (a.startsWith('data:image/')) return `<img src="${esc(a)}" alt="">`;
+  const p = a.startsWith('p:') && AVATARS.find(([id]) => id === a.slice(2));
+  if (p) return ic(p[0]);
+  return esc(nm ? nm[0].toUpperCase() : 'T');
+}
+const avatarStyle = st => { const a = (st && st.avatar) || ''; const p = a.startsWith('p:') && AVATARS.find(([id]) => id === a.slice(2)); return p ? `background:${p[1]}` : ''; };
+function avatarPickerHTML(cur, name){
+  return `<div class="avpick" data-avpick>
+    <input type="hidden" name="avatar" value="${esc(cur || '')}">
+    <div class="avpick-prev avatar" style="${avatarStyle({avatar:cur})}" aria-hidden="true">${avatarInner({avatar:cur, name})}</div>
+    <div class="avpick-opts">
+      <div class="avpick-grid" role="radiogroup" aria-label="Choose an avatar">
+        <button type="button" class="avpick-o ${!cur ? 'on' : ''}" data-av="" role="radio" aria-checked="${!cur}" title="Your initial"><span class="avatar">${esc(((name || '').trim()[0] || 'T').toUpperCase())}</span></button>
+        ${AVATARS.map(([id, c]) => `<button type="button" class="avpick-o ${cur === 'p:' + id ? 'on' : ''}" data-av="p:${id}" role="radio" aria-checked="${cur === 'p:' + id}" title="${esc(id.replace(/-\d$/, ''))}"><span class="avatar" style="background:${c}">${ic(id)}</span></button>`).join('')}
+      </div>
+      <div class="avpick-acts">
+        <label class="btn sm">${ic('upload')} Upload a photo<input type="file" accept="image/*" data-avupload hidden></label>
+        <button type="button" class="link" data-av="" ${cur ? '' : 'hidden'} data-avremove>Remove</button>
+      </div>
+    </div>
+  </div>`;
+}
+function avatarPickSet(box, val){
+  box.querySelector('input[name=avatar]').value = val;
+  box.querySelectorAll('.avpick-o').forEach(b => { const on = b.dataset.av === val; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); });
+  const form = box.closest('form'), name = form && form.elements.name ? form.elements.name.value : '';
+  const prev = box.querySelector('.avpick-prev'); prev.innerHTML = avatarInner({avatar:val, name}); prev.setAttribute('style', avatarStyle({avatar:val}));
+  const rm = box.querySelector('[data-avremove]'); if (rm) rm.hidden = !val;
+  drawIcons();
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-avpick] [data-av]'); if (!b) return;
+  avatarPickSet(b.closest('[data-avpick]'), b.dataset.av);
+});
+document.addEventListener('change', e => {
+  if (!e.target.matches('[data-avupload]')) return;
+  const file = e.target.files && e.target.files[0], box = e.target.closest('[data-avpick]'); e.target.value = '';
+  if (!file) return;
+  if (!/^image\//.test(file.type)) { toast('Choose an image file (JPG, PNG, WebP or HEIC).', true); return; }
+  const url = URL.createObjectURL(file), img = new Image();
+  img.onload = () => {
+    const S2 = 160, c = document.createElement('canvas'); c.width = c.height = S2;
+    const k = Math.min(img.naturalWidth, img.naturalHeight), sx = (img.naturalWidth - k) / 2, sy = (img.naturalHeight - k) / 2;
+    const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, S2, S2); g.drawImage(img, sx, sy, k, k, 0, 0, S2, S2);
+    URL.revokeObjectURL(url);
+    avatarPickSet(box, c.toDataURL('image/jpeg', 0.82));
+  };
+  img.onerror = () => { URL.revokeObjectURL(url); toast('That image couldn’t be opened. Try a JPG or PNG.', true); };
+  img.src = url;
+});
+document.addEventListener('input', e => {
+  if (e.target.name !== 'name' || !e.target.form) return;
+  const box = e.target.form.querySelector('[data-avpick]'); if (!box) return;
+  const v = box.querySelector('input[name=avatar]').value, ch = ((e.target.value || '').trim()[0] || 'T').toUpperCase();
+  const first = box.querySelector('.avpick-o[data-av=""] .avatar'); if (first) first.textContent = ch;
+  if (!v) box.querySelector('.avpick-prev').textContent = ch;
+});
+
 /* ---------- First-run onboarding (website accounts only, shown once) */
+const OB_LANGS = [['english','English','languages'],['ielts','IELTS preparation','graduation-cap'],['korean','Korean','languages'],['other','Another language','globe']];
 function onboardShow(){
   if (settings().onboarding || $('#ob-form')) return;
+  const st0 = settings();
+  const ob = {step:1, name:st0.name || '', avatar:st0.avatar || '', goals:[], other:'', daily:Number(st0.dailyNew) || 10, tg:{}};
   const mark = how => { const st = settings(); if (!st.onboarding) Store.put({...clone(st), onboarding:how, onboardedAt:Date.now()}); };
-  openModal(`<form class="ob" id="ob-form">
-    <div class="ob-ic">${ic('flag')}</div>
-    <h2>What’s your IELTS goal?</h2>
-    <p class="muted">Set your target band scores to personalize your learning journey.</p>
-    <div class="ob-grid">${TG_SKILLS.map(([k,l,icn]) => `<label class="ob-cell"><span>${ic(icn)} ${l}</span>${tgSelect(k, l, '')}</label>`).join('')}</div>
-    <div class="ob-ov" aria-live="polite"><span>${ic('target')} Overall band</span><span class="tg-ov" id="ob-ov">${tgOverallHTML({})}</span></div>
-    <button class="btn primary block lg" id="ob-save">${ic('check')} Save My Target</button>
-    <button type="button" class="link ob-skip" data-ob="skip">Skip for now. I’ll set it later on the Dashboard</button>
-  </form>`, {size:'sm', onClose:() => mark('skipped'), onMount: el => {
-    el.querySelector('[data-ob=skip]').addEventListener('click', () => { mark('skipped'); modalClose = null; closeModal(true); toast('You can set your IELTS target any time on the Dashboard'); });
-    el.querySelector('#ob-form').addEventListener('submit', e => {
-      e.preventDefault();
-      const t = tgFromForm(e.target), st = clone(settings());
-      if (!TG_SKILLS.some(([k]) => t[k])) { toast('Choose at least one band, or skip for now.', true); return; }
-      const prev = st.ieltsTargets || {};
-      const merged = {}; TG_SKILLS.forEach(([k]) => merged[k] = prev[k] || t[k]); merged.overall = ieltsOverall(merged);   // never overwrite targets that already exist
-      Store.put({...st, ieltsTargets:merged, onboarding:'done', onboardedAt:Date.now()});
-      modalClose = null; closeModal(true); toast('IELTS target saved');
+  const saveProfile = () => {          // never replace an existing value with an empty one
+    const st = clone(settings()), up = {};
+    if (ob.name.trim() && ob.name.trim() !== st.name) up.name = ob.name.trim();
+    if (ob.avatar !== (st.avatar || '') && (ob.avatar || !st.avatar)) up.avatar = ob.avatar;
+    if (Object.keys(up).length) Store.put({...st, ...up});
+  };
+  const dots = n => `<div class="ob-dots" aria-label="Step ${n} of 3">${[1,2,3].map(k => `<i class="${k === n ? 'on' : k < n ? 'done' : ''}"></i>`).join('')}</div>`;
+  const skip = `<button type="button" class="link ob-skip" data-ob="skip">Skip setup. I’ll do it later</button>`;
+  const body = () => {
+    if (ob.step === 1) return `${dots(1)}<div class="ob-ic">${$('.brand .mark') ? $('.brand .mark').outerHTML : ic('sparkles')}</div>
+      <h2>Welcome to Thuverse</h2>
+      <p class="muted">Your personal space for learning languages. Collect words and phrases, review them at the right moment, and watch your progress grow. English and IELTS tools are built in, and you can use it for any language you study.</p>
+      <button type="button" class="btn primary block lg" data-ob="next">Get started ${ic('arrow-right')}</button>${skip}`;
+    if (ob.step === 2) return `${dots(2)}<h2>Set up your profile</h2><p class="muted">This is how Thuverse greets you. You can change it any time in Preferences.</p>
+      <label class="fld ob-l"><span>Display name</span><input name="name" value="${esc(ob.name)}" placeholder="e.g. Thư" maxlength="40" autocomplete="nickname" autofocus></label>
+      <div class="fld ob-l"><span>Avatar</span>${avatarPickerHTML(ob.avatar, ob.name)}</div>
+      <div class="ob-nav"><button type="button" class="btn ghost" data-ob="back">${ic('arrow-left')} Back</button><button type="button" class="btn primary" data-ob="next">Continue ${ic('arrow-right')}</button></div>${skip}`;
+    const ie = ob.goals.includes('ielts');
+    return `${dots(3)}<h2>What are you learning?</h2><p class="muted">Pick everything that applies. This helps Thuverse focus on what matters to you.</p>
+      <div class="ob-goals" role="group" aria-label="Learning goals">${OB_LANGS.map(([k, l, icn]) => `<label class="ob-goal"><input type="checkbox" name="goal" value="${k}" ${ob.goals.includes(k) ? 'checked' : ''}><span>${ic(icn)} ${l}</span></label>`).join('')}</div>
+      ${ob.goals.includes('other') ? `<label class="fld ob-l"><span>Which language?</span><input name="other" value="${esc(ob.other)}" placeholder="e.g. Japanese"></label>` : ''}
+      ${ie ? `<div class="ob-ielts"><b>${ic('flag')} Your IELTS target</b>
+        <div class="ob-grid">${TG_SKILLS.map(([k,l,icn]) => `<label class="ob-cell"><span>${ic(icn)} ${l}</span>${tgSelect(k, l, ob.tg[k] || '')}</label>`).join('')}</div>
+        <div class="ob-ov" aria-live="polite"><span>${ic('target')} Overall band</span><span class="tg-ov" id="ob-ov">${tgOverallHTML(ob.tg)}</span></div></div>` : ''}
+      <label class="fld ob-l"><span>New words per day</span><select name="daily">${[5,10,15,20,30].map(n => `<option ${ob.daily === n ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
+      <div class="ob-nav"><button type="button" class="btn ghost" data-ob="back">${ic('arrow-left')} Back</button><button class="btn primary" id="ob-save">${ic('check')} ${ie ? 'Save My Target' : 'Start learning'}</button></div>${skip}`;
+  };
+  const collect = f => {
+    if (f.elements.name) ob.name = f.elements.name.value;
+    if (f.elements.avatar) ob.avatar = f.elements.avatar.value;
+    if (f.querySelector('[name=goal]')) ob.goals = [...f.querySelectorAll('[name=goal]:checked')].map(x => x.value);
+    if (f.elements.other) ob.other = f.elements.other.value;
+    if (f.elements.daily) ob.daily = Number(f.elements.daily.value) || 10;
+    if (f.querySelector('select[data-tg]')) ob.tg = tgFromForm(f);
+  };
+  openModal(`<form class="ob" id="ob-form" novalidate></form>`, {size:'sm', onClose:() => { saveProfile(); mark('skipped'); }, onMount: el => {
+    const f = el.querySelector('#ob-form');
+    const paint = () => { f.innerHTML = body(); drawIcons(); const a = f.querySelector('[autofocus]'); if (a) setTimeout(() => a.focus(), 30); };
+    paint();
+    f.addEventListener('change', e => { if (e.target.name === 'goal') { collect(f); paint(); } });
+    f.addEventListener('click', e => {
+      const b = e.target.closest('[data-ob]'); if (!b) return;
+      collect(f);
+      if (b.dataset.ob === 'next') { if (ob.step === 2) saveProfile(); ob.step++; paint(); }
+      else if (b.dataset.ob === 'back') { ob.step--; paint(); }
+      else if (b.dataset.ob === 'skip') { saveProfile(); mark('skipped'); modalClose = null; closeModal(true); toast('You can finish setting up any time in Preferences'); }
+    });
+    f.addEventListener('submit', e => {
+      e.preventDefault(); collect(f);
+      if (ob.step === 2) { saveProfile(); ob.step = 3; paint(); return; }
+      if (ob.step !== 3) return;
+      saveProfile();
+      const st = clone(settings());
+      const up = {onboarding:'done', onboardedAt:Date.now(), dailyNew:ob.daily, learning:{goals:ob.goals, other:ob.goals.includes('other') ? ob.other.trim() : ''}};
+      if (ob.goals.includes('ielts') && TG_SKILLS.some(([k]) => ob.tg[k])) {
+        const prev = st.ieltsTargets || {}, merged = {};
+        TG_SKILLS.forEach(([k]) => merged[k] = prev[k] || ob.tg[k] || '');           // never overwrite targets that already exist
+        merged.overall = ieltsOverall(merged); up.ieltsTargets = merged;
+      }
+      Store.put({...st, ...up});
+      modalClose = null; closeModal(true);
+      toast(up.ieltsTargets ? 'Profile and IELTS target saved' : 'You’re all set');
     });
   }});
 }
@@ -2255,7 +2402,7 @@ function vKnowledge(){
   const tagCount = {}; its.forEach(r => [...(r.tags||[]), ...(r.category?[r.category]:[])].forEach(t => tagCount[t] = (tagCount[t]||0)+1));
   const tags = Object.entries(tagCount).sort((a,b)=>b[1]-a[1]).slice(0,16);
   const title = col === 'all' ? 'My Knowledge' : COLS[col].label;
-  const lede = col === 'all' ? 'Every word, structure and correction you have collected, from IELTS practice and everyday English, in one library.' :
+  const lede = col === 'all' ? 'Every word, structure and correction you’ve collected, across your languages and IELTS practice, in one place.' :
     ({vocabulary:'Words you want to own: meaning, pronunciation, and how they are really used.', structures:'Sentence patterns you can reuse in writing and speaking.', grammar:'Rules worth remembering, with examples that make them stick.', idioms:'Idioms and natural expressions, and when they sound right.', collocations:'Words that go together, and phrasal verbs.', mistakes:'What you got wrong, and the correct version. Reviewing these is one of the fastest ways to improve.'})[col];
   const shown = list.slice(0, S.kLimit);
   return `
@@ -2407,11 +2554,11 @@ function vReview(){
     <div><span class="v">${due.length}</span><span class="l mi">${ic('repeat-2')} ${due.length === 1 ? 'word is' : 'words are'} due now</span></div>
     <div class="rcontrols">
       <label class="fld"><span>Review style</span><div class="seg">${[['mix','Mixed','shuffle'],['flip','Flashcards','layers'],['type','Type the answer','keyboard']].map(([v,l,i]) => `<button class="${style===v?'on':''}" data-act="rv-style" data-v="${v}">${ic(i)} ${l}</button>`).join('')}</div></label>
-      ${style !== 'type' ? `<label class="fld"><span>Flashcard direction</span><div class="seg"><button class="${!S.rv.reverse?'on':''}" data-act="rv-dir" data-v="0">English first</button><button class="${S.rv.reverse?'on':''}" data-act="rv-dir" data-v="1">Meaning first</button></div></label>` : ''}
+      ${style !== 'type' ? `<label class="fld"><span>Flashcard direction</span><div class="seg"><button class="${!S.rv.reverse?'on':''}" data-act="rv-dir" data-v="0">Word first</button><button class="${S.rv.reverse?'on':''}" data-act="rv-dir" data-v="1">Meaning first</button></div></label>` : ''}
     </div>
     <button class="btn hl lg" data-act="start-review" data-deck="due" ${due.length?'':'disabled'}>${ic('play')} Start review</button>
   </section>
-  <p class="muted" style="font-size:14px;margin:-6px 0 18px">${style==='mix' ? 'Mixed: new words are flashcards; once you know a word, you type it from its meaning, which builds stronger recall.' : style==='type' ? 'You see the meaning and type the English word. It is harder, and it works better for long-term memory.' : 'You see the card, try to recall, then rate yourself.'}</p>
+  <p class="muted" style="font-size:14px;margin:-6px 0 18px">${style==='mix' ? 'Mixed: new words are flashcards; once you know a word, you type it from its meaning, which builds stronger recall.' : style==='type' ? 'You see the meaning and type the word. It’s harder, and it works better for long-term memory.' : 'You see the card, try to recall, then rate yourself.'}</p>
   <h2 class="sec si" style="margin-bottom:12px">${ic('layers')} Choose a set</h2>
   <div class="decks">
     ${deck('mine','book-a','My Knowledge', deckFor('mine').length, 'your own entries, due now')}
@@ -2569,7 +2716,7 @@ function vStudy(){
       <div class="stop"><span>${ic('keyboard')} ${step.t === 'rev' ? 'Review · type the word' : 'Type the word'}</span><span>${esc(v.pos||'')}</span></div>
       ${v.vi ? `<div class="svi" style="margin-top:18px">${esc(v.vi)}</div>` : ''}<div class="sdef">${esc(v.def||'')}</div>
       ${ex ? `<blockquote class="sex">${ex}</blockquote>` : ''}
-      <form class="typebox" id="typeform" autocomplete="off"><input id="typein" ${res?'disabled':''} value="${esc(res ? res.val : '')}" placeholder="Starts with “${esc(v.term.charAt(0))}” · ${v.term.split(' ').length > 1 ? plural(v.term.split(' ').length,'word') : plural(v.term.length,'letter')}" autocapitalize="off" spellcheck="false" aria-label="Type the English word">${res?'':'<button class="btn primary">Check</button>'}</form>
+      <form class="typebox" id="typeform" autocomplete="off"><input id="typein" ${res?'disabled':''} value="${esc(res ? res.val : '')}" placeholder="Starts with “${esc(v.term.charAt(0))}” · ${v.term.split(' ').length > 1 ? plural(v.term.split(' ').length,'word') : plural(v.term.length,'letter')}" autocapitalize="off" spellcheck="false" aria-label="Type the word">${res?'':'<button class="btn primary">Check</button>'}</form>
       ${!res ? `<button class="link" style="margin-top:10px;font-size:14px" data-act="s-giveup">I don’t remember</button>` : ''}
     </div>
     ${res ? `<div class="fb ${res.ok?'ok':'no'}"><span>${res.ok ? `${ic('check')} ${res.almost ? `Almost — it’s spelled <b>${esc(v.term)}</b>` : 'Correct'}` : `${ic('x')} The answer is <b>${esc(v.term)}</b>`} ${listen(v.term)}</span>
@@ -2689,20 +2836,21 @@ function vPrefs(){
   const st = settings(), its = items(), samples = all().filter(r => r.sample).length;
   const where = {cloud: Web.uid ? `Your library is saved to your Thuverse account (${esc(Web.email)}) and syncs to every device where you sign in.` : 'Your library is saved to your Claude account, so it follows you to any device where you open this page.', syncing:'Connecting to your account…', starting:'Connecting to your account…', local:'Your account’s storage isn’t available here, so your library is saved in this browser only. Export a backup regularly.', error:'Your account can’t be reached right now. Changes are kept in this browser and will sync when it reconnects.'}[Store.mode];
   return `
-  <h1 class="page">Preferences</h1><p class="lede">Your goals, how the app looks and sounds, and your data.</p>
+  <h1 class="page">Preferences</h1><p class="lede">Your profile, goals, how the app looks and sounds, and your data.</p>
   <div class="prefs">
-    <section class="panel"><h2 class="sec si">${ic('user')} About you</h2>
+    <section class="panel"><h2 class="sec si">${ic('user')} Profile and goals</h2>
       <form class="stack" id="pref-form">
-        <label class="fld"><span>Your name</span><input name="name" value="${esc(st.name||'')}" placeholder="What should the dashboard call you?"></label>
+        <label class="fld"><span>Display name</span><input name="name" value="${esc(st.name||'')}" placeholder="How should Thuverse greet you?" maxlength="40" autocomplete="nickname"></label>
+        <div class="fld"><span>Avatar</span>${avatarPickerHTML(st.avatar || '', st.name || '')}</div>
         <div class="grid2">
-          <label class="fld"><span>Target band</span><select name="target">${[5,5.5,6,6.5,7,7.5,8,8.5,9].map(b => `<option ${Number(st.target)===b?'selected':''}>${b}</option>`).join('')}</select></label>
+          <label class="fld"><span>IELTS target band</span><select name="target">${[5,5.5,6,6.5,7,7.5,8,8.5,9].map(b => `<option ${Number(st.target)===b?'selected':''}>${b}</option>`).join('')}</select></label>
           <label class="fld"><span>IELTS exam date <em>optional</em></span><input type="date" name="examDate" value="${esc(st.examDate||'')}"></label>
         </div>
         <div class="grid2">
           <label class="fld"><span>New words per day</span><select name="dailyNew">${[5,10,15,20,30].map(n => `<option ${Number(st.dailyNew||10)===n?'selected':''}>${n}</option>`).join('')}</select></label>
           <label class="fld"><span>Review style</span><select name="reviewStyle">${[['mix','Mixed (recommended)'],['flip','Flashcards'],['type','Type the answer']].map(([v,l]) => `<option value="${v}" ${(st.reviewStyle||'mix')===v?'selected':''}>${l}</option>`).join('')}</select></label>
         </div>
-        <label class="fld"><span>Pronunciation accent for the listen button</span><select name="accent"><option value="en-GB" ${st.accent!=='en-US'?'selected':''}>British English</option><option value="en-US" ${st.accent==='en-US'?'selected':''}>American English</option></select></label>
+        <label class="fld"><span>English pronunciation for the listen button</span><select name="accent"><option value="en-GB" ${st.accent!=='en-US'?'selected':''}>British English</option><option value="en-US" ${st.accent==='en-US'?'selected':''}>American English</option></select></label>
         <div><button class="btn primary">${ic('check')} Save preferences</button></div>
       </form>
     </section>
@@ -3062,7 +3210,7 @@ function lkApplySense(m, i){
 }
 
 /* ---------- lookup UI */
-const LK_FIELDS = [['ipaUK','IPA · British'],['ipaUS','IPA · American'],['pos','Part of speech'],['def','English definition'],['vi','Vietnamese meaning'],['ex','Example sentences'],['syn','Synonyms'],['ant','Antonyms'],['col','Collocations'],['rel','Related words']];
+const LK_FIELDS = [['ipaUK','IPA · British'],['ipaUS','IPA · American'],['pos','Part of speech'],['def','Definition'],['vi','Vietnamese meaning'],['ex','Example sentences'],['syn','Synonyms'],['ant','Antonyms'],['col','Collocations'],['rel','Related words']];
 const srcName = s => Array.isArray(s) ? s.map(x => SRC[x].name).join(', ') : (SRC[s] || {name:s}).name;
 function lkVerifyHTML(word){
   if (!word) return '';
@@ -3225,11 +3373,11 @@ function avStatus(el, state, word, x){
   const asked = x && x.src ? Object.values(x.src).filter(s => s.status !== 'off').length : 0;
   st.className = 'av-status ' + state;
   st.innerHTML = {
-    idle: `${ic('sparkle')} <span>Type a word or phrase. Thuverse looks it up as you type.</span>`,
+    idle: `${ic('sparkle')} <span>Type a word or phrase. English entries are looked up automatically as you type; for other languages, fill the fields in yourself.</span>`,
     loading: `${ic('loader-circle')} <span>Looking up “${esc(word)}”…</span>`,
     partial: `${ic('loader-circle')} <span>${answered ? `${plural(answered, 'source')} answered, checking ${pending} more…` : `Looking up “${esc(word)}”…`}</span>`,
     done: `${ic('circle-check')} <span>${answered} of ${asked} sources answered. Shaded fields came from the dictionaries, so check and edit them before saving.</span>`,
-    none: `${ic('search-x')} <span><b>No dictionary entry for “${esc(word)}”.</b> Check the spelling or try the base form, or fill the fields in yourself.</span>`,
+    none: `${ic('search-x')} <span><b>No dictionary entry for “${esc(word)}”.</b> Check the spelling or try the base form. Automatic lookup covers English for now, so for other languages fill the fields in yourself.</span>`,
     unavailable: `${ic('plug')} <span>Automatic lookup isn’t available here. Fill the fields in yourself.</span>`,
     error: `${ic('triangle-alert')} <span></span>`,
   }[state] || '';
@@ -3332,7 +3480,7 @@ function avHTML(d, preset){
         <label class="fld"><span>Part of speech <small class="av-src" data-for="pos"></small></span><input name="pos" value="${esc(d.pos || '')}" placeholder="noun, verb…" list="dl-pos"></label>
         <div class="fld"><label for="av-vi"><span>Vietnamese meaning <small class="av-src" data-for="vi"></small></span></label><input id="av-vi" name="vi" value="${esc(d.vi || '')}" placeholder="nghĩa tiếng Việt"><div class="av-chips" id="lk-vi"></div></div>
       </div>
-      <label class="fld"><span><span data-l="def">English definition</span> <small class="av-src" data-for="def"></small></span><textarea name="def" rows="2">${esc(d.def || '')}</textarea></label>
+      <label class="fld"><span><span data-l="def">Definition</span> <small class="av-src" data-for="def"></small></span><textarea name="def" rows="2">${esc(d.def || '')}</textarea></label>
       <label class="fld"><span>Examples <em>one per line</em> <small class="av-src" data-for="examples"></small></span><textarea name="examples" rows="2">${esc(d.examples || '')}</textarea></label>
     </div>
     <details class="av-sec" id="av-rel"><summary>${ic('git-branch')}<b>Word relationships</b><span id="av-rel-sum">none yet</span>${ic('chevron-down', 'av-chev')}</summary>
@@ -3850,7 +3998,7 @@ document.addEventListener('submit', e => {
   if (e.target.id === 'dict-form') { e.preventDefault(); const k = new FormData(e.target).get('mwKey') || ''; Store.put({...clone(settings()), mwKey:String(k).trim()}); toast(k ? 'Key saved' : 'Key removed'); return; }
   if (e.target.id !== 'pref-form') return;
   e.preventDefault(); const v = Object.fromEntries(new FormData(e.target));
-  Store.put({...clone(settings()), name:v.name.trim(), target:Number(v.target), examDate:v.examDate, accent:v.accent, dailyNew:Number(v.dailyNew)||10, reviewStyle:v.reviewStyle||'mix'});
+  Store.put({...clone(settings()), name:v.name.trim(), avatar:String(v.avatar || ''), target:Number(v.target), examDate:v.examDate, accent:v.accent, dailyNew:Number(v.dailyNew)||10, reviewStyle:v.reviewStyle||'mix'});
   toast('Preferences saved');
 });
 $('#gsearch').addEventListener('input', e => { S.search = e.target.value; render(); });
