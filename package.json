@@ -1,0 +1,7 @@
+{
+  "name": "thuverse",
+  "private": true,
+  "type": "module",
+  "description": "Thuverse: personal English and IELTS learning app (static page + Vercel functions)",
+  "engines": { "node": ">=20" }
+}
