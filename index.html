@@ -1191,10 +1191,16 @@ async function webConnect(){
     if (session && session.user) setTimeout(() => webStart(session), 0);
     else if (ev === 'SIGNED_OUT') authShow('in');
   });
-  if (/[?&](code|error_description)=/.test(location.search)) setTimeout(() => history.replaceState(null, '', location.pathname + (location.hash || '#dashboard')), 1500);
-  const {data} = await sb.auth.getSession();
+  const cb = authCallbackInfo();
+  const {data} = await sb.auth.getSession();          // also finishes any ?code= exchange from an email link
+  if (cb.any) history.replaceState(null, '', location.pathname + (cb.routeHash || ''));
   if (data && data.session) await webStart(data.session);
-  else { setMode('starting'); authShow(Store.owner ? 'in' : 'in'); }
+  else {
+    setMode('starting');
+    if (cb.error) { AUTH.msg = cb.error; AUTH.err = true; }
+    else if (cb.code) { AUTH.msg = 'Your email is confirmed. This link was opened in a different browser from the one you signed up in, so sign in here to continue.'; AUTH.err = false; }
+    authShow('in');
+  }
   addEventListener('online', () => webRefresh(true));
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') webRefresh(false); });
   return true;
@@ -1210,17 +1216,34 @@ async function webSignOut(){
   authShow('in'); scheduleRender();
 }
 
+/* Email links come back to the site root as ?code=… (success) or with error=…
+   in the query or the hash. Read them before the hash router or supabase-js touch them. */
+function authCallbackInfo(){
+  const q = new URLSearchParams(location.search), h = new URLSearchParams(location.hash.replace(/^#/, ''));
+  const get = k => q.get(k) || h.get(k) || '';
+  const code = q.get('code') || '', ec = get('error_code'), ed = get('error_description'), er = get('error');
+  const hashIsAuth = /(^|&)(error|error_code|error_description|access_token|code)=/.test(location.hash.replace(/^#/, ''));
+  let error = '';
+  if (er || ec || ed) error = /expired|otp_expired|invalid|not found/i.test(ec + ' ' + ed)
+    ? 'That email link has expired or was already used. If you already confirmed your email, just sign in. Otherwise choose “Resend confirmation email”.'
+    : `The email link didn’t work (${(ed || er || ec).replace(/\+/g, ' ')}). Sign in, or ask for a new link.`;
+  return {code, error, any: !!(code || error || hashIsAuth), routeHash: hashIsAuth ? '' : location.hash};
+}
+/* where email links send people back to: the production site in production, the current site elsewhere */
+const authBack = () => ((Web.cfg && Web.cfg.siteUrl) || location.origin).replace(/\/*$/, '/');
+
 /* ---------- Sign-in screen (website only) */
 const AUTH = {mode:'in', busy:false, msg:'', err:false};
 function authHTML(){
   const m = AUTH.mode;
-  const title = {in:'Sign in to Thuverse', up:'Create your Thuverse account', link:'Get a sign-in link', reset:'Choose a new password', forgot:'Reset your password'}[m];
-  const sub = {in:'Your vocabulary, reviews and notes, on every device.', up:'One account keeps your library in sync everywhere.', link:'We’ll email you a link that signs you in.', reset:'Enter a new password for your account.', forgot:'We’ll email you a link to choose a new password.'}[m];
+  const title = {in:'Sign in to Thuverse', up:'Create your Thuverse account', link:'Get a sign-in link', reset:'Choose a new password', forgot:'Reset your password', resend:'Resend confirmation email'}[m];
+  const sub = {in:'Your vocabulary, reviews and notes, on every device.', up:'One account keeps your library in sync everywhere.', link:'We’ll email you a link that signs you in.', reset:'Enter a new password for your account.', forgot:'We’ll email you a link to choose a new password.', resend:'We’ll send a new confirmation link to your email.'}[m];
   const email = m !== 'reset' ? `<label class="fld"><span>Email</span><input name="email" type="email" autocomplete="email" required value="${esc(AUTH.email || '')}"></label>` : '';
   const pass = ['in','up','reset'].includes(m) ? `<label class="fld"><span>${m === 'in' ? 'Password' : 'New password'}</span><input name="password" type="password" minlength="8" required autocomplete="${m === 'in' ? 'current-password' : 'new-password'}"></label>` : '';
-  const btn = {in:'Sign in', up:'Create account', link:'Email me a link', reset:'Save new password', forgot:'Email me a reset link'}[m];
+  const btn = {in:'Sign in', up:'Create account', link:'Email me a link', reset:'Save new password', forgot:'Email me a reset link', resend:'Send a new link'}[m];
   const links = {
-    in:`<button type="button" class="link" data-auth="link">Email me a sign-in link instead</button><button type="button" class="link" data-auth="forgot">Forgot password?</button><span>New here? <button type="button" class="link" data-auth="up">Create an account</button></span>`,
+    in:`<button type="button" class="link" data-auth="link">Email me a sign-in link instead</button><button type="button" class="link" data-auth="forgot">Forgot password?</button><button type="button" class="link" data-auth="resend">Resend confirmation email</button><span>New here? <button type="button" class="link" data-auth="up">Create an account</button></span>`,
+    resend:`<button type="button" class="link" data-auth="in">Back to sign in</button>`,
     up:`<span>Already have an account? <button type="button" class="link" data-auth="in">Sign in</button></span>`,
     link:`<button type="button" class="link" data-auth="in">Sign in with a password</button>`,
     forgot:`<button type="button" class="link" data-auth="in">Back to sign in</button>`,
@@ -1259,18 +1282,19 @@ document.addEventListener('submit', async e => {
   if (f.elements.email && !/^\S+@\S+\.\S+$/.test(email)) return fail('Enter a valid email address.');
   if (f.elements.password && pw.length < 8) return fail('Use at least 8 characters for the password.');
   AUTH.busy = true; AUTH.msg = ''; authShow();
-  const sb = Web.sb, back = location.origin + location.pathname;
+  const sb = Web.sb, back = authBack();
   try {
     let r;
     if (AUTH.mode === 'in') r = await sb.auth.signInWithPassword({email, password:pw});
     else if (AUTH.mode === 'up') r = await sb.auth.signUp({email, password:pw, options:{emailRedirectTo:back}});
     else if (AUTH.mode === 'link') r = await sb.auth.signInWithOtp({email, options:{emailRedirectTo:back}});
     else if (AUTH.mode === 'forgot') r = await sb.auth.resetPasswordForEmail(email, {redirectTo:back});
+    else if (AUTH.mode === 'resend') r = await sb.auth.resend({type:'signup', email, options:{emailRedirectTo:back}});
     else if (AUTH.mode === 'reset') r = await sb.auth.updateUser({password:pw});
     if (r && r.error) {
       const m = r.error.message || '';
       return fail(/invalid login/i.test(m) ? 'That email and password don’t match. Try again or reset your password.'
-        : /not confirmed/i.test(m) ? 'Confirm your email first: open the link we sent you, then sign in.'
+        : /not confirmed/i.test(m) ? 'Confirm your email first: open the link we sent you, then sign in. No email? Choose “Resend confirmation email”.'
         : /rate|too many/i.test(m) ? 'Too many emails were sent just now. Wait a little, then try again.'
         : /registered|exists/i.test(m) ? 'There’s already an account with this email. Sign in instead.'
         : m || 'Something went wrong. Try again.');
@@ -1279,6 +1303,7 @@ document.addEventListener('submit', async e => {
     if (AUTH.mode === 'up' && !(r.data && r.data.session)) { AUTH.msg = 'Check your inbox and open the confirmation link. It brings you back here signed in.'; authShow('in'); }
     else if (AUTH.mode === 'link') { AUTH.msg = 'Check your inbox for the sign-in link. Open it on this device.'; authShow(); }
     else if (AUTH.mode === 'forgot') { AUTH.msg = 'Check your inbox for the reset link.'; authShow('in'); }
+    else if (AUTH.mode === 'resend') { AUTH.msg = 'If that email has an unconfirmed account, a new confirmation link is on its way.'; authShow('in'); }
     else if (AUTH.mode === 'reset') { authHide(); toast('Password updated'); }
   } catch (err) { fail('Can’t reach the sign-in service. Check your connection and try again.'); }
 }, true);

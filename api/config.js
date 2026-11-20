@@ -11,6 +11,8 @@ export default function handler(req, res) {
     app: 'thuverse',
     supabaseUrl: url,
     supabaseAnonKey: anon,
+    // where confirmation / sign-in / reset emails send people back to (production only)
+    siteUrl: process.env.SITE_URL || '',
     mw: Boolean(process.env.MW_API_KEY),
   }));
 }

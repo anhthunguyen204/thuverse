@@ -32,12 +32,13 @@ The page detects which mode it's in, so both keep working.
 | `MW_API_KEY` | no | Merriam-Webster Learner's key. Lookups stay server-side; the key never reaches the browser. |
 | `CONTACT` | no | email or URL added to the User-Agent sent to Wiktionary (Wikimedia asks for one) |
 | `LOOKUP_REQUIRE_AUTH` | no | `false` allows lookups without signing in (default: sign-in required) |
+| `SITE_URL` | production | `https://thuverse.vercel.app`: where confirmation, sign-in-link and reset emails return to. Leave unset for previews and local development, which then use their own address. |
 | `CRON_SECRET` | recommended | protects `/api/keepalive`; Vercel sends it with cron calls automatically |
 
 ## Supabase setup
 
 1. Run `supabase/schema.sql` in the SQL editor (already done for the `thuverse` project).
-2. Authentication → URL Configuration: set **Site URL** to the production address (e.g. `https://thuverse.vercel.app`) and add it under **Redirect URLs**. Confirmation, sign-in-link and password-reset emails send people there.
+2. Authentication → URL Configuration: **Site URL** `https://thuverse.vercel.app`; **Redirect URLs** `https://thuverse.vercel.app/**` and `http://localhost:3000/**` (development). Supabase only honours a redirect that is on this list; otherwise it falls back to the Site URL. The auth callback is the site root `/`: email links return as `/?code=…`, the app exchanges the code for a session and removes it from the address. Hash routes such as `#dashboard` are app views, not callbacks.
 3. Free-plan notes: 500 MB database, 50,000 monthly active users, and the project pauses after a week without activity (the daily keepalive cron helps; data is kept and the project can be restored from the dashboard). Free projects have no automatic backups, so use Preferences → Backup now and then.
 
 ## Dictionary sources
