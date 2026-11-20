@@ -997,6 +997,46 @@ body.auth-open .app{visibility:hidden}
 .auth-or{display:flex;align-items:center;gap:10px;margin:16px 0 14px;color:var(--muted);font-size:13px}
 .auth-or::before,.auth-or::after{content:"";flex:1;height:1px;background:var(--border)}
 
+
+/* ---------- sidebar: collapse to an icon rail (desktop / iPad) */
+.app.side-anim{transition:grid-template-columns .22s ease}
+.app.side-collapsed{grid-template-columns:72px minmax(0,1fr)}
+.brand{position:relative}
+.side-toggle{margin-left:auto}
+.side-toggle .st-expand,.side-toggle .st-close{display:none}
+.side-collapsed .side-toggle .st-collapse{display:none}
+.side-collapsed .side-toggle .st-expand{display:block}
+.nav-item,.side-row .icon-btn,.side-toggle{position:relative}
+.top .menu-btn{display:none}
+.scrim{display:none}
+@media (min-width:821px){
+  .side-collapsed .side{padding:16px 10px 12px;overflow:visible}
+  .side-collapsed .brand{flex-direction:column;gap:10px;padding:2px 0 14px}
+  .side-collapsed .brand>div:not(.mark){display:none}
+  .side-collapsed .side-toggle{margin:0}
+  .side-collapsed .nav-item{justify-content:center;padding:11px 0;gap:0}
+  .side-collapsed .nav-item>span{display:none}
+  .side-collapsed .nav-item>.badge{display:block;position:absolute;top:5px;right:9px;min-width:16px;height:16px;padding:0 4px;font-size:10px;line-height:16px}
+  .side-collapsed .navgroup{font-size:0;letter-spacing:0;padding:10px 8px 6px;gap:0}
+  .side-collapsed .subnav{display:none}
+  .side-collapsed .side-row{flex-direction:column;gap:4px}
+  .side-collapsed #pref-link{flex:none !important;width:100%}
+  .side-collapsed .sync{justify-content:center}
+  .side-collapsed .sync-t{display:none}
+  /* tooltips for the icon rail */
+  .side-collapsed [data-tip]:hover::after,.side-collapsed [data-tip]:focus-visible::after{content:attr(data-tip);position:absolute;left:calc(100% + 12px);top:50%;transform:translateY(-50%);background:var(--text);color:var(--bg);font:600 12.5px/1 var(--f-ui);padding:7px 9px;border-radius:8px;white-space:nowrap;z-index:300;pointer-events:none;box-shadow:0 6px 18px -8px rgba(0,0,0,.4)}
+}
+@media (max-width:820px){
+  .top .menu-btn{display:inline-grid}
+  .side.open{box-shadow:none}
+  .side-toggle .st-collapse,.side-toggle .st-expand{display:none !important}
+  .side-toggle .st-close{display:block}
+  .scrim{display:block;position:fixed;inset:0;background:rgba(18,18,22,.45);z-index:140;opacity:0;pointer-events:none;transition:opacity .2s}
+  .side.open~.scrim{opacity:1;pointer-events:auto}
+  body.nav-open{overflow:hidden}
+}
+@media (prefers-reduced-motion:reduce){.app.side-anim{transition:none}.side{transition:none !important}}
+
 /* ---------- responsive */
 @media (max-width:1180px){
   .d3{grid-template-columns:minmax(0,1fr)}
@@ -1010,7 +1050,7 @@ body.auth-open .app{visibility:hidden}
 @media (max-width:820px){
   .app{grid-template-columns:1fr}
   .side{position:fixed;left:0;top:0;bottom:0;width:276px;z-index:150;transform:translateX(-100%);transition:transform .2s}
-  .side.open{transform:none;box-shadow:0 0 0 100vmax rgba(18,18,22,.45)}
+  .side.open{transform:none}
   .menu-btn{display:inline-grid}
   .top{padding:12px 16px;gap:10px}
   .topstats{gap:12px}.topstats .tstat:nth-child(2){display:none}
@@ -1041,19 +1081,20 @@ body.auth-open .app{visibility:hidden}
 <body>
 <div class="app">
   <aside class="side" id="side" aria-label="Main navigation">
-    <div class="brand"><div class="mark" aria-hidden="true"><svg viewBox="0 0 36 36" width="36" height="36"><rect width="36" height="36" rx="10" class="mk-bg"/><rect x="9" y="9.5" width="18" height="4.4" rx="2.2" class="mk-t"/><rect x="15.8" y="9.5" width="4.4" height="17.5" rx="2.2" class="mk-t"/><circle cx="27.2" cy="25.2" r="2.6" class="mk-dot"/></svg></div><div><div class="brand-name">Thuverse</div><div class="brand-sub" id="brand-sub">Your language universe</div></div></div>
+    <div class="brand"><div class="mark" aria-hidden="true"><svg viewBox="0 0 36 36" width="36" height="36"><rect width="36" height="36" rx="10" class="mk-bg"/><rect x="9" y="9.5" width="18" height="4.4" rx="2.2" class="mk-t"/><rect x="15.8" y="9.5" width="4.4" height="17.5" rx="2.2" class="mk-t"/><circle cx="27.2" cy="25.2" r="2.6" class="mk-dot"/></svg></div><div><div class="brand-name">Thuverse</div><div class="brand-sub" id="brand-sub">Your language universe</div></div><button class="icon-btn side-toggle" id="side-toggle" data-act="side-toggle" aria-controls="side" aria-expanded="true" aria-label="Collapse sidebar" data-tip="Collapse sidebar"><i data-lucide="panel-left-close" class="ic st-collapse" aria-hidden="true"></i><i data-lucide="panel-left-open" class="ic st-expand" aria-hidden="true"></i><i data-lucide="x" class="ic st-close" aria-hidden="true"></i></button></div>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
       <div class="side-row">
-        <a href="#preferences" class="nav-item" id="pref-link" style="flex:1"><i data-lucide="settings" class="ic" aria-hidden="true"></i><span>Preferences</span></a>
-        <button class="icon-btn" data-act="theme" id="theme-btn" title="Switch light / dark" aria-label="Switch light or dark theme"><i data-lucide="moon" class="ic" aria-hidden="true"></i></button>
+        <a href="#preferences" class="nav-item" id="pref-link" style="flex:1" data-tip="Preferences"><i data-lucide="settings" class="ic" aria-hidden="true"></i><span>Preferences</span></a>
+        <button class="icon-btn" data-act="theme" id="theme-btn" data-tip="Light / dark theme" aria-label="Switch light or dark theme"><i data-lucide="moon" class="ic" aria-hidden="true"></i></button>
       </div>
       <div class="sync wait" id="sync"><span class="sync-ic"></span><span class="sync-t">Loading your library…</span></div>
     </div>
   </aside>
+  <div class="scrim" data-act="menu" aria-hidden="true"></div>
   <main class="main">
     <header class="top">
-      <button class="icon-btn menu-btn" data-act="menu" aria-label="Open menu"><i data-lucide="menu" class="ic" aria-hidden="true"></i></button>
+      <button class="icon-btn menu-btn" data-act="menu" aria-label="Open navigation" aria-controls="side" aria-expanded="false" title="Menu"><i data-lucide="menu" class="ic" aria-hidden="true"></i></button>
       <div class="search"><i data-lucide="search" class="ic" aria-hidden="true"></i><input id="gsearch" type="search" placeholder="Search words, notes, journal…  ( / )" autocomplete="off" aria-label="Search everything"></div>
       <div class="grow"></div>
       <div class="newwrap">
@@ -1627,7 +1668,7 @@ function route(){
   else S.view = 'dashboard';
   if (S.view !== 'study') S.summary = null;
   if (S.search) { S.search = ''; $('#gsearch').value = ''; }
-  $('#side').classList.remove('open');
+  setDrawer(false);
   hideSel();
   render(); window.scrollTo(0,0);
 }
@@ -1662,7 +1703,7 @@ function renderNav(){
     if (g) h += `<div class="navgroup">${g}</div>`;
     list.forEach(([k,l,icon]) => {
       const on = active === k && !S.search;
-      h += `<a href="#${k}" class="nav-item ${on?'on':''}" ${on?'aria-current="page"':''}>${ic(icon)}<span>${l}</span>${k==='review'&&due?`<span class="badge" title="${due} due">${due}</span>`:''}</a>`;
+      h += `<a href="#${k}" class="nav-item ${on?'on':''}" data-tip="${l}${k==='review'&&due?` · ${due} due`:''}" ${on?'aria-current="page"':''}>${ic(icon)}<span>${l}</span>${k==='review'&&due?`<span class="badge" title="${due} due">${due}</span>`:''}</a>`;
       if (k === 'library' && on) h += '<div class="subnav">' + CATS.map(c => `<a href="#library-${c.id}" class="${S.view==='library'&&S.libCat===c.id || (S.view==='collection'&&COLL[S.colId]&&COLL[S.colId].cat===c.id) || (S.view==='lesson'&&c.id==='grammar')?'on':''}"><span>${ic(c.icon)} ${c.name}</span></a>`).join('') + '</div>';
       if (k === 'knowledge' && on) h += '<div class="subnav">' + Object.entries(COLS).map(([c,o]) => `<a href="#knowledge-${c}" class="${S.kCol===c?'on':''}"><span>${ic(COLIC[c])} ${o.label}</span><small>${its.filter(r=>r.col===c).length}</small></a>`).join('') + '</div>';
       if (k === 'ielts' && on) h += '<div class="subnav">' + Object.entries(SK).map(([s,o]) => `<a href="#ielts-${s}" class="${S.skill===s?'on':''}"><span>${ic(o.icon)} ${o.label}</span></a>`).join('') + '</div>';
@@ -2483,6 +2524,31 @@ function savedTopicsHTML(kind){
   return `<section class="saved-lib"><h3 class="sub-h">${ic('bookmark-check')} Saved from the library <span class="muted">${ids.length}</span><a class="link" href="${lib}">Browse the library ${ic('chevron-right')}</a></h3>
     ${ids.length ? `<div class="tlist">${ids.map(id => topicRow(kind, kind === 'g' ? LESSONS[id] : STRUCTS[id])).join('')}</div>` : `<p class="muted" style="margin:0">Save topics from the ${kind === 'g' ? 'grammar' : 'sentence structure'} library and they appear here, alongside your own notes below.</p>`}
     <h3 class="sub-h" style="margin-top:18px">${ic('pencil-line')} My own ${kind === 'g' ? 'grammar notes' : 'sentence structures'}</h3></section>`;
+}
+
+/* ---------- Sidebar: collapsible rail on desktop/iPad, drawer on small screens.
+   The choice is a per-device display preference, so it lives in localStorage. */
+const SIDE_KEY = 'thuverse.sidebar';
+const isDrawerMode = () => matchMedia('(max-width:820px)').matches;
+function setSideCollapsed(on, save){
+  const app = document.querySelector('.app'), t = $('#side-toggle');
+  app.classList.toggle('side-collapsed', on);
+  const lbl = on ? 'Expand sidebar' : 'Collapse sidebar';
+  if (t) { t.setAttribute('aria-expanded', String(!on)); t.setAttribute('aria-label', lbl); t.dataset.tip = lbl; }
+  if (save) lsSet(SIDE_KEY, on ? 'collapsed' : 'expanded');
+}
+function setDrawer(open){
+  const side = $('#side'), b = $('.menu-btn');
+  side.classList.toggle('open', !!open); document.body.classList.toggle('nav-open', !!open);
+  if (b) b.setAttribute('aria-expanded', String(!!open));
+  if (open) { const a = side.querySelector('.nav-item.on') || side.querySelector('.nav-item'); if (a) setTimeout(() => a.focus(), 60); }
+}
+function initSidebar(){
+  const saved = lsGet(SIDE_KEY);
+  setSideCollapsed(saved ? saved === 'collapsed' : (innerWidth > 820 && innerWidth <= 1100), false);
+  requestAnimationFrame(() => document.querySelector('.app').classList.add('side-anim'));
+  addEventListener('keydown', e => { if (e.key === 'Escape' && $('#side').classList.contains('open')) { setDrawer(false); const b = $('.menu-btn'); if (b) b.focus(); } });
+  matchMedia('(max-width:820px)').addEventListener('change', () => setDrawer(false));
 }
 
 /* ---------- Grammar lesson */
@@ -4082,7 +4148,8 @@ function loadStarter(){
    Events
    ========================================================= */
 const ACT = {
-  menu: () => $('#side').classList.toggle('open'),
+  menu: () => setDrawer(!$('#side').classList.contains('open')),
+  'side-toggle': () => { if (isDrawerMode()) setDrawer(false); else setSideCollapsed(!document.querySelector('.app').classList.contains('side-collapsed'), true); },
   theme: () => { const d = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'; document.documentElement.dataset.theme = d; lsSet('englishHub.theme', d); render(); },
   'new-menu': () => newMenu(),
   new: el => {
@@ -4247,6 +4314,7 @@ window.addEventListener('hashchange', route);
    ========================================================= */
 window.drawIcons = drawIcons;
 (function boot(){
+  initSidebar();
   const th = lsGet('englishHub.theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   document.documentElement.dataset.theme = th;
   Store.loadLocal();
