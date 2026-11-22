@@ -945,6 +945,7 @@ body.auth-open .app{visibility:hidden}
 .ob-ielts{display:flex;flex-direction:column;gap:8px;text-align:left}
 .ob-ielts>b{display:inline-flex;align-items:center;gap:6px;font-size:14px}
 .ob-ielts>b .ic{width:15px;height:15px;color:var(--primary)}
+.ob-ielts>small{font-size:13px;margin-top:-4px}
 @media (max-width:480px){.avpick{flex-direction:column}.ob-goals{grid-template-columns:1fr}}
 
 
@@ -2230,7 +2231,7 @@ function onboardShow(){
     return `${dots(3)}<h2>What are you learning?</h2><p class="muted">Pick everything that applies. This helps Thuverse focus on what matters to you.</p>
       <div class="ob-goals" role="group" aria-label="Learning goals">${OB_LANGS.map(([k, l, icn]) => `<label class="ob-goal"><input type="checkbox" name="goal" value="${k}" ${ob.goals.includes(k) ? 'checked' : ''}><span>${ic(icn)} ${l}</span></label>`).join('')}</div>
       ${ob.goals.includes('other') ? `<label class="fld ob-l"><span>Which language?</span><input name="other" value="${esc(ob.other)}" placeholder="e.g. Japanese"></label>` : ''}
-      ${ie ? `<div class="ob-ielts"><b>${ic('flag')} Your IELTS target</b>
+      ${ie ? `<div class="ob-ielts"><b>${ic('flag')} What’s your IELTS goal?</b><small class="muted">Set your target band scores to personalize your learning journey.</small>
         <div class="ob-grid">${TG_SKILLS.map(([k,l,icn]) => `<label class="ob-cell"><span>${ic(icn)} ${l}</span>${tgSelect(k, l, ob.tg[k] || '')}</label>`).join('')}</div>
         <div class="ob-ov" aria-live="polite"><span>${ic('target')} Overall band</span><span class="tg-ov" id="ob-ov">${tgOverallHTML(ob.tg)}</span></div></div>` : ''}
       <label class="fld ob-l"><span>New words per day</span><select name="daily">${[5,10,15,20,30].map(n => `<option ${ob.daily === n ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
