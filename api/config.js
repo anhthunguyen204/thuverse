@@ -30,5 +30,7 @@ export default async function handler(req, res) {
     siteUrl: process.env.SITE_URL || '',
     providers: await providers(url, anon),
     mw: Boolean(process.env.MW_API_KEY),
+    // Lumi's free chat is on only when the server has an AI key (the key itself never leaves the server)
+    ai: Boolean(process.env.ANTHROPIC_API_KEY),
   }));
 }

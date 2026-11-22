@@ -1170,6 +1170,69 @@ body.auth-open .app{visibility:hidden}
   .lrow{grid-template-columns:48px minmax(0,1fr)}.lrow .lmeta{display:none}
   .drawer .modal{border-radius:0}
 }
+/* ---------- Lumi, the learning buddy */
+.lumi{display:block}
+.lumi-leaf{fill:#3BA86A}.lumi-stem{stroke:#2E8A55;stroke-width:2.4;fill:none;stroke-linecap:round}.lumi-body{fill:#7C6CF2}.lumi-face{fill:#F4F2FF}
+.lumi-eyes{fill:#231F3F}.lumi-glint{fill:#fff}.lumi-blush{fill:#FF8FAB;opacity:.75}.lumi-mouth{stroke:#231F3F;stroke-width:1.9;fill:none;stroke-linecap:round}
+.bd-launch{position:fixed;right:20px;bottom:20px;z-index:80;width:60px;height:60px;border-radius:50%;border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow-pop);display:grid;place-items:center;cursor:pointer;padding:0}
+.bd-launch .lumi{width:44px;height:44px;transition:transform .18s ease}
+.bd-launch:hover .lumi,.bd-launch:focus-visible .lumi{transform:translateY(-2px) rotate(-4deg)}
+.bd-launch .lumi-eyes{transform-box:fill-box;transform-origin:center;animation:lumiBlink 7s infinite}
+@keyframes lumiBlink{0%,95%,100%{transform:scaleY(1)}97%{transform:scaleY(.15)}}
+.bd-launch[hidden],.bd-panel[hidden],.bd-hide .bd-launch,.bd-hide .bd-panel{display:none}
+.bd-panel{position:fixed;right:20px;bottom:20px;z-index:85;width:min(400px,calc(100vw - 24px));height:min(640px,calc(100dvh - 104px));display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow-pop);overflow:hidden}
+.bd-panel.min{height:auto;width:250px}
+.bd-panel.min .bd-msgs,.bd-panel.min .bd-in,.bd-panel.min #bd-clear,.bd-panel.min #bd-min{display:none}
+.bd-head{display:flex;align-items:center;gap:2px;padding:8px 8px 8px 12px;border-bottom:1px solid var(--border)}
+.bd-panel.min .bd-head{border-bottom:0}
+.bd-who{flex:1;display:flex;align-items:center;gap:10px;border:0;background:none;padding:0;text-align:left;cursor:default;font:inherit;color:inherit;min-width:0}
+.bd-panel.min .bd-who{cursor:pointer}
+.bd-who b{display:block;font-size:15.5px}.bd-who small{display:block;font-size:12.5px;color:var(--muted)}
+.bd-av{width:34px;height:34px;flex:none;border-radius:50%;background:var(--primary-soft);display:grid;place-items:center}
+.bd-av .lumi{width:28px;height:28px}
+.bd-av.lg{width:60px;height:60px}.bd-av.lg .lumi{width:48px;height:48px}
+.bd-msgs{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:16px 14px;display:flex;flex-direction:column;gap:12px}
+.bd-hello{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:4px 10px;color:var(--text-2);font-size:14.5px}
+.bd-hello p{margin:0;max-width:32ch}
+.bd-starters{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.bd-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:999px;padding:6px 12px;font:500 13.5px var(--f-ui);cursor:pointer;min-height:34px;text-align:left}
+.bd-chip:hover{border-color:var(--border-strong);background:var(--surface-2)}
+.bd-chip .ic{width:14px;height:14px;color:var(--muted)}
+.bd-msg{display:flex;gap:8px;align-items:flex-end}
+.bd-msg.me{justify-content:flex-end}
+.bd-msg.bot .bd-av{width:28px;height:28px}.bd-msg.bot .bd-av .lumi{width:23px;height:23px}
+.bd-bub{max-width:86%;font-size:14.5px;line-height:1.5;padding:10px 12px;border-radius:16px;overflow-wrap:anywhere;min-width:0}
+.bd-msg.me .bd-bub{background:var(--primary);color:var(--on-primary);border-bottom-right-radius:6px;white-space:pre-wrap}
+.bd-msg.bot .bd-bub{background:var(--surface-2);border-bottom-left-radius:6px;max-width:calc(100% - 36px)}
+.bd-msg.bot .bd-bub:has(.bd-card){flex:1}
+.bd-bub p{margin:0 0 6px}.bd-bub p:last-child{margin-bottom:0}
+.bd-steps{margin:4px 0 0;padding-left:20px}.bd-steps li{margin:4px 0}
+.bd-act{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;align-items:center}
+.bd-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px;margin-top:4px}
+.bd-ch{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px}
+.bd-term{font-size:17px}.bd-ipa{color:var(--text-2);font-size:14px}
+.bd-bub .bd-def{margin:6px 0}
+.bd-row{display:grid;grid-template-columns:96px minmax(0,1fr);gap:8px;font-size:13.5px;margin-top:6px}
+.bd-row span{color:var(--muted)}.bd-row p{margin:0}
+.bd-ex{margin:6px 0 0;padding-left:18px;color:var(--text-2);font-size:13.5px;font-style:italic}
+.bd-src{display:block;margin-top:8px;color:var(--muted);font-size:12px}
+.bd-note{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--green)}.bd-note .ic{width:14px;height:14px}
+.bd-wait{color:var(--muted)}
+.bd-bub .bd-sub{font-size:13px;color:var(--text-2);margin:6px 0 0}
+.bd-form label{display:flex;flex-direction:column;gap:3px;margin-bottom:8px;font-size:12.5px;color:var(--muted);min-width:0}
+.bd-form input,.bd-form textarea,.bd-form select{font:14px var(--f-ui);color:var(--text);background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:7px 9px;width:100%;box-sizing:border-box;resize:vertical;min-height:36px}
+.bd-2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bd-stats{list-style:none;margin:6px 0;padding:0}.bd-stats li{display:flex;justify-content:space-between;gap:10px;padding:4px 0;border-bottom:1px solid var(--border-2);font-size:13.5px}
+.bd-typing{display:flex;gap:4px;align-items:center;padding:13px 14px}
+.bd-typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:bdDot 1s infinite ease-in-out}
+.bd-typing i:nth-child(2){animation-delay:.15s}.bd-typing i:nth-child(3){animation-delay:.3s}
+@keyframes bdDot{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+@media (prefers-reduced-motion:reduce){.bd-typing i,.bd-launch .lumi-eyes{animation:none}.bd-launch .lumi{transition:none}}
+.bd-in{display:flex;gap:8px;align-items:flex-end;padding:10px;border-top:1px solid var(--border)}
+.bd-in textarea{flex:1;resize:none;font:15px/1.4 var(--f-ui);color:var(--text);background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:10px 12px;max-height:140px;min-height:44px;box-sizing:border-box}
+.bd-send{width:44px;height:44px;padding:0;flex:none;border-radius:12px;justify-content:center}
+@media (max-width:560px){.bd-panel:not(.min){right:8px;left:8px;bottom:8px;width:auto;height:calc(100dvh - 76px)}.bd-launch{right:14px;bottom:14px;width:54px;height:54px}}
+@media print{.bd-launch,.bd-panel{display:none!important}}
 </style>
 </head>
 <body>
@@ -1867,6 +1930,7 @@ function render(){
   mountCharts();
   drawIcons();
   if (ME.open) meRender();
+  bdMount(); bdVisibility();
 }
 
 function renderNav(){
@@ -2814,6 +2878,450 @@ function answerLesson(qi, oi){
 }
 
 /* ---------- Reading list */
+/* =========================================================
+   Lumi — the learning buddy
+   Common jobs (app help, lookups, saving words) are handled here without AI.
+   Anything else goes to /api/buddy when the server has an AI key.
+   ========================================================= */
+const LUMI_SVG = `<svg class="lumi" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+  <path class="lumi-leaf" d="M33 15.5c1.2-6.6 6.4-10.3 12.6-9.8-.6 6.2-5.6 10.4-12.6 9.8z"/>
+  <path class="lumi-stem" d="M32 18.5c0-2.6.4-4.4 1.4-5.8" />
+  <path class="lumi-body" d="M32 17.5c14 0 24.5 9.6 24.5 23.2C56.5 52.4 46 59 32 59S7.5 52.4 7.5 40.7C7.5 27.1 18 17.5 32 17.5z"/>
+  <ellipse class="lumi-face" cx="32" cy="42" rx="17.5" ry="12.5"/>
+  <g class="lumi-eyes"><ellipse cx="25" cy="39.5" rx="3.1" ry="3.6"/><ellipse cx="39" cy="39.5" rx="3.1" ry="3.6"/></g>
+  <circle class="lumi-glint" cx="26.1" cy="38.2" r="1.1"/><circle class="lumi-glint" cx="40.1" cy="38.2" r="1.1"/>
+  <ellipse class="lumi-blush" cx="19.6" cy="45.2" rx="3.2" ry="1.9"/><ellipse class="lumi-blush" cx="44.4" cy="45.2" rx="3.2" ry="1.9"/>
+  <path class="lumi-mouth" d="M29.2 45.3q2.8 2.6 5.6 0"/>
+</svg>`;
+const BUDDY = {open:false, min:false, msgs:[], busy:false, wait:null, lang:/^vi\b/i.test(navigator.language || '') ? 'vi' : 'en', n:0};
+const BD_T = {
+  en:{name:'Lumi', role:'Your learning buddy', hi:'Hi! I’m Lumi. I can look up words, save them to your collections, and show you around Thuverse.',
+    ph:'Ask me anything, or type a word…', send:'Send', min:'Minimise', close:'Close', clear:'Start a new chat', typing:'Lumi is thinking',
+    starters:[['explore','Help me explore the app'],['lookup','Look up a new word'],['col','Find useful collocations'],['organize','Help me organise my vocabulary']],
+    askWord:'Sure! Which word or phrase? For example: *resilient* or *break down*.', askCol:'Which word or phrase should I find collocations for? For example: *decision* or *take responsibility*.',
+    looking:w => `Looking up **${w}**…`, notFound:w => `I couldn’t find **${w}** in the dictionaries. Check the spelling, or add it yourself with the Add form.`,
+    lookupErr:'The dictionaries didn’t answer. Try again in a moment.', noLookup:'Word lookup isn’t available here right now.',
+    syn:'Synonyms', ant:'Antonyms', colls:'Collocations', rel:'Related', ex:'Examples', vi:'Vietnamese', from:'From',
+    saveBtn:'Save to My Collections', formBtn:'Open in Add form', already:(c) => `Already in your ${c}`, open:'Open it',
+    noCols:w => `I didn’t find collocations for **${w}**, but here’s what it means.`, colsFor:w => `Collocations with **${w}**:`,
+    reviewSave:'Check the details, then save.', term:'Word or phrase', def:'Meaning', ipa:'IPA', pos:'Part of speech', exs:'Example', col:'Collection', topic:'Topic', topicPh:'e.g. Environment (optional)',
+    save:'Save', cancel:'Cancel', edit:'Edit in Add form', cancelled:'Okay, nothing saved.',
+    saved:(t, c, tp) => `Saved **${t}** to ${c}${tp ? `, topic **${tp}**` : ''}.`, view:'View entry', openCol:'Open collection',
+    newTopic:t => `You don’t have a **${t}** topic yet. It’ll start with this word.`, pickTopic:(t) => `Which topic did you mean by “${t}”?`, noneOfThese:'None of these',
+    dup:(t, c) => `**${t}** is already in your ${c}.`, needTerm:'Write the word or phrase first.',
+    unknown:'I’m not sure how to help with that yet. I can look up words, save them to your collections, and explain how Thuverse works. Try one of these:',
+    aiOff:'My free chat isn’t switched on yet, so I can only help with words and with using Thuverse for now.',
+    aiErr:'I couldn’t get an answer just now. Try again in a moment.', aiBusy:'I’m getting a lot of questions right now. Give me a minute and ask again.',
+    explore:'Here’s a quick tour. Pick where you’d like to go:', organize:'Here’s how your collections look:', noItems:'You haven’t saved any entries yet. Tell me a word and I’ll help you save it.',
+    noTopic:n => `${n} without a topic`, topicsTip:'Tip: give entries a topic (like Environment) when you add them, then filter by it in My Collections.',
+    here:'You’re on', pageHelp:'Here’s what you can do on this page:'},
+  vi:{name:'Lumi', role:'Bạn đồng hành học tập', hi:'Chào bạn! Mình là Lumi. Mình có thể tra từ, lưu từ vào bộ sưu tập của bạn và hướng dẫn bạn dùng Thuverse.',
+    ph:'Hỏi mình bất cứ điều gì, hoặc gõ một từ…', send:'Gửi', min:'Thu nhỏ', close:'Đóng', clear:'Bắt đầu cuộc trò chuyện mới', typing:'Lumi đang nghĩ',
+    starters:[['explore','Giới thiệu app cho mình'],['lookup','Tra một từ mới'],['col','Tìm collocation hay'],['organize','Giúp mình sắp xếp từ vựng']],
+    askWord:'Được thôi! Bạn muốn tra từ hay cụm từ nào? Ví dụ: *resilient* hoặc *break down*.', askCol:'Bạn muốn tìm collocation cho từ nào? Ví dụ: *decision* hoặc *take responsibility*.',
+    looking:w => `Đang tra **${w}**…`, notFound:w => `Mình không tìm thấy **${w}** trong từ điển. Bạn kiểm tra lại chính tả, hoặc tự thêm bằng form Add nhé.`,
+    lookupErr:'Từ điển chưa phản hồi. Bạn thử lại sau chút nhé.', noLookup:'Hiện chưa tra từ được ở đây.',
+    syn:'Từ đồng nghĩa', ant:'Từ trái nghĩa', colls:'Collocation', rel:'Liên quan', ex:'Ví dụ', vi:'Tiếng Việt', from:'Nguồn',
+    saveBtn:'Lưu vào My Collections', formBtn:'Mở trong form Add', already:(c) => `Đã có trong ${c}`, open:'Mở',
+    noCols:w => `Mình chưa tìm thấy collocation cho **${w}**, nhưng đây là nghĩa của nó.`, colsFor:w => `Collocation với **${w}**:`,
+    reviewSave:'Kiểm tra lại rồi lưu nhé.', term:'Từ hoặc cụm từ', def:'Nghĩa', ipa:'IPA', pos:'Từ loại', exs:'Ví dụ', col:'Bộ sưu tập', topic:'Chủ đề', topicPh:'vd. Environment (không bắt buộc)',
+    save:'Lưu', cancel:'Huỷ', edit:'Sửa trong form Add', cancelled:'Được, mình chưa lưu gì cả.',
+    saved:(t, c, tp) => `Đã lưu **${t}** vào ${c}${tp ? `, chủ đề **${tp}**` : ''}.`, view:'Xem mục đã lưu', openCol:'Mở bộ sưu tập',
+    newTopic:t => `Bạn chưa có chủ đề **${t}**. Từ này sẽ là từ đầu tiên.`, pickTopic:(t) => `Bạn muốn nói chủ đề nào khi viết “${t}”?`, noneOfThese:'Không phải các chủ đề này',
+    dup:(t, c) => `**${t}** đã có trong ${c} của bạn.`, needTerm:'Bạn điền từ hoặc cụm từ trước nhé.',
+    unknown:'Mình chưa chắc giúp được câu này. Mình có thể tra từ, lưu từ vào bộ sưu tập và giải thích cách dùng Thuverse. Thử một trong các gợi ý sau:',
+    aiOff:'Tính năng trò chuyện tự do của mình chưa được bật, nên hiện mình chỉ giúp được về từ vựng và cách dùng Thuverse.',
+    aiErr:'Mình chưa trả lời được lúc này. Bạn thử lại sau chút nhé.', aiBusy:'Đang có nhiều câu hỏi quá. Bạn đợi một phút rồi hỏi lại nhé.',
+    explore:'Cùng dạo một vòng nhé. Chọn nơi bạn muốn đến:', organize:'Bộ sưu tập của bạn hiện như sau:', noItems:'Bạn chưa lưu mục nào. Nói cho mình một từ, mình giúp bạn lưu nhé.',
+    noTopic:n => `${n} chưa có chủ đề`, topicsTip:'Mẹo: đặt chủ đề (như Environment) khi thêm từ, rồi lọc theo chủ đề trong My Collections.',
+    here:'Bạn đang ở', pageHelp:'Đây là những gì bạn có thể làm ở trang này:'},
+};
+const bdT = (k, ...a) => { const v = (BD_T[BUDDY.lang] || BD_T.en)[k] ?? BD_T.en[k]; return typeof v === 'function' ? v(...a) : v; };
+const BD_VI_RX = /[ăâđêôơưàáạảãằắặẳẵầấậẩẫèéẹẻẽềếệểễìíịỉĩòóọỏõồốộổỗờớợởỡùúụủũừứựửữỳýỵỷỹ]/i;
+const bdLangOf = t => BD_VI_RX.test(t) || /\b(tra|nghia|them|vao|cach|giup|minh|toi)\b/i.test(t) ? 'vi' : /[a-z]{3,}\s+[a-z]{2,}/i.test(t) ? 'en' : BUDDY.lang;
+
+/* ---------- what Lumi knows about the app (only real features) */
+const BD_PAGES = {dashboard:['Dashboard','layout-dashboard'], library:['Library','library'], review:['Review','repeat-2'], collections:['My Collections','bookmark'], reading:['Reading list','newspaper'],
+  sources:['Sources','globe'], ielts:['IELTS Workspace','graduation-cap'], journal:['Learning Journal','notebook-pen'], preferences:['Preferences','settings']};
+const bdPageOk = h => { const [v, sub] = String(h || '').split(/-(.*)/s); if (!BD_PAGES[v]) return false; if (!sub) return true;
+  return (v === 'library' && CATS.some(c => c.id === sub)) || (v === 'collections' && !!COLS[sub]) || (v === 'ielts' && !!SK[sub]); };
+const bdPageLabel = h => { const [v, sub] = String(h).split(/-(.*)/s); if (v === 'library' && sub) return 'Library · ' + CATS.find(c => c.id === sub).name; if (v === 'collections' && sub) return 'My Collections · ' + COLS[sub].label; if (v === 'ielts' && sub) return SK[sub].label; return BD_PAGES[v][0]; };
+const BD_HELP = [
+  {id:'add', k:['add a new','add new','add a word','add vocab','new vocab','new word','save a word','create an entry','add an entry','thêm từ','từ mới','lưu từ','thêm một từ'], v:[],
+    en:['Press **Add** at the top of the page, or the **N** key.','Choose what it is: Word, Collocation, Phrasal verb, Sentence or Linking phrase.','Type it. The meaning, IPA, Vietnamese and examples fill in from the dictionaries.','Check the details, add a topic under **Organise** if you like, then save.','Or just tell me, for example: “add resilient to Vocabulary”.'],
+    vi:['Nhấn **Add** ở đầu trang, hoặc phím **N**.','Chọn loại: Word, Collocation, Phrasal verb, Sentence hoặc Linking phrase.','Gõ từ vào. Nghĩa, IPA, nghĩa tiếng Việt và ví dụ sẽ tự điền từ từ điển.','Kiểm tra lại, thêm chủ đề trong phần **Organise** nếu muốn, rồi lưu.','Hoặc nói với mình, ví dụ: “thêm resilient vào Vocabulary”.'],
+    go:['add','collections']},
+  {id:'grammar', k:['grammar','ngữ pháp','tense','thì '], v:[],
+    en:['Open **Library** in the sidebar and choose **Grammar**.','Lessons run from the basics to advanced structures, with Vietnamese explanations, common mistakes and practice.','Your own grammar notes live in **My Collections → Grammar Notes**.'],
+    vi:['Mở **Library** ở thanh bên và chọn **Grammar**.','Các bài học đi từ cơ bản đến nâng cao, có giải thích tiếng Việt, lỗi thường gặp và bài luyện tập.','Ghi chú ngữ pháp của riêng bạn nằm ở **My Collections → Grammar Notes**.'],
+    go:['library-grammar','collections-grammar']},
+  {id:'collection', k:['create a collection','new collection','make a collection','collection','organise','organize','topic','tag','bộ sưu tập','sắp xếp','chủ đề','phân loại'], v:['collections'],
+    en:['**My Collections** has fixed sections: ' + Object.values(COLS).map(c => c.label).join(', ') + '. You can’t add new sections.','To group entries your own way, give them a **topic** (for example *Environment*) or tags when you add or edit them. A new topic starts as soon as one entry uses it.','In My Collections, tap a topic to see only those entries.'],
+    vi:['**My Collections** có các mục cố định: ' + Object.values(COLS).map(c => c.label).join(', ') + '. Bạn không tạo thêm mục mới được.','Để nhóm theo cách của bạn, hãy đặt **chủ đề** (ví dụ *Environment*) hoặc thẻ khi thêm hay sửa một mục. Chủ đề mới xuất hiện ngay khi có một mục dùng nó.','Trong My Collections, chạm vào một chủ đề để chỉ xem các mục đó.'],
+    go:['collections']},
+  {id:'review', k:['flashcard','review','revise','spaced','practice words','ôn tập','ôn từ','thẻ'], v:['review','study'],
+    en:['Open **Review**, or press **R** anywhere.','Choose a set and start. Press **Space** to flip a card.','Rate each card **1–4**: forgot, hard, remembered, easy. Words you miss come back the same day; words you know wait weeks.','Change the style (Mixed, Flashcards, Type the answer) in **Preferences → Review style**.'],
+    vi:['Mở **Review**, hoặc nhấn **R** ở bất cứ đâu.','Chọn một bộ rồi bắt đầu. Nhấn **Space** để lật thẻ.','Đánh giá mỗi thẻ từ **1–4**: quên, khó, nhớ, dễ. Từ bạn quên sẽ quay lại trong ngày; từ bạn thuộc sẽ đợi vài tuần.','Đổi kiểu ôn (Mixed, Flashcards, Type the answer) trong **Preferences → Review style**.'],
+    go:['review','preferences']},
+  {id:'progress', k:['progress','track','streak','statistic','stats','goal','tiến độ','theo dõi','chuỗi','mục tiêu'], v:['dashboard'],
+    en:['The **Dashboard** shows your streak, today’s goal, your vocabulary progress and your learning overview with IELTS targets.','Each entry has a status: New, Learning or Mastered. Reviewing moves words along as you remember them.','Write down what you learned each day in the **Learning Journal**.'],
+    vi:['**Dashboard** hiển thị chuỗi ngày học, mục tiêu hôm nay, tiến độ từ vựng và tổng quan học tập cùng mục tiêu IELTS.','Mỗi mục có trạng thái: New, Learning hoặc Mastered. Khi ôn tập, từ sẽ chuyển trạng thái theo mức độ bạn nhớ.','Ghi lại điều bạn học mỗi ngày trong **Learning Journal**.'],
+    go:['dashboard','journal']},
+  {id:'colpv', k:['difference between collocation','collocations and phrasal','collocation and phrasal','phrasal verbs and collocation','khác nhau','khác gì'], v:[],
+    en:['A **collocation** is words that naturally go together, like *make a decision* or *heavy rain*.','A **phrasal verb** is a verb plus a small word (up, down, out…) that together mean something new, like *break down* (stop working) or *give up* (stop trying).','In Thuverse they live together: **Library → Collocations & phrasal verbs** for shared lists, and **My Collections → Collocations & Phrasal Verbs** for yours. When you add one, choose Collocation or Phrasal verb as the type.'],
+    vi:['**Collocation** là những từ thường đi cùng nhau, như *make a decision* hay *heavy rain*.','**Phrasal verb** là động từ cộng một tiểu từ (up, down, out…) tạo thành nghĩa mới, như *break down* (hỏng, ngừng hoạt động) hay *give up* (bỏ cuộc).','Trong Thuverse, hai loại này ở cùng một chỗ: **Library → Collocations & phrasal verbs** cho danh sách chung, và **My Collections → Collocations & Phrasal Verbs** cho của bạn. Khi thêm, chọn loại Collocation hoặc Phrasal verb.'],
+    go:['library-phrases','collections-collocations']},
+  {id:'library', k:['library','thư viện','lesson','bài học','course'], v:['library','collection','lesson','structure'],
+    en:['**Library** holds the shared learning material: ' + CATS.map(c => c.name).join(', ') + '.','Open a set to study it, or save its words into your own collections.'],
+    vi:['**Library** chứa tài liệu học chung: ' + CATS.map(c => c.name).join(', ') + '.','Mở một bộ để học, hoặc lưu từ của nó vào bộ sưu tập của bạn.'],
+    go:['library']},
+  {id:'reading', k:['reading list','article','source','website','bài báo','bài đọc','nguồn'], v:['reading','sources','article'],
+    en:['**Reading list** keeps articles to read later. Paste an article’s link and its title and image fill in.','While reading an article saved with its text, select a word to save it with its sentence.','**Sources** lists good websites to read; add your own there too.'],
+    vi:['**Reading list** lưu các bài để đọc sau. Dán đường dẫn bài báo, tiêu đề và ảnh sẽ tự điền.','Khi đọc một bài đã dán nội dung, bôi đen một từ để lưu nó cùng câu chứa từ đó.','**Sources** liệt kê các trang web nên đọc; bạn cũng có thể thêm trang của riêng mình.'],
+    go:['reading','sources']},
+  {id:'ielts', k:['ielts','writing task','speaking part','band','listening','cue card'], v:['ielts'],
+    en:['**IELTS Workspace** has a section for each skill: Listening, Reading, Writing Task 1 and 2, Speaking Parts 1–3.','Each one keeps your strategies, practice results, ideas and useful language in one place.','Set your target bands on the **Dashboard**.'],
+    vi:['**IELTS Workspace** có một mục cho từng kỹ năng: Listening, Reading, Writing Task 1 và 2, Speaking Part 1–3.','Mỗi mục lưu chiến lược, kết quả luyện tập, ý tưởng và cách diễn đạt hay ở cùng một chỗ.','Đặt band mục tiêu trên **Dashboard**.'],
+    go:['ielts','dashboard']},
+  {id:'journal', k:['journal','nhật ký','diary'], v:['journal'],
+    en:['The **Learning Journal** is for a few lines each day: what you studied, what was hard, what to try next.'],
+    vi:['**Learning Journal** để bạn ghi vài dòng mỗi ngày: đã học gì, phần nào khó, lần tới thử gì.'], go:['journal']},
+  {id:'search', k:['search','find my','where is my','tìm kiếm','tìm lại'], v:[],
+    en:['Use the search box at the top, or press **/**. It searches your words, notes and journal.'],
+    vi:['Dùng ô tìm kiếm ở đầu trang, hoặc nhấn **/**. Nó tìm trong từ, ghi chú và nhật ký của bạn.'], go:[]},
+  {id:'settings', k:['setting','preference','dark mode','light mode','theme','appearance','profile','avatar','display name','cài đặt','giao diện','chế độ tối','hồ sơ'], v:['preferences'],
+    en:['Click your **avatar** at the top right. From its menu you can edit your profile, switch Light, Dark or System under **Appearance**, or sign out.','**Preferences** has your name, avatar, goals, review style, pronunciation and your data.'],
+    vi:['Nhấn vào **ảnh đại diện** ở góc trên bên phải. Từ menu đó bạn có thể sửa hồ sơ, đổi Light, Dark hoặc System trong **Appearance**, hoặc đăng xuất.','**Preferences** chứa tên, ảnh đại diện, mục tiêu, kiểu ôn tập, cách phát âm và dữ liệu của bạn.'],
+    go:['preferences']},
+  {id:'linking', k:['linking','linking phrase','connector','từ nối'], v:[],
+    en:['**Linking phrases** connect ideas, grouped by what they do: cause and effect, contrast, addition, examples, sequencing and conclusions.','Find shared lists in **Library → Linking phrases** and yours in **My Collections → Linking Phrases**.'],
+    vi:['**Linking phrases** nối các ý, được nhóm theo chức năng: nguyên nhân – kết quả, tương phản, bổ sung, ví dụ, trình tự và kết luận.','Danh sách chung ở **Library → Linking phrases**, của bạn ở **My Collections → Linking Phrases**.'],
+    go:['library-linking','collections-linking']},
+];
+const BD_HELP_TITLE = {add:['Adding a new word','Thêm từ mới'], grammar:['Grammar Library','Thư viện ngữ pháp'], collection:['Organising your collections','Sắp xếp bộ sưu tập'], review:['How flashcards work','Cách dùng flashcard'],
+  progress:['Tracking your progress','Theo dõi tiến độ'], colpv:['Collocations vs phrasal verbs','Collocation và phrasal verb'], library:['The Library','Library'], reading:['Reading list and Sources','Reading list và Sources'],
+  ielts:['IELTS Workspace','IELTS Workspace'], journal:['Learning Journal','Learning Journal'], search:['Searching','Tìm kiếm'], settings:['Profile and appearance','Hồ sơ và giao diện'], linking:['Linking phrases','Linking phrases']};
+function bdHelpMatch(text){
+  const t = ' ' + text.toLowerCase().replace(/[?!.,]/g, ' ').replace(/\s+/g, ' ') + ' ';
+  let best = null, bs = 0;
+  for (const h of BD_HELP) { let s = 0; for (const k of h.k) if (t.includes(k)) s += k.length; if (s > bs) { bs = s; best = h; } }
+  return bs >= 4 ? best : null;
+}
+
+/* ---------- understanding a message (no AI) */
+const BD_PARTICLES = ['up','down','out','off','on','in','over','away','back','through','around','about','along','across','by','into','after','forward','apart','together'];
+const bdClean = s => String(s || '').trim().replace(/^["“'‘]+|["”'’]+$/g, '').replace(/[?.!]+$/, '').trim();
+const bdTermOk = s => !!s && s.length <= 60 && s.split(/\s+/).length <= 6 && /^[\p{L}][\p{L}\p{M}' \-]*$/u.test(s);
+const BD_NOT_TERM = /\b(my|app|page|library|collection|collections|review|dashboard|setting|settings|thuverse|flashcards?|progress|grammar library|journal|lumi)\b/i;
+function bdIntent(raw){
+  const s = bdClean(raw).replace(/\s+/g, ' '), low = s.toLowerCase();
+  let m;
+  if (/\b(this page|what can i do here|trang này)\b/i.test(low)) return {t:'page'};
+  if ((m = s.match(/^(?:please\s+|can you\s+|could you\s+)?(?:add|save|put)\s+(?:the\s+)?(?:word|phrase|phrasal verb|collocation\s+)?\s*["“]?(.+?)["”]?\s+(?:to|in|into)\s+(?:my\s+|the\s+)?(.+?)$/i)) && bdTermOk(bdClean(m[1])) && !/^(a|an)\s+new\b/i.test(m[1])) return {t:'save', term:bdClean(m[1]), target:m[2]};
+  if ((m = s.match(/^(?:hãy\s+|giúp mình\s+|giúp tôi\s+)?(?:thêm|lưu|bỏ)\s+(?:từ\s+|cụm từ\s+)?["“]?(.+?)["”]?\s+vào\s+(?:bộ sưu tập\s+|mục\s+|chủ đề\s+|danh sách\s+)?(.+)$/i)) && bdTermOk(bdClean(m[1]))) return {t:'save', term:bdClean(m[1]), target:m[2]};
+  if ((m = s.match(/^(?:please\s+)?(?:add|save)\s+(?:the\s+word\s+|the\s+phrase\s+)?["“]?([^"”]+?)["”]?$/i)) && bdTermOk(bdClean(m[1])) && !/^(a|an|new)\b/i.test(m[1]) && !BD_NOT_TERM.test(m[1])) return {t:'save', term:bdClean(m[1]), target:''};
+  if ((m = s.match(/^(?:thêm|lưu)\s+(?:từ\s+|cụm từ\s+)["“]?(.+?)["”]?$/i)) && bdTermOk(bdClean(m[1]))) return {t:'save', term:bdClean(m[1]), target:''};
+  if ((m = s.match(/\bcollocations?\s+(?:for|with|of|using)\s+["“]?(.+?)["”]?$/i)) || (m = s.match(/\b(?:collocation|cụm từ đi với|từ đi với)\s+(?:cho|với|của)?\s*["“]?(.+?)["”]?$/i))) { const w = bdClean(m[1]); if (bdTermOk(w)) return {t:'col', term:w}; }
+  if (/\b(difference|khác nhau|khác gì|how|where|why|when|làm sao|ở đâu|thế nào|cách)\b/i.test(low)) return null;
+  const tries = [/^(?:please\s+|can you\s+)?(?:look\s*up|define|check|search for|find)\s+(?:the\s+)?(?:word|phrase|phrasal verb|meaning of)?\s*["“]?(.+?)["”]?$/i,
+    /^what(?:'s| is| does)\s+(?:the\s+)?(?:meaning of\s+|word\s+)?["“]?(.+?)["”]?(?:\s+mean)?$/i, /^meaning of\s+["“]?(.+?)["”]?$/i, /^["“]?(.+?)["”]?\s+meaning$/i,
+    /^(?:tra(?:\s+cứu)?(?:\s+từ)?|nghĩa của(?:\s+từ)?|định nghĩa)\s+["“]?(.+?)["”]?$/i, /^["“]?(.+?)["”]?\s+(?:nghĩa là gì|có nghĩa là gì|là gì|nghĩa là sao)$/i];
+  for (const rx of tries) if ((m = s.match(rx))) { const w = bdClean(m[1]); if (bdTermOk(w) && !BD_NOT_TERM.test(w)) return {t:'lookup', term:w}; }
+  if (bdTermOk(s) && s.split(' ').length <= 3 && !BD_NOT_TERM.test(s) && !bdHelpMatch(s) && !/^(hi|hello|hey|thanks|thank you|xin chào|chào|cảm ơn|ok|okay|yes|no)$/i.test(s)) return {t:'lookup', term:s};
+  return null;
+}
+
+/* ---------- user data Lumi may use (the signed-in user's own records, already scoped by Store) */
+const bdTopics = () => { const c = {}; items().forEach(r => [r.category, ...(r.tags || [])].filter(Boolean).forEach(t => { const k = t.trim(); c[k] = (c[k] || 0) + 1; })); return Object.entries(c).sort((a, b) => b[1] - a[1]).map(([t]) => t); };
+const BD_SAVE_COLS = ['vocabulary','collocations','idioms','linking'];
+const BD_COLWORDS = {vocabulary:['vocabulary','vocab','words','word list','từ vựng'], collocations:['collocations','collocation','phrasal verbs','phrasal verb','phrasal','collocations & phrasal verbs','cụm từ'], idioms:['idioms','idiom','expressions','idioms & expressions','thành ngữ'], linking:['linking phrases','linking','từ nối']};
+const bdGuessCol = term => { const w = term.trim().toLowerCase().split(/\s+/); if (w.length === 1) return 'vocabulary'; return 'collocations'; };
+const bdIsPhrasal = term => { const w = term.trim().toLowerCase().split(/\s+/); return w.length >= 2 && w.length <= 3 && BD_PARTICLES.includes(w[w.length - 1]); };
+function bdResolveTarget(raw){
+  const name = String(raw || '').replace(/(^|\s)(my|the|collection|collections|list|topic|section|bộ sưu tập|chủ đề|mục|danh sách|của mình|của tôi)(?=\s|$)/gi, ' ').replace(/\s+/g, ' ').trim();
+  const t = name.toLowerCase();
+  if (!t) return {};
+  for (const [col, words] of Object.entries(BD_COLWORDS)) if (words.includes(t)) return {col};
+  const topics = bdTopics(), exact = topics.find(x => x.toLowerCase() === t);
+  if (exact) return {topic:exact};
+  const near = topics.filter(x => { const a = x.toLowerCase(); return a.includes(t) || t.includes(a) || (a.length > 4 && t.length > 4 && a.slice(0, 5) === t.slice(0, 5)); });
+  if (near.length === 1) return {topic:near[0]};
+  if (near.length > 1) return {ask:near.slice(0, 5), name};
+  return {topic:name.slice(0, 40).replace(/^./, c => c.toUpperCase()), isNew:true};
+}
+const bdFindSaved = term => { const k = termKey(term); return k ? items().find(r => termKey(r.term) === k) : null; };
+
+/* ---------- rendering */
+const bdFmt = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/(^|[\s(“])\*(.+?)\*(?=[\s).,;:!?”]|$)/g, '$1<i>$2</i>');
+const bdBtnGo = h => h === 'add' ? `<button type="button" class="bd-chip" data-bd="add">${ic('plus')} ${BUDDY.lang === 'vi' ? 'Mở form Add' : 'Open the Add form'}</button>`
+  : bdPageOk(h) ? `<button type="button" class="bd-chip" data-bd="go" data-v="${esc(h)}">${ic(BD_PAGES[h.split('-')[0]][1])} ${esc(bdPageLabel(h))}</button>` : '';
+function bdLookupHTML(m){
+  const o = m.lk, mm = o && o.m, L = (k) => bdT(k);
+  if (!o) return '';
+  if (o.err) return `<p>${bdFmt(o.err)}</p>`;
+  if (!mm || (o.done && !mm.def && !(mm.syn || mm.col))) return o.done ? `<p>${bdFmt(bdT('notFound', m.term))}</p>` : `<p class="bd-wait">${bdFmt(bdT('looking', m.term))}</p>`;
+  const ipa = (mm.ipaUK && mm.ipaUK.value) || (mm.ipaUS && mm.ipaUS.value) || (mm.ipaAny && mm.ipaAny.value) || '';
+  const lst = (k, v) => v && v.value && v.value.length ? `<div class="bd-row"><span>${L(k)}</span><p>${v.value.slice(0, 8).map(x => esc(typeof x === 'string' ? x : x.p || x.word || '')).join(', ')}</p></div>` : '';
+  const saved = bdFindSaved(m.term);
+  const colFirst = m.mode === 'col';
+  const cols = mm.col && mm.col.value && mm.col.value.length ? mm.col : null;
+  return `${colFirst ? `<p>${bdFmt(cols ? bdT('colsFor', m.term) : (o.done ? bdT('noCols', m.term) : bdT('looking', m.term)))}</p>` : ''}
+  <div class="bd-card">
+    <div class="bd-ch"><b class="bd-term">${esc(o.word)}</b>${ipa ? `<span class="bd-ipa">${esc(ipa)}</span>` : ''}${mm.pos ? `<span class="chip">${esc(mm.pos.value)}</span>` : ''}</div>
+    ${colFirst && cols ? lst('colls', cols) : ''}
+    ${mm.def ? `<p class="bd-def">${esc(mm.def.value)}</p>` : ''}
+    ${mm.vi ? `<div class="bd-row"><span>${L('vi')}</span><p>${esc(mm.vi.value)}</p></div>` : ''}
+    ${mm.ex ? `<ul class="bd-ex">${mm.ex.value.slice(0, 2).map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+    ${lst('syn', mm.syn)}${lst('ant', mm.ant)}${colFirst ? '' : lst('colls', cols)}${lst('rel', mm.rel)}
+    ${o.done ? `<div class="bd-act">${saved ? `<span class="bd-note">${ic('circle-check')} ${esc(bdT('already', COLS[saved.col].label))}</span><button type="button" class="bd-chip" data-bd="item" data-v="${saved.id}">${bdT('open')}</button>`
+      : `<button type="button" class="btn sm primary" data-bd="to-save" data-m="${m.id}">${ic('bookmark-plus')} ${bdT('saveBtn')}</button>`}<button type="button" class="btn sm ghost" data-bd="form" data-m="${m.id}">${bdT('formBtn')}</button></div>
+      ${mm.sources && mm.sources.length ? `<small class="bd-src">${bdT('from')} ${mm.sources.map(s => esc(s.name)).join(', ')}</small>` : ''}` : `<p class="bd-wait">${bdFmt(bdT('looking', m.term))}</p>`}
+  </div>`;
+}
+function bdSaveHTML(m){
+  const f = m.f, tps = bdTopics();
+  if (m.done === 'saved') return `<p>${bdFmt(bdT('saved', f.term, COLS[f.col].label, f.topic))}</p><div class="bd-act"><button type="button" class="bd-chip" data-bd="item" data-v="${m.savedId}">${ic('eye')} ${bdT('view')}</button>${bdBtnGo('collections-' + f.col)}</div>`;
+  if (m.done === 'cancel') return `<p>${bdFmt(bdT('cancelled'))}</p>`;
+  return `${m.note ? `<p>${bdFmt(m.note)}</p>` : ''}<p class="bd-sub">${bdT('reviewSave')}</p>
+  <form class="bd-card bd-form" data-m="${m.id}">
+    <label><span>${bdT('term')}</span><input name="term" value="${esc(f.term)}" required autocapitalize="none" autocomplete="off"></label>
+    <div class="bd-2"><label><span>${bdT('ipa')}</span><input name="ipa" value="${esc(f.ipa)}"></label><label><span>${bdT('pos')}</span><input name="pos" value="${esc(f.pos)}"></label></div>
+    <label><span>${bdT('def')}</span><textarea name="def" rows="2">${esc(f.def)}</textarea></label>
+    <label><span>${bdT('vi')}</span><input name="vi" value="${esc(f.vi)}"></label>
+    <label><span>${bdT('exs')}</span><textarea name="examples" rows="2">${esc(f.examples)}</textarea></label>
+    <div class="bd-2"><label><span>${bdT('col')}</span><select name="col">${BD_SAVE_COLS.map(c => `<option value="${c}" ${f.col === c ? 'selected' : ''}>${esc(COLS[c].label)}</option>`).join('')}</select></label>
+      <label><span>${bdT('topic')}</span><input name="topic" value="${esc(f.topic)}" placeholder="${esc(bdT('topicPh'))}" list="bd-topics"></label></div>
+    <datalist id="bd-topics">${tps.map(t => `<option value="${esc(t)}">`).join('')}</datalist>
+    <div class="bd-act"><button class="btn sm primary">${ic('check')} ${bdT('save')}</button><button type="button" class="btn sm ghost" data-bd="form" data-m="${m.id}">${bdT('edit')}</button><button type="button" class="btn sm ghost" data-bd="cancel" data-m="${m.id}">${bdT('cancel')}</button></div>
+  </form>`;
+}
+function bdMsgHTML(m){
+  if (m.role === 'user') return `<div class="bd-msg me" data-id="${m.id}"><div class="bd-bub" dir="auto">${esc(m.text)}</div></div>`;
+  let body = '';
+  if (m.kind === 'lookup') body = bdLookupHTML(m);
+  else if (m.kind === 'save') body = bdSaveHTML(m);
+  else body = (m.text ? `<p dir="auto">${bdFmt(m.text)}</p>` : '') + (m.steps ? `<ol class="bd-steps">${m.steps.map(s => `<li dir="auto">${bdFmt(s)}</li>`).join('')}</ol>` : '') + (m.html || '');
+  const acts = (m.go || []).map(bdBtnGo).join('') + (m.chips || []).map(([k, l]) => `<button type="button" class="bd-chip" data-bd="${esc(k.split(':')[0])}" data-v="${esc(k.split(':').slice(1).join(':'))}" data-m="${m.id}">${esc(l)}</button>`).join('');
+  return `<div class="bd-msg bot" data-id="${m.id}"><span class="bd-av">${LUMI_SVG}</span><div class="bd-bub">${body}${acts ? `<div class="bd-act">${acts}</div>` : ''}</div></div>`;
+}
+function bdRenderMsgs(){
+  const box = $('#bd-msgs'); if (!box) return;
+  const empty = !BUDDY.msgs.length;
+  box.innerHTML = `<div class="bd-hello"><span class="bd-av lg">${LUMI_SVG}</span><p>${bdFmt(bdT('hi'))}</p></div>` +
+    (empty ? `<div class="bd-starters">${bdT('starters').map(([k, l]) => `<button type="button" class="bd-chip" data-bd="start" data-v="${k}">${esc(l)}</button>`).join('')}</div>` : '') +
+    BUDDY.msgs.map(bdMsgHTML).join('') + (BUDDY.busy ? `<div class="bd-msg bot" aria-label="${esc(bdT('typing'))}"><span class="bd-av">${LUMI_SVG}</span><div class="bd-bub bd-typing"><i></i><i></i><i></i></div></div>` : '');
+  drawIcons(); box.scrollTop = box.scrollHeight;
+}
+function bdUpdate(m){
+  const n = $(`#bd-msgs [data-id="${m.id}"]`); if (!n) return bdRenderMsgs();
+  const box = $('#bd-msgs'), atEnd = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
+  n.outerHTML = bdMsgHTML(m); drawIcons(); if (atEnd) box.scrollTop = box.scrollHeight;
+}
+const bdPush = m => { m.id = 'm' + (++BUDDY.n); BUDDY.msgs.push(m); if (BUDDY.msgs.length > 60) BUDDY.msgs.splice(0, BUDDY.msgs.length - 60); bdRenderMsgs(); return m; };
+const bdSay = (text, extra = {}) => bdPush({role:'bot', text, ...extra});
+
+/* ---------- panel */
+function bdMount(){
+  if ($('#bd-launch')) return;
+  document.body.insertAdjacentHTML('beforeend', `<button type="button" class="bd-launch" id="bd-launch" aria-controls="bd-panel" aria-expanded="false" aria-label="Chat with Lumi, your learning buddy" title="Lumi, your learning buddy">${LUMI_SVG}</button>
+  <section class="bd-panel" id="bd-panel" role="dialog" aria-labelledby="bd-name" hidden>
+    <header class="bd-head"><button type="button" class="bd-who" data-bd="restore" tabindex="-1"><span class="bd-av">${LUMI_SVG}</span><span><b id="bd-name">Lumi</b><small id="bd-role"></small></span></button>
+      <button type="button" class="icon-btn" data-bd="clear" id="bd-clear">${ic('rotate-ccw')}</button><button type="button" class="icon-btn" data-bd="min" id="bd-min">${ic('minus')}</button><button type="button" class="icon-btn" data-bd="close" id="bd-close">${ic('x')}</button></header>
+    <div class="bd-msgs" id="bd-msgs" role="log" aria-live="polite"></div>
+    <form class="bd-in" id="bd-form"><textarea id="bd-text" rows="1" maxlength="1000" autocomplete="off" autocapitalize="sentences"></textarea><button class="btn primary bd-send" id="bd-send">${ic('send-horizontal')}</button></form>
+  </section>`);
+  bdLabels(); drawIcons();
+}
+function bdLabels(){
+  const set = (id, k) => { const e = $(id); if (e) { e.setAttribute('aria-label', bdT(k)); e.title = bdT(k); } };
+  set('#bd-clear', 'clear'); set('#bd-min', 'min'); set('#bd-close', 'close'); set('#bd-send', 'send');
+  const t = $('#bd-text'); if (t) { t.placeholder = bdT('ph'); t.setAttribute('aria-label', bdT('ph')); }
+  const r = $('#bd-role'); if (r) r.textContent = bdT('role');
+}
+function bdShow(open, min = false){
+  bdMount();
+  BUDDY.open = open; BUDDY.min = open && min;
+  const p = $('#bd-panel'), l = $('#bd-launch');
+  p.hidden = !open; p.classList.toggle('min', BUDDY.min); l.hidden = open; l.setAttribute('aria-expanded', String(open));
+  document.body.classList.toggle('bd-on', open && !BUDDY.min);
+  if (open && !BUDDY.min) { bdRenderMsgs(); setTimeout(() => $('#bd-text').focus({preventScroll:true}), 30); }
+  if (!open) l.focus({preventScroll:true});
+}
+function bdVisibility(){
+  const l = $('#bd-launch'), p = $('#bd-panel'); if (!l) return;
+  const hide = S.view === 'study' || !Store.mode || Store.mode === 'starting';
+  document.body.classList.toggle('bd-hide', hide);
+  if (hide && BUDDY.open && !BUDDY.min) { BUDDY.min = true; p.classList.add('min'); document.body.classList.remove('bd-on'); }
+}
+
+/* ---------- actions */
+async function bdLookup(term, mode){
+  const m = bdPush({role:'bot', kind:'lookup', term, mode, lk:{word:term}});
+  try {
+    const mcp = await lkInit();
+    if (!mcp) { m.lk = {err:bdT('noLookup')}; return bdUpdate(m); }
+    const o = await lkLookup(term, part => { m.lk = part; bdUpdate(m); });
+    m.lk = o; bdUpdate(m);
+    return m;
+  } catch (e) { m.lk = {err:(e && e.code === 'sign_in_required' && e.message) || bdT('lookupErr')}; bdUpdate(m); }
+}
+function bdFieldsFrom(term, lk, target){
+  const mm = (lk && lk.m) || {}, col = target.col || bdGuessCol(term);
+  return {term, ipa:(mm.ipaUK && mm.ipaUK.value) || (mm.ipaAny && mm.ipaAny.value) || '', ipaUS:(mm.ipaUS && mm.ipaUS.value) || '', pos:bdIsPhrasal(term) ? 'phrasal verb' : (mm.pos && mm.pos.value) || '',
+    def:(mm.def && mm.def.value) || '', vi:(mm.vi && mm.vi.value) || '', examples:(mm.ex && mm.ex.value || []).slice(0, 2).join('\n'),
+    synonyms:(mm.syn && mm.syn.value || []).slice(0, 6), antonyms:(mm.ant && mm.ant.value || []).slice(0, 4), collocations:(mm.col && mm.col.value || []).slice(0, 6).map(x => typeof x === 'string' ? x : x.p).filter(Boolean),
+    related:(mm.rel && mm.rel.value || []).slice(0, 6).map(x => typeof x === 'string' ? x : x.word || x.p || '').filter(Boolean),
+    col:BD_SAVE_COLS.includes(col) ? col : 'vocabulary', topic:target.topic || '', sources:mm.sources || [], at:lk && lk.at};
+}
+async function bdSaveFlow(term, targetRaw, lk){
+  const ex = bdFindSaved(term);
+  if (ex) return bdSay(bdT('dup', ex.term, COLS[ex.col].label), {chips:[['item:' + ex.id, bdT('view')]]});
+  const target = bdResolveTarget(targetRaw);
+  if (target.ask) return bdSay(bdT('pickTopic', target.name), {chips:[...target.ask.map(t => [`pick:${JSON.stringify({term, topic:t})}`, t]), [`pick:${JSON.stringify({term, topic:target.name, isNew:true})}`, bdT('noneOfThese')]]});
+  if (!lk) {
+    BUDDY.busy = true; bdRenderMsgs();
+    try { if (await lkInit()) lk = await lkLookup(term); } catch {}
+    BUDDY.busy = false;
+  }
+  const f = bdFieldsFrom(term, lk, target);
+  bdPush({role:'bot', kind:'save', f, note:target.isNew && target.topic ? bdT('newTopic', target.topic) : ''});
+}
+function bdCreate(f){
+  const now = Date.now(), list = a => (Array.isArray(a) ? a : String(a || '').split(',')).map(x => String(x).trim()).filter(Boolean);
+  const vtype = f.col === 'vocabulary' ? 'word' : f.col === 'collocations' ? (bdIsPhrasal(f.term) ? 'phrasal' : 'collocation') : f.col === 'linking' ? 'linking' : '';
+  const rec = {id:newId(), kind:'item', createdAt:now, srs:{ease:2.5, interval:0, reps:0, lapses:0, due:now}, reviews:0,
+    col:f.col, term:f.term, ipa:f.ipa, ipaUS:f.ipaUS || '', pos:f.pos, vi:f.vi, def:f.def, examples:f.examples, synonyms:list(f.synonyms), antonyms:list(f.antonyms), collocations:list(f.collocations), related:list(f.related),
+    context:'', category:f.topic, tags:[], ielts:[], notes:'', status:'new'};
+  if (vtype) rec.vtype = vtype;
+  if (vtype && vtype !== 'word') { rec.ipa = ''; rec.ipaUS = ''; }
+  if (vtype === 'phrasal') rec.pos = 'phrasal verb';
+  if (vtype === 'linking') rec.pos = 'linking phrase';
+  if (f.sources && f.sources.length) { rec.sources = f.sources; rec.lookupAt = f.at || now; }
+  setStatusSrs(rec, 'new', true);
+  rec.addedAt = now; logEvent('added', rec.id);
+  Store.put(rec);
+  return rec;
+}
+function bdExplore(){
+  bdSay(bdT('explore'), {go:['dashboard','library','collections','review','reading','ielts','journal']});
+}
+function bdOrganize(){
+  const its = items();
+  if (!its.length) return bdSay(bdT('noItems'), {go:['add']});
+  const per = Object.keys(COLS).map(c => [c, its.filter(r => r.col === c).length]).filter(([, n]) => n);
+  const tps = bdTopics().slice(0, 8), none = its.filter(r => !r.category && !(r.tags || []).length).length;
+  const html = `<ul class="bd-stats">${per.map(([c, n]) => `<li><span>${esc(COLS[c].label)}</span><b>${n}</b></li>`).join('')}</ul>
+    ${tps.length ? `<p class="bd-sub">${BUDDY.lang === 'vi' ? 'Chủ đề' : 'Topics'}: ${tps.map(esc).join(', ')}</p>` : ''}${none ? `<p class="bd-sub">${esc(bdT('noTopic', plural(none, 'entry', 'entries')))}</p>` : ''}<p class="bd-sub">${bdFmt(bdT('topicsTip'))}</p>`;
+  bdSay(bdT('organize'), {html, go:['collections']});
+}
+function bdHelp(h){ const vi = BUDDY.lang === 'vi'; bdSay(`**${BD_HELP_TITLE[h.id][vi ? 1 : 0]}**`, {steps:h[vi ? 'vi' : 'en'], go:h.go}); }
+function bdPageHelp(){
+  const v = S.view, h = BD_HELP.find(x => x.v.includes(v));
+  const lbl = BD_PAGES[{knowledge:'collections', collection:'library', lesson:'library', structure:'library', article:'reading', study:'review'}[v] || v];
+  if (h) { const vi = BUDDY.lang === 'vi'; bdSay(`${bdT('here')} **${lbl ? lbl[0] : v}**. ${bdT('pageHelp')}`, {steps:h[vi ? 'vi' : 'en'], go:h.go.filter(g => g.split('-')[0] !== v)}); }
+  else bdExplore();
+}
+const bdAiOn = () => !isClaude() && !!(Web.cfg && Web.cfg.ai);
+async function bdAsk(text){
+  if (!bdAiOn()) return bdSay(bdT('aiOff') + ' ' + bdT('unknown'), {chips:bdT('starters').map(([k, l]) => ['start:' + k, l])});
+  BUDDY.busy = true; bdRenderMsgs();
+  let token = ''; try { const {data} = await Web.sb.auth.getSession(); token = (data && data.session && data.session.access_token) || ''; } catch {}
+  const history = BUDDY.msgs.filter(m => m.text && (m.role === 'user' || !m.kind)).slice(-9, -1).map(m => ({role:m.role === 'user' ? 'user' : 'assistant', text:String(m.text).slice(0, 1500)}));
+  const its = items();
+  const ctx = {page:S.view, lang:BUDDY.lang, collections:Object.keys(COLS).map(c => ({name:COLS[c].label, count:its.filter(r => r.col === c).length})), topics:bdTopics().slice(0, 15)};
+  let r, b = null;
+  try {
+    r = await fetch('/api/buddy', {method:'POST', headers:{'Content-Type':'application/json', ...(token ? {Authorization:'Bearer ' + token} : {})}, body:JSON.stringify({message:text, history, context:ctx}), signal:AbortSignal.timeout(30000)});
+    b = await r.json().catch(() => null);
+  } catch {}
+  BUDDY.busy = false;
+  if (!r || !b) return bdSay(bdT('aiErr'));
+  if (r.status === 429) return bdSay(bdT('aiBusy'));
+  if (b.error === 'ai_not_configured') { Web.cfg.ai = false; return bdAsk(text); }
+  if (!r.ok || typeof b.reply !== 'string') return bdSay(bdT('aiErr'));
+  const go = [], chips = [];
+  (Array.isArray(b.actions) ? b.actions : []).slice(0, 4).forEach(a => {
+    if (a && a.type === 'open' && bdPageOk(a.page)) go.push(a.page);
+    else if (a && a.type === 'add') go.push('add');
+    else if (a && a.type === 'lookup' && bdTermOk(bdClean(a.term))) chips.push(['lookup:' + bdClean(a.term), (BUDDY.lang === 'vi' ? 'Tra ' : 'Look up ') + bdClean(a.term)]);
+  });
+  bdSay(b.reply.slice(0, 2000), {go:[...new Set(go)], chips});
+}
+async function bdHandle(text){
+  text = String(text || '').trim().slice(0, 1000); if (!text || BUDDY.busy) return;
+  BUDDY.lang = bdLangOf(text); bdLabels();
+  bdPush({role:'user', text});
+  const wait = BUDDY.wait; BUDDY.wait = null;
+  if (wait && bdTermOk(bdClean(text)) && !bdHelpMatch(text)) return wait === 'col' ? bdLookup(bdClean(text), 'col') : bdLookup(bdClean(text));
+  const it = bdIntent(text);
+  if (it && it.t === 'lookup') return bdLookup(it.term);
+  if (it && it.t === 'col') return bdLookup(it.term, 'col');
+  if (it && it.t === 'save') return bdSaveFlow(it.term, it.target);
+  if (it && it.t === 'page') return bdPageHelp();
+  const h = bdHelpMatch(text);
+  if (h) return bdHelp(h);
+  return bdAsk(text);
+}
+document.addEventListener('click', async e => {
+  if (e.target.closest('#bd-launch')) { bdShow(true); return; }
+  const b = e.target.closest('#bd-panel [data-bd]'); if (!b) return;
+  const k = b.dataset.bd, v = b.dataset.v || '', m = b.dataset.m && BUDDY.msgs.find(x => x.id === b.dataset.m);
+  if (k === 'close') return bdShow(false);
+  if (k === 'min') return bdShow(true, true);
+  if (k === 'restore') { if (BUDDY.min) bdShow(true); return; }
+  if (k === 'clear') { BUDDY.msgs = []; BUDDY.wait = null; bdRenderMsgs(); $('#bd-text').focus(); return; }
+  if (k === 'go') { go(v); if (innerWidth < 900) bdShow(true, true); return; }
+  if (k === 'add') { itemForm(null, {}); return; }
+  if (k === 'item') { if (Store.get(v)) itemDetail(v); return; }
+  if (k === 'lookup') { bdPush({role:'user', text:v}); return bdLookup(v); }
+  if (k === 'start') {
+    const label = (bdT('starters').find(([x]) => x === v) || [, v])[1]; bdPush({role:'user', text:label});
+    if (v === 'explore') return bdExplore();
+    if (v === 'organize') return bdOrganize();
+    BUDDY.wait = v === 'col' ? 'col' : 'lookup'; return bdSay(bdT(v === 'col' ? 'askCol' : 'askWord'));
+  }
+  if (k === 'pick') {
+    let o; try { o = JSON.parse(v); } catch { return; }
+    if (!o || !bdTermOk(o.term)) return;
+    bdPush({role:'user', text:o.topic});
+    BUDDY.busy = true; bdRenderMsgs(); let l = null; try { if (await lkInit()) l = await lkLookup(o.term); } catch {} BUDDY.busy = false;
+    bdPush({role:'bot', kind:'save', f:bdFieldsFrom(o.term, l, {topic:String(o.topic).slice(0, 40)}), note:o.isNew ? bdT('newTopic', o.topic) : ''});
+    return;
+  }
+  if (!m) return;
+  if (k === 'to-save') return bdSaveFlow(m.term, '', m.lk);
+  if (k === 'form') {
+    const f = m.kind === 'save' ? Object.fromEntries(new FormData($(`#bd-panel form[data-m="${m.id}"]`))) : null;
+    const term = f ? f.term : m.term, col = f ? f.col : bdGuessCol(term);
+    itemForm(null, {col, term, category:f ? f.topic : '', examples:f ? f.examples : ''});
+    return;
+  }
+  if (k === 'cancel') { m.done = 'cancel'; bdUpdate(m); return; }
+});
+document.addEventListener('submit', e => {
+  if (e.target.id === 'bd-form') { e.preventDefault(); const t = $('#bd-text'); const v = t.value; t.value = ''; bdGrow(t); bdHandle(v); return; }
+  const f = e.target.closest('#bd-panel form.bd-form'); if (!f) return;
+  e.preventDefault();
+  const m = BUDDY.msgs.find(x => x.id === f.dataset.m); if (!m || m.done) return;
+  const v = Object.fromEntries(new FormData(f));
+  const term = v.term.trim();
+  if (!term) { toast(bdT('needTerm'), true); f.elements.term.focus(); return; }
+  if (!BD_SAVE_COLS.includes(v.col)) return;
+  const dup = items().find(r => r.col === v.col && termKey(r.term) === termKey(term));
+  if (dup) { bdSay(bdT('dup', dup.term, COLS[dup.col].label), {chips:[['item:' + dup.id, bdT('view')]]}); return; }
+  const sameWord = termKey(term) === termKey(m.f.term);
+  const fields = {...m.f, term, ipa:v.ipa.trim(), pos:v.pos.trim(), def:v.def.trim(), vi:v.vi.trim(), examples:v.examples.trim(), col:v.col, topic:v.topic.trim().slice(0, 40)};
+  if (!sameWord) Object.assign(fields, {synonyms:[], antonyms:[], collocations:[], related:[], sources:[]});
+  const rec = bdCreate(fields);
+  m.f = fields; m.done = 'saved'; m.savedId = rec.id; bdUpdate(m);
+});
+function bdGrow(t){ t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight, 140) + 'px'; }
+document.addEventListener('input', e => { if (e.target.id === 'bd-text') bdGrow(e.target); });
+document.addEventListener('keydown', e => {
+  if (e.target.id === 'bd-text' && e.key === 'Enter' && !e.shiftKey && !e.isComposing && e.keyCode !== 229) { e.preventDefault(); $('#bd-form').requestSubmit(); return; }
+  if (e.key === 'Escape' && BUDDY.open && !BUDDY.min && e.target.closest && e.target.closest('#bd-panel') && !$('#modal-root').firstElementChild) { e.preventDefault(); e.stopPropagation(); bdShow(false); }
+}, true);
+
 /* ---------- reading sources (curated ones are shared content; custom ones are private records of kind 'source') */
 const SOURCES = (CONTENT.sources || []).map(s => ({...s, curated:true}));
 const SRC_TONES = [['--blue-soft','--blue'],['--green-soft','--green'],['--amber-soft','--amber'],['--primary-soft','--primary'],['--red-soft','--red']];
