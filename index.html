@@ -90,7 +90,7 @@ svg.lucide{flex:none}
 .subnav a.on{color:var(--primary);font-weight:650}
 .subnav .ic{width:15px;height:15px}
 .subnav small{font-size:12px;color:var(--muted)}
-.side-foot{margin-top:auto;padding-top:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px}
+.side-foot{margin-top:auto;padding-top:10px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px}
 .side-row{display:flex;align-items:center;justify-content:space-between;gap:6px}
 .sync{font-size:12.5px;color:var(--muted);display:flex;gap:7px;align-items:center;padding:4px 12px}
 .sync-ic .ic{width:14px;height:14px}
@@ -682,6 +682,29 @@ textarea.code{font:13px/1.45 ui-monospace,Menlo,monospace;width:100%;min-height:
 .confirm p{margin:0 0 20px;color:var(--text-2)}
 .confirm .row{display:flex;justify-content:flex-end;gap:8px}
 .newwrap{position:relative}
+.me-btn{border:0;padding:0;cursor:pointer;font:inherit;font-weight:700;flex:none}
+.me-btn[aria-expanded=true]{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--primary)}
+.me-btn.alert{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--red)}
+.mepop{position:fixed;z-index:90;width:280px;max-width:calc(100vw - 16px);background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-pop);padding:6px;outline:0}
+.mepop[hidden]{display:none}
+.mesub{width:200px;z-index:91}
+.mp-acct{display:flex;gap:12px;align-items:center;padding:10px 10px 6px}
+.mp-av{width:44px;height:44px;flex:none;font-size:18px}
+.mp-who{min-width:0;display:flex;flex-direction:column;align-items:flex-start}
+.mp-who b{font-size:15px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mp-who small{font-size:13px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mp-edit{border:0;background:none;padding:2px 0;margin-top:2px;color:var(--primary);font:600 13px var(--f-ui);cursor:pointer;border-radius:4px}
+.mp-edit:hover{text-decoration:underline}
+.mp-sync{padding:2px 10px 8px}
+.mp-sep{height:1px;background:var(--border);margin:4px 4px}
+.mp-i{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:none;padding:9px 10px;min-height:40px;border-radius:10px;cursor:pointer;font:500 14.5px var(--f-ui);color:var(--text)}
+.mp-i span{flex:1}
+.mp-i .ic{width:17px;height:17px;color:var(--muted);flex:none}
+.mp-i small{color:var(--muted);font-size:13px}
+.mp-i:hover,.mp-i:focus-visible,.mp-i.act{background:var(--surface-2);outline:0}
+.mp-i:focus-visible{box-shadow:inset 0 0 0 2px var(--primary)}
+.mp-i.on{font-weight:650}.mp-i.on>.ic:first-child,.mp-i .mp-chk{color:var(--primary)}
+.mp-note{margin:4px 10px 6px;font-size:12.5px;color:var(--muted)}
 .newmenu{position:absolute;right:0;top:calc(100% + 8px);background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-pop);padding:6px;min-width:260px;z-index:50}
 .newmenu button,.newmenu a{display:flex;width:100%;text-align:left;border:0;background:none;padding:9px 12px;border-radius:10px;cursor:pointer;font-size:14.5px;justify-content:space-between;align-items:center}
 .newmenu button span,.newmenu a{color:inherit;text-decoration:none;box-sizing:border-box}
@@ -1125,14 +1148,12 @@ body.auth-open .app{visibility:hidden}
     <div class="brand"><div class="mark" aria-hidden="true"><svg viewBox="0 0 36 36" width="36" height="36"><rect width="36" height="36" rx="10" class="mk-bg"/><rect x="9" y="9.5" width="18" height="4.4" rx="2.2" class="mk-t"/><rect x="15.8" y="9.5" width="4.4" height="17.5" rx="2.2" class="mk-t"/><circle cx="27.2" cy="25.2" r="2.6" class="mk-dot"/></svg></div><div><div class="brand-name">Thuverse</div><div class="brand-sub" id="brand-sub">Your language universe</div></div><button class="icon-btn side-toggle" id="side-toggle" data-act="side-toggle" aria-controls="side" aria-expanded="true" aria-label="Collapse sidebar" data-tip="Collapse sidebar"><i data-lucide="panel-left-close" class="ic st-collapse" aria-hidden="true"></i><i data-lucide="panel-left-open" class="ic st-expand" aria-hidden="true"></i><i data-lucide="x" class="ic st-close" aria-hidden="true"></i></button></div>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
-      <div class="side-row">
-        <a href="#preferences" class="nav-item" id="pref-link" style="flex:1" data-tip="Preferences"><i data-lucide="settings" class="ic" aria-hidden="true"></i><span>Preferences</span></a>
-        <button class="icon-btn" data-act="theme" id="theme-btn" data-tip="Light / dark theme" aria-label="Switch light or dark theme"><i data-lucide="moon" class="ic" aria-hidden="true"></i></button>
-      </div>
-      <div class="sync wait" id="sync"><span class="sync-ic"></span><span class="sync-t">Loading your library…</span></div>
+      <a href="#preferences" class="nav-item" id="pref-link" data-tip="Preferences"><i data-lucide="settings" class="ic" aria-hidden="true"></i><span>Preferences</span></a>
     </div>
   </aside>
   <div class="scrim" data-act="menu" aria-hidden="true"></div>
+  <div class="mepop" id="mepop" role="menu" aria-label="Account" tabindex="-1" hidden></div>
+  <div class="mepop mesub" id="mesub" role="menu" aria-label="Appearance" tabindex="-1" hidden></div>
   <main class="main">
     <header class="top">
       <button class="icon-btn menu-btn" data-act="menu" aria-label="Open navigation" aria-controls="side" aria-expanded="false" title="Menu"><i data-lucide="menu" class="ic" aria-hidden="true"></i></button>
@@ -1608,8 +1629,7 @@ const Store = {
 };
 function setMode(m){
   Store.mode = m;
-  const el = $('#sync');
-  const map = {
+    const map = {
     starting:['wait','Loading your library…'],
     syncing:['wait','Syncing…'],
     cloud:['ok','Saved to your account'],
@@ -1618,8 +1638,88 @@ function setMode(m){
   };
   const [c, t] = map[m] || map.local;
   const icn = {starting:'loader', syncing:'refresh-cw', cloud:'cloud', local:'hard-drive', error:'cloud-off'}[m] || 'hard-drive';
-  el.className = 'sync ' + c; el.querySelector('.sync-t').textContent = t; el.querySelector('.sync-ic').innerHTML = ic(icn); drawIcons();
+  SYNC = [c, icn, t];
+  const b = $('#me-btn'); if (b) b.classList.toggle('alert', c === 'err');
+  if (ME.open) meRender();
 }
+/* ---------- account menu (avatar popover) */
+let SYNC = ['wait', 'loader', 'Loading your library…'];
+const ME = {open:false, sub:false};
+const meItem = (k, icon, label) => `<button type="button" class="mp-i" role="menuitem" data-mp="${k}">${ic(icon)}<span>${label}</span></button>`;
+function meHTML(){
+  const st = settings(), nm = (st.name || '').trim(), [c, icn, t] = SYNC, mode = themeMode();
+  const who = Web.uid ? Web.email : '';
+  return `<div class="mp-acct"><span class="avatar mp-av" style="${avatarStyle(st)}" aria-hidden="true">${avatarInner(st)}</span>
+      <div class="mp-who"><b dir="auto">${esc(nm || 'Your profile')}</b>${who ? `<small title="${esc(who)}">${esc(who)}</small>` : ''}<button type="button" class="mp-edit" role="menuitem" data-mp="profile">Edit profile</button></div></div>
+    <div class="sync mp-sync ${c}"><span class="sync-ic">${ic(icn)}</span><span>${esc(t)}</span></div>
+    <div class="mp-sep" role="separator"></div>
+    ${meItem('prefs', 'settings', 'Preferences')}${meItem('goals', 'target', 'Learning goals')}
+    <button type="button" class="mp-i ${ME.sub ? 'act' : ''}" role="menuitem" data-mp="appearance" aria-haspopup="menu" aria-expanded="${ME.sub}" aria-controls="mesub">${ic('sun-moon')}<span>Appearance</span><small>${THEME_LBL[mode]}</small>${ic('chevron-right', 'mp-chev')}</button>
+    ${Web.uid ? `<div class="mp-sep" role="separator"></div>${meItem('signout', 'log-out', 'Sign out')}` : ''}`;
+}
+function meSubHTML(){
+  const m = themeMode();
+  return [['light','sun','Light'],['dark','moon','Dark'],['system','monitor','System']].map(([v, i, l]) =>
+    `<button type="button" class="mp-i ${m === v ? 'on' : ''}" role="menuitemradio" aria-checked="${m === v}" data-theme-v="${v}">${ic(i)}<span>${l}</span>${m === v ? ic('check', 'mp-chk') : ''}</button>`).join('')
+    + (m === 'system' ? `<p class="mp-note">Following your device, now ${document.documentElement.dataset.theme}.</p>` : '');
+}
+function mePlace(){
+  const btn = $('#me-btn'), pop = $('#mepop'), sub = $('#mesub');
+  if (!btn || !btn.getClientRects().length) return meClose(false);
+  const r = btn.getBoundingClientRect(), vw = document.documentElement.clientWidth, vh = innerHeight, M = 8, pw = pop.offsetWidth, ph = pop.offsetHeight;
+  const left = Math.max(M, Math.min(r.right - pw, vw - pw - M));
+  let top = r.bottom + 8; if (top + ph > vh - M && r.top - 8 - ph >= M) top = r.top - 8 - ph;
+  top = Math.max(M, Math.min(top, vh - ph - M));
+  pop.style.left = left + 'px'; pop.style.top = top + 'px';
+  if (sub.hidden) return;
+  const it = $('[data-mp=appearance]', pop).getBoundingClientRect(), sw = sub.offsetWidth, sh = sub.offsetHeight;
+  let sl = left - sw - 6, st = it.top - 7;                                // beside the menu, on the side with room
+  if (sl < M) { sl = left + pw + 6; if (sl + sw > vw - M) { sl = Math.max(M, Math.min(it.right - sw, vw - sw - M)); st = it.bottom + 4; sub.classList.add('stacked'); } }
+  st = Math.max(M, Math.min(st, vh - sh - M));
+  sub.style.left = sl + 'px'; sub.style.top = st + 'px';
+}
+function meRender(){
+  const pop = $('#mepop'), sub = $('#mesub');
+  if (!ME.open) { pop.hidden = true; sub.hidden = true; return; }
+  const ae = document.activeElement, keep = ae && (pop.contains(ae) || sub.contains(ae)) ? (ae.dataset.mp ? `[data-mp=${ae.dataset.mp}]` : ae.dataset.themeV ? `[data-theme-v=${ae.dataset.themeV}]` : '') : '';
+  pop.innerHTML = meHTML(); pop.hidden = false;
+  sub.classList.remove('stacked'); sub.hidden = !ME.sub; sub.innerHTML = ME.sub ? meSubHTML() : '';
+  const b = $('#me-btn'); if (b) b.setAttribute('aria-expanded', 'true');
+  drawIcons(); mePlace();
+  if (keep) meFocus(keep);
+}
+const meFocus = sel => { const n = $(sel); if (n) n.focus(); };
+function meOpen(kbd){ ME.open = true; ME.sub = false; meRender(); if (kbd) meFocus('#mepop [role=menuitem]'); else $('#mepop').focus({preventScroll:true}); }
+function meClose(restore){
+  ME.open = false; ME.sub = false; meRender();
+  const b = $('#me-btn'); if (b) { b.setAttribute('aria-expanded', 'false'); if (restore) b.focus(); }
+}
+function meSub(open, focusSel){ ME.sub = open; meRender(); if (focusSel) meFocus(focusSel); }
+document.addEventListener('pointerdown', e => { if (ME.open && !e.target.closest('#mepop,#mesub,#me-btn')) meClose(false); }, true);
+addEventListener('resize', () => { if (ME.open) mePlace(); });
+addEventListener('keydown', e => {
+  if (!ME.open) return;
+  const pop = $('#mepop'), sub = $('#mesub'), inSub = sub.contains(document.activeElement), k = e.key;
+  if (k === 'Escape') { e.preventDefault(); e.stopPropagation(); if (ME.sub) meSub(false, '[data-mp=appearance]'); else meClose(true); return; }
+  if (k === 'Tab') { meClose(false); return; }
+  const list = [...(inSub ? sub : pop).querySelectorAll('[role^=menuitem]')], i = list.indexOf(document.activeElement), n = list.length;
+  if (k === 'ArrowDown' || k === 'ArrowUp') { e.preventDefault(); const d = k === 'ArrowDown' ? 1 : -1; list[i < 0 ? (d > 0 ? 0 : n - 1) : (i + d + n) % n].focus(); }
+  else if (k === 'Home' || k === 'End') { e.preventDefault(); list[k === 'Home' ? 0 : n - 1].focus(); }
+  else if (k === 'ArrowRight' && document.activeElement && document.activeElement.dataset.mp === 'appearance') { e.preventDefault(); meSub(true, '#mesub [aria-checked=true]'); }
+  else if (k === 'ArrowLeft' && inSub) { e.preventDefault(); meSub(false, '[data-mp=appearance]'); }
+}, true);
+document.addEventListener('click', e => {
+  const t = e.target.closest('#mepop [data-mp], #mesub [data-theme-v]'); if (!t) return;
+  if (t.dataset.themeV) { setTheme(t.dataset.themeV); meSub(false, '[data-mp=appearance]'); return; }
+  const k = t.dataset.mp;
+  if (k === 'appearance') { meSub(!ME.sub, ME.sub ? '[data-mp=appearance]' : '#mesub [aria-checked=true]'); return; }
+  meClose(false);
+  const after = fn => setTimeout(fn, 80);
+  if (k === 'prefs') go('preferences');
+  else if (k === 'profile') { go('preferences'); after(() => { const f = $('#pref-form'); if (f) { f.closest('section').scrollIntoView({block:'start'}); f.elements.name.focus({preventScroll:true}); } }); }
+  else if (k === 'goals') { go('dashboard'); after(() => { const g = $('.tgoal'); if (g) { g.scrollIntoView({block:'center'}); const b = $('button, a', g); if (b) b.focus({preventScroll:true}); } }); }
+  else if (k === 'signout') webSignOut();
+});
 
 /* =========================================================
    Data queries
@@ -1736,6 +1836,7 @@ function render(){
   else if (S.view === 'study' && !S.search && !$('#modal-root').firstElementChild) { const f = $('#typein:not([disabled])') || $('#s-focus'); if (f) f.focus({preventScroll:true}); }
   mountCharts();
   drawIcons();
+  if (ME.open) meRender();
 }
 
 function renderNav(){
@@ -1758,10 +1859,7 @@ function renderNav(){
   $('#nav').innerHTML = h;
   $('#pref-link').classList.toggle('on', S.view === 'preferences' && !S.search);
   const sk = streaks(dayCounts()), nm = (settings().name || '').trim();
-  $('#topstats').innerHTML = `<a class="tstat" href="#dashboard" title="Learning streak">${ic('zap','t-zap')}<b>${sk.cur}</b></a><a class="tstat" href="#review" title="Words due for review">${ic('repeat-2','t-due')}<b>${due}</b></a><a class="avatar" href="#preferences" title="${esc(nm ? nm + ' · Profile and preferences' : 'Profile and preferences')}" style="${avatarStyle(settings())}">${avatarInner(settings())}</a>`;
-  const tb = $('#theme-btn'); const dark = document.documentElement.dataset.theme === 'dark';
-  if (tb && tb.dataset.mode !== String(dark)) { tb.dataset.mode = String(dark); tb.innerHTML = ic(dark ? 'sun' : 'moon'); }
-  if (tb) { const tip = `Theme: ${THEME_LBL[themeMode()]}${themeMode() === 'system' ? ` (${dark ? 'dark' : 'light'})` : ''}. Switch to ${dark ? 'light' : 'dark'}`; tb.dataset.tip = tip; tb.setAttribute('aria-label', tip); }
+  $('#topstats').innerHTML = `<a class="tstat" href="#dashboard" title="Learning streak">${ic('zap','t-zap')}<b>${sk.cur}</b></a><a class="tstat" href="#review" title="Words due for review">${ic('repeat-2','t-due')}<b>${due}</b></a><button type="button" class="avatar me-btn ${SYNC[0]==='err'?'alert':''}" id="me-btn" data-act="me-menu" aria-haspopup="menu" aria-expanded="${ME.open}" aria-controls="mepop" title="${esc(nm ? nm + ' · Account menu' : 'Account menu')}${SYNC[0]==='err' ? ' · ' + SYNC[2] : ''}" style="${avatarStyle(settings())}">${avatarInner(settings())}</button>`;
 }
 const PILLIC = {new:'circle-dashed', learning:'clock', mastered:'circle-check'};
 const statusPill = r => `<button class="pill ${r.status||'new'}" data-act="cycle-status" data-id="${r.id}" title="Change status">${ic(PILLIC[r.status||'new'])} ${cap(r.status||'new')}</button>`;
@@ -4388,7 +4486,7 @@ function loadStarter(){
 const ACT = {
   menu: () => setDrawer(!$('#side').classList.contains('open')),
   'side-toggle': () => { if (isDrawerMode()) setDrawer(false); else setSideCollapsed(!document.querySelector('.app').classList.contains('side-collapsed'), true); },
-  theme: () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'),
+  'me-menu': (el, e) => ME.open ? meClose(false) : meOpen(e && e.detail === 0),
   'set-theme': el => { setTheme(el.dataset.v); toast(`Appearance: ${THEME_LBL[el.dataset.v]}`); },
   new: el => {
     const t = el.dataset.type;
