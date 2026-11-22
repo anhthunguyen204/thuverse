@@ -882,9 +882,9 @@ body.auth-open .app{visibility:hidden}
 .av-sec[open]>summary{border-bottom:1px solid var(--border)}
 .av-in{padding:12px 14px 14px;display:flex;flex-direction:column;gap:12px}
 .av-in .lk-srcs{margin:0}
-.av-foot{display:flex;align-items:center;gap:10px;padding:12px 22px;border-top:1px solid var(--border);background:var(--surface);flex-wrap:wrap}
+.av-foot{display:flex;align-items:center;gap:8px;padding:12px 22px;border-top:1px solid var(--border);background:var(--surface);flex-wrap:wrap}
 .av-col{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text-2)}
-.av-col select{border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:7px 10px;font:600 13.5px var(--f-ui);color:var(--text);max-width:220px}
+.av-col select{border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:7px 10px;font:600 13.5px var(--f-ui);color:var(--text);max-width:190px}
 .av-foot .chk{display:flex;gap:6px;align-items:center;font-size:13.5px;color:var(--text-2)}
 .av-sp{flex:1}
 @media (max-width:640px){.av-head{padding:14px 16px 0}.av-body{padding:12px 16px 16px}.av-foot{padding:10px 16px}.av-sense{grid-template-columns:20px minmax(0,1fr)}.av-tag{grid-column:2;margin:0}.av-dup .lk-dup{grid-template-columns:20px 1fr}.av-dup .lk-dup-a{grid-column:2}}
@@ -1045,8 +1045,10 @@ body.auth-open .app{visibility:hidden}
 .av-head h3{margin-right:auto}
 .av-type{order:3;flex-basis:100%;margin-top:12px}
 .av-type button{flex:1;justify-content:center}
-#item-form[data-vt=phrasal] .av-posvi{grid-template-columns:minmax(0,1fr)}
-#item-form[data-vt=collocation] .vt-hide-collocation,#item-form[data-vt=phrasal] .vt-hide-phrasal{display:none !important}
+#item-form[data-vt=collocation] .vt-hide-collocation,#item-form[data-vt=phrasal] .vt-hide-phrasal,#item-form[data-vt=sentence] .vt-hide-sentence,#item-form[data-vt=linking] .vt-hide-linking{display:none !important}
+#item-form:not([data-vt=linking]) .vt-only-linking{display:none !important}
+#item-form[data-vt=sentence] .av-posvi,#item-form[data-vt=phrasal] .av-posvi{grid-template-columns:minmax(0,1fr)}
+.av-type{flex-wrap:wrap}.av-type button{min-width:0;white-space:nowrap}
 
 
 /* ---------- global search popover */
@@ -1154,14 +1156,18 @@ body.auth-open .app{visibility:hidden}
    ========================================================= */
 const COLS = {
   vocabulary:  {label:'Vocabulary', one:'word', short:'word', term:'Word or phrase', def:'Definition', ph:'e.g. mitigate'},
-  structures:  {label:'Sentence Structures', one:'structure', short:'structure', term:'Structure or pattern', def:'How and when to use it', ph:'e.g. Not only … but also …'},
-  grammar:     {label:'Grammar', one:'grammar point', short:'grammar', term:'Grammar point', def:'Rule or explanation', ph:'e.g. Present perfect vs past simple'},
-  idioms:      {label:'Idioms & Expressions', one:'idiom', short:'idiom', term:'Idiom or expression', def:'Meaning', ph:'e.g. a double-edged sword'},
   collocations:{label:'Collocations & Phrasal Verbs', one:'collocation', short:'collocation', term:'Collocation or phrasal verb', def:'Meaning', ph:'e.g. pose a threat to'},
+  linking:     {label:'Linking Phrases', one:'linking phrase', short:'linking', term:'Linking phrase', def:'Meaning', ph:'e.g. in turn'},
+  structures:  {label:'Sentences & Structures', one:'sentence', short:'sentence', term:'Sentence or structure', def:'How and when to use it', ph:'e.g. Not only … but also …'},
+  grammar:     {label:'Grammar Notes', one:'grammar note', short:'grammar', term:'Grammar point', def:'Rule or explanation', ph:'e.g. Present perfect vs past simple'},
+  idioms:      {label:'Idioms & Expressions', one:'idiom', short:'idiom', term:'Idiom or expression', def:'Meaning', ph:'e.g. a double-edged sword'},
   mistakes:    {label:'Common Mistakes', one:'mistake', short:'mistake', term:'What I wrote or said (wrong)', def:'Correct version', ph:'e.g. I am agree with this view.'},
 };
+/* what a linking phrase does in a text (stored on the entry as func) */
+const LINK_FUNCS = [['cause','Cause & Effect'],['contrast','Contrast'],['addition','Addition'],['example','Example'],['sequence','Sequencing'],['conclusion','Conclusion']];
+const linkFuncLabel = k => (LINK_FUNCS.find(([v]) => v === k) || [,''])[1];
 const STATUSES = ['new','learning','mastered'];
-const COLIC = {vocabulary:'book-a', structures:'quote', grammar:'languages', idioms:'message-circle', collocations:'network', mistakes:'triangle-alert'};
+const COLIC = {vocabulary:'book-a', structures:'quote', grammar:'languages', idioms:'message-circle', collocations:'network', linking:'link', mistakes:'triangle-alert'};
 const SEC = {
   strategies:{label:'Strategies & notes', title:'Strategy or tip', body:'Notes'},
   practice:{label:'Practice log', title:'Test or section', body:'What went well, what to fix', topic:'Source', topicLabel:'Source'},
@@ -1695,8 +1701,9 @@ const S = {
 function route(){
   const h = (location.hash || '').slice(1), k = h.indexOf('-');
   const v = k < 0 ? h : h.slice(0, k), sub = k < 0 ? '' : h.slice(k + 1);
-  if (v === 'knowledge') { S.view = 'knowledge'; const c = COLS[sub] ? sub : 'all'; if (c !== S.kCol) { S.kCol = c; S.kTag = ''; S.kLimit = 150; } }
+  if (v === 'knowledge' || v === 'collections') { S.view = 'knowledge'; const c = COLS[sub] ? sub : 'all'; if (c !== S.kCol) { S.kCol = c; S.kTag = ''; S.kLimit = 150; } }
   else if (v === 'ielts') { S.view = 'ielts'; if (SK[sub] && sub !== S.skill) { S.skill = sub; S.skillTab = null; S.topic = ''; } }
+  else if (v === 'library' && sub === 'mine') { location.replace('#collections'); return; }
   else if (v === 'library') { S.view = 'library'; S.libCat = CATS.find(c => c.id === sub) ? sub : ''; }
   else if (v === 'collection' && COLL[sub]) { S.view = 'collection'; if (S.colId !== sub) { S.colId = sub; S.cFilter = 'all'; S.cQ = ''; } touchCol(sub); }
   else if (v === 'lesson' && LESSONS[sub]) { S.view = 'lesson'; S.lessonId = sub; openLesson(sub); }
@@ -1735,8 +1742,8 @@ function renderNav(){
   const due = dueItems().length;
   const its = items();
   const groups = [[null, [['dashboard','Dashboard','layout-dashboard']]], ['Learn', [['library','Library','library'],['review','Review','repeat-2']]],
-    ['My notes', [['knowledge','My Knowledge','book-a'],['reading','Reading list','newspaper'],['ielts','IELTS Workspace','graduation-cap'],['journal','Learning Journal','notebook-pen']]]];
-  const active = {collection:'library', lesson:'library', structure:'library', article:'reading', study:'review'}[S.view] || S.view;
+    ['My learning', [['collections','My Collections','bookmark'],['reading','Reading list','newspaper'],['ielts','IELTS Workspace','graduation-cap'],['journal','Learning Journal','notebook-pen']]]];
+  const active = {collection:'library', lesson:'library', structure:'library', article:'reading', study:'review', knowledge:'collections'}[S.view] || S.view;
   let h = '';
   groups.forEach(([g, list]) => {
     if (g) h += `<div class="navgroup">${g}</div>`;
@@ -1744,7 +1751,7 @@ function renderNav(){
       const on = active === k && !S.search;
       h += `<a href="#${k}" class="nav-item ${on?'on':''}" data-tip="${l}${k==='review'&&due?` · ${due} due`:''}" ${on?'aria-current="page"':''}>${ic(icon)}<span>${l}</span>${k==='review'&&due?`<span class="badge" title="${due} due">${due}</span>`:''}</a>`;
       if (k === 'library' && on) h += '<div class="subnav">' + CATS.map(c => `<a href="#library-${c.id}" class="${S.view==='library'&&S.libCat===c.id || (S.view==='collection'&&COLL[S.colId]&&COLL[S.colId].cat===c.id) || (S.view==='lesson'&&c.id==='grammar')?'on':''}"><span>${ic(c.icon)} ${c.name}</span></a>`).join('') + '</div>';
-      if (k === 'knowledge' && on) h += '<div class="subnav">' + Object.entries(COLS).map(([c,o]) => `<a href="#knowledge-${c}" class="${S.kCol===c?'on':''}"><span>${ic(COLIC[c])} ${o.label}</span><small>${its.filter(r=>r.col===c).length}</small></a>`).join('') + '</div>';
+      if (k === 'collections' && on) h += '<div class="subnav">' + Object.entries(COLS).map(([c,o]) => `<a href="#collections-${c}" class="${S.kCol===c?'on':''}"><span>${ic(COLIC[c])} ${o.label}</span><small>${its.filter(r=>r.col===c).length}</small></a>`).join('') + '</div>';
       if (k === 'ielts' && on) h += '<div class="subnav">' + Object.entries(SK).map(([s,o]) => `<a href="#ielts-${s}" class="${S.skill===s?'on':''}"><span>${ic(o.icon)} ${o.label}</span></a>`).join('') + '</div>';
     });
   });
@@ -1767,7 +1774,7 @@ function entryRow(r, showCol){
   const mistake = r.col === 'mistakes';
   return `<div class="entry ${mistake?'mistake':''}" data-act="open-item" data-id="${r.id}" role="button" tabindex="0">
     <div style="min-width:0">
-      <div class="hw"><span>${esc(r.term)}</span>${r.ipa?`<span class="ipa">${esc(r.ipa)}</span>`:''}${showCol?`<span class="ctype">${c.short}</span>`:''}</div>
+      <div class="hw"><span>${esc(r.term)}</span>${r.ipa?`<span class="ipa">${esc(r.ipa)}</span>`:''}${showCol?`<span class="ctype">${c.short}</span>`:''}${r.func?`<span class="ctype">${esc(linkFuncLabel(r.func))}</span>`:''}</div>
       <div class="gloss">${mistake ? (r.def?`<span class="fix">✓ ${esc(r.def)}</span>`:'') : `${r.vi?`<span class="vi">${esc(r.vi)}</span>`:''}${r.vi&&r.def?' — ':''}${esc(r.def||'')}`}</div>
       ${ex && !mistake ? `<div class="ex">${hl(ex, r.term)}</div>` : ''}
     </div>
@@ -1805,10 +1812,10 @@ const CATS = [
   {id:'grammar', name:'Grammar', icon:'languages', desc:'A complete grammar library from the basics to advanced structures, with Vietnamese explanations, common mistakes and practice.'},
   {id:'phrases', name:'Collocations & phrasal verbs', icon:'network', desc:'Words that go together, learned as whole chunks.'},
   {id:'structures', name:'Sentence structures', icon:'quote', desc:'Ready-to-use sentence patterns with formulas and examples, plus phrase banks for writing and speaking.'},
-  {id:'mine', name:'My collections', icon:'bookmark', desc:'Everything you have saved yourself.'},
+  {id:'linking', name:'Linking phrases', icon:'link', desc:'Phrases that connect ideas, grouped by what they do: cause and effect, contrast, addition, examples, sequencing and conclusions.'},
 ];
-const CAT_TONE = {ielts:'blue', grammar:'indigo', phrases:'teal', structures:'amber', mine:'coral'};
-const CAT_LABEL = {ielts:'Vocabulary', grammar:'Grammar', phrases:'Collocations', structures:'Structures', mine:'My collection'};
+const CAT_TONE = {ielts:'blue', grammar:'indigo', phrases:'teal', structures:'amber', linking:'coral'};
+const CAT_LABEL = {ielts:'Vocabulary', grammar:'Grammar', phrases:'Collocations', structures:'Structures', linking:'Linking phrases'};
 const LEVELS = {'B1':'Intermediate','B1–B2':'Intermediate','B2':'Upper-intermediate','B2–C1':'Upper-intermediate+','C1':'Advanced'};
 const fmtDur = m => m < 60 ? `${Math.max(5, Math.round(m/5)*5)} min` : `${(m/60).toFixed(1).replace(/\.0$/,'')} h`;
 const estTime = c => c.kind === 'words' ? c.wordIds.length * 1.5 : c.lessons.length * 15;
@@ -1851,7 +1858,7 @@ function wv(r){
     return {term:w.term, ipa:w.ipa, pos:w.pos, vi:w.vi, def:w.def, ex:[w.ex].filter(Boolean), src:(COLL[w.cols[0]]||{}).name || 'Library', mistake:false, notes:'', cols:w.cols};
   }
   const c = COLS[r.col] || COLS.vocabulary;
-  return {term:r.term, ipa:r.ipa, pos:c.short, vi:r.vi, def:r.def, ex:lines(r.examples), src:'My Knowledge · ' + c.label, mistake:r.col === 'mistakes', notes:r.notes, cols:[]};
+  return {term:r.term, ipa:r.ipa, pos:c.short, vi:r.vi, def:r.def, ex:lines(r.examples), src:'My Collections · ' + c.label, mistake:r.col === 'mistakes', notes:r.notes, cols:[]};
 }
 function today(){
   const k = ymd(), a = activity(), st = settings();
@@ -2076,7 +2083,7 @@ function vDashboard(){
     left === 0
       ? task('book-a', 'New vocabulary', `Goal reached — ${plural(t.newDone,'new word')} today`, '', `<a class="btn sm ghost" href="#library">${ic('library')} More words</a>`, true)
       : next ? task('book-a', `Learn ${plural(newAvail,'new word')}`, `From <a href="#collection-${next.id}">${esc(next.name)}</a> · <a href="#library">change</a>`, newAvail, `<button class="btn sm" data-act="learn-col" data-id="${next.id}" data-n="${left}">${ic('play')} Learn</button>`)
-      : task('book-a', 'New vocabulary', 'You have started every word in the library.', '', `<a class="btn sm ghost" href="#knowledge">My words</a>`, true),
+      : task('book-a', 'New vocabulary', 'You have started every word in the library.', '', `<a class="btn sm ghost" href="#collections">My words</a>`, true),
     t.due ? task('repeat-2', `Review ${plural(t.due,'word')}`, 'Due now — reviewing before you forget is what makes words stick', t.due, `<button class="btn sm" data-act="start-review" data-deck="due">${ic('play')} Review</button>`)
       : task('repeat-2', 'Reviews', t.revDone ? `All caught up — ${plural(t.revDone,'review')} done today` : `Nothing due right now${tomorrow?` · ${tomorrow} due by tomorrow`:''}`, '', '', true),
     ipItems.length ? task('clock', 'Grammar & collocations in progress', ipItems.slice(0,2).map(x => `<a href="${x.href}">${esc(x.name)}</a>${x.p?` (${x.p.done}/${x.p.total})`:''}`).join(' · ') + (ipItems.length > 2 ? ` · +${ipItems.length-2} more` : ''), '', `<a class="btn sm" href="${ipItems[0].href}">${ic('play')} Continue</a>`)
@@ -2337,13 +2344,6 @@ function vLibrary(){
     if (c.id === 'ielts') {
       const core = list.filter(x => x.group !== 'Topic vocabulary'), topics = list.filter(x => x.group === 'Topic vocabulary');
       body = `<div class="colls">${core.map(x => collCard(x)).join('')}</div><h3 class="sub-h">${ic('tags')} Topic vocabulary · ${topics.length} topics</h3><div class="colls compact">${topics.map(x => collCard(x, true)).join('')}</div>`;
-    } else if (c.id === 'mine') {
-      const its = items(), arts = articles();
-      body = `<div class="colls">
-        <a class="coll compact" href="#knowledge"><span class="tile t-coral">${ic('book-a')}</span><div class="cbody"><b>My Knowledge</b><p>Words, structures, idioms and mistakes you have added yourself.</p><div class="cmeta"><span>${ic('layers')} ${plural(its.length,'entry','entries')}</span><span>${ic('repeat')} ${dueItems().filter(r=>r.kind==='item').length} due</span></div></div></a>
-        <a class="coll compact" href="#reading"><span class="tile t-coral">${ic('newspaper')}</span><div class="cbody"><b>Reading list</b><p>Articles saved for later, with the words you collected from each one.</p><div class="cmeta"><span>${ic('layers')} ${plural(arts.length,'article')}</span><span>${ic('bookmark')} ${arts.filter(a=>a.status!=='done').length} to read</span></div></div></a>
-        <a class="coll compact" href="#knowledge-mistakes"><span class="tile t-coral">${ic('triangle-alert')}</span><div class="cbody"><b>My mistakes</b><p>Corrections of your own errors — review them often.</p><div class="cmeta"><span>${ic('layers')} ${plural(items('mistakes').length,'mistake')}</span></div></div></a>
-      </div>`;
     } else if (c.id === 'grammar') {
       body = cat === 'grammar' ? grammarLibraryHTML() : `<div class="colls">${list.map(x => collCard(x)).join('')}</div><p class="lib-more"><a class="btn" href="#library-grammar">${ic('search')} Browse and search all ${Object.keys(LESSONS).length} grammar topics</a></p>`;
     } else if (c.id === 'structures') {
@@ -2355,7 +2355,7 @@ function vLibrary(){
   };
   const totalWords = Object.keys(WORDS).length;
   return `<h1 class="page">Library</h1>
-  <p class="lede">Ready-made collections: ${totalWords} words and phrases, ${Object.keys(LESSONS).length} grammar topics and ${Object.keys(STRUCTS).length} sentence-structure topics. Open one, learn a few items a day, and the review schedule takes care of the rest.</p>
+  <p class="lede">Shared learning resources for every Thuverse learner: ${totalWords} words and phrases, ${Object.keys(LESSONS).length} grammar topics and ${Object.keys(STRUCTS).length} sentence-structure topics. What you save yourself lives in <a href="#collections">My Collections</a>. Open one, learn a few items a day, and the review schedule takes care of the rest.</p>
   <div class="tabs" role="tablist"><a class="tab ${!cat?'on':''}" href="#library">${ic('library')} All</a>${CATS.map(c => `<a class="tab ${cat===c.id?'on':''}" href="#library-${c.id}">${ic(c.icon)} ${c.name}</a>`).join('')}</div>
   ${CATS.filter(c => !cat || c.id === cat).map(sec).join('')}`;
 }
@@ -2517,7 +2517,7 @@ function topicPersonalTop(kind, id){
   const r = topicRec(kind, id), st = topicStatus(r);
   return `<div class="tpbar">
     <div class="seg" role="radiogroup" aria-label="Your status">${['learning','reviewed','mastered'].map(v => `<button class="${st===v?'on':''}" role="radio" aria-checked="${st===v}" data-act="tp-mark" data-k="${kind}" data-id="${id}" data-v="${v}">${ic(TSTAT[v][0])} ${TSTAT[v][1]}</button>`).join('')}</div>
-    <button class="btn ${r.saved ? 'on' : ''}" data-act="tp-save" data-k="${kind}" data-id="${id}" aria-pressed="${!!r.saved}">${ic(r.saved ? 'bookmark-check' : 'bookmark-plus')} ${r.saved ? 'Saved to My Knowledge' : 'Save to My Knowledge'}</button>
+    <button class="btn ${r.saved ? 'on' : ''}" data-act="tp-save" data-k="${kind}" data-id="${id}" aria-pressed="${!!r.saved}">${ic(r.saved ? 'bookmark-check' : 'bookmark-plus')} ${r.saved ? 'Saved to My Collections' : 'Save to My Collections'}</button>
   </div>`;
 }
 function topicPersonalNotes(kind, id){
@@ -2778,15 +2778,15 @@ function vKnowledge(){
   list.sort(sorters[S.kSort] || sorters.new);
   const tagCount = {}; its.forEach(r => [...(r.tags||[]), ...(r.category?[r.category]:[])].forEach(t => tagCount[t] = (tagCount[t]||0)+1));
   const tags = Object.entries(tagCount).sort((a,b)=>b[1]-a[1]).slice(0,16);
-  const title = col === 'all' ? 'My Knowledge' : COLS[col].label;
-  const lede = col === 'all' ? 'Every word, structure and correction you’ve collected, across your languages and IELTS practice, in one place.' :
+  const title = col === 'all' ? 'My Collections' : COLS[col].label;
+  const lede = col === 'all' ? 'Everything you’ve saved or written yourself: words, phrases, sentences, notes and corrections. Only you can see it.' :
     ({vocabulary:'Words you want to own: meaning, pronunciation, and how they are really used.', structures:'Sentence patterns you can reuse in writing and speaking.', grammar:'Rules worth remembering, with examples that make them stick.', idioms:'Idioms and natural expressions, and when they sound right.', collocations:'Words that go together, and phrasal verbs.', mistakes:'What you got wrong, and the correct version. Reviewing these is one of the fastest ways to improve.'})[col];
   const shown = list.slice(0, S.kLimit);
   return `
   <h1 class="page">${title}</h1><p class="lede">${lede}</p>
   <div class="tabs" role="tablist">
-    <a class="tab ${col==='all'?'on':''}" href="#knowledge">${ic('layers')} All<small>${items().length}</small></a>
-    ${Object.entries(COLS).map(([c,o]) => `<a class="tab ${col===c?'on':''}" href="#knowledge-${c}">${ic(COLIC[c])} ${o.label}<small>${items(c).length}</small></a>`).join('')}
+    <a class="tab ${col==='all'?'on':''}" href="#collections">${ic('layers')} All<small>${items().length}</small></a>
+    ${Object.entries(COLS).map(([c,o]) => `<a class="tab ${col===c?'on':''}" href="#collections-${c}">${ic(COLIC[c])} ${o.label}<small>${items(c).length}</small></a>`).join('')}
   </div>
   <div class="toolbar">
     <label class="sbox">${ic('search')}<input class="fsearch" id="kq" type="search" placeholder="Filter by word, meaning, example, tag…" value="${esc(S.kQ)}" data-input="kQ" aria-label="Filter entries"></label>
@@ -2860,7 +2860,7 @@ function skillContent(sk){
     const cols = tab === 'vocab' ? VOCAB_COLS : STRUCT_COLS;
     const list = items().filter(r => (r.ielts||[]).includes(S.skill) && cols.includes(r.col)).sort((a,b) => b.createdAt - a.createdAt);
     const addCol = tab === 'vocab' ? 'vocabulary' : 'structures';
-    const head = `<div class="toolbar"><span class="muted" style="flex:1;font-size:14.5px">Entries from My Knowledge linked to ${sk.label}. Anything you add here is also in your main library.</span><button class="btn primary" data-act="new" data-type="item" data-col="${addCol}" data-ielts="${S.skill}">${ic('plus')} Add ${tab==='vocab'?'vocabulary':'structure'}</button></div>`;
+    const head = `<div class="toolbar"><span class="muted" style="flex:1;font-size:14.5px">Entries from My Collections linked to ${sk.label}. Anything you add here is also in My Collections.</span><button class="btn primary" data-act="new" data-type="item" data-col="${addCol}" data-ielts="${S.skill}">${ic('plus')} Add ${tab==='vocab'?'vocabulary':'structure'}</button></div>`;
     if (!list.length) return head + `<div class="empty">${ic(tab==='vocab'?'book-a':'quote')}<h3>Nothing linked yet</h3><p>Add an entry here, or link an existing one to ${sk.label} from its edit form.</p></div>`;
     const groups = {}; list.forEach(r => { const g = r.category || 'Other'; (groups[g] = groups[g] || []).push(r); });
     const keys = Object.keys(groups).sort((a,b) => a === 'Other' ? 1 : b === 'Other' ? -1 : a.localeCompare(b));
@@ -2939,7 +2939,7 @@ function vReview(){
   <p class="muted" style="font-size:14px;margin:-6px 0 18px">${style==='mix' ? 'Mixed: new words are flashcards; once you know a word, you type it from its meaning, which builds stronger recall.' : style==='type' ? 'You see the meaning and type the word. It’s harder, and it works better for long-term memory.' : 'You see the card, try to recall, then rate yourself.'}</p>
   <h2 class="sec si" style="margin-bottom:12px">${ic('layers')} Choose a set</h2>
   <div class="decks">
-    ${deck('mine','book-a','My Knowledge', deckFor('mine').length, 'your own entries, due now')}
+    ${deck('mine','bookmark','My Collections', deckFor('mine').length, 'your own entries, due now')}
     ${deck('difficult','flag','Difficult words', deckFor('difficult').length, 'flagged or often forgotten')}
     ${deck('practice','shuffle','Practice 20', Math.min(20, rv.length), 'random words you have learned, any time')}
     ${colDecks.map(([c,n]) => deck(c.id, c.icon, esc(c.name), n, 'due now')).join('')}
@@ -3002,7 +3002,7 @@ function startLearn(colId, n){
 }
 function startReviewDeck(deck){
   const list = deckFor(deck).slice(0, 100);
-  const names = {due:'Review', mine:'My Knowledge', difficult:'Difficult words', practice:'Practice 20'};
+  const names = {due:'Review', mine:'My Collections', difficult:'Difficult words', practice:'Practice 20'};
   startSession(names[deck] || ('Review · ' + (COLL[deck] ? COLL[deck].name : '')), list.map(r => ({t:'rev', key:r.id})));
 }
 function startToday(){
@@ -3280,7 +3280,7 @@ ${Web.cfg ? `<p style="margin:0;color:var(--text-2)">When you add vocabulary, Th
    never sends a database query.
    ========================================================= */
 const SR = {q:'', key:'', timer:0, res:null, active:-1, open:false};
-const SR_GROUPS = [['vocab','Vocabulary','book-a'],['colloc','Collocations','link-2'],['phrasal','Phrasal verbs','corner-down-right'],['idioms','Idioms & expressions','message-square-quote'],['grammar','Grammar','languages'],['structures','Sentence structures','quote'],['mistakes','Common mistakes','triangle-alert'],['reading','Reading list','newspaper'],['ielts','IELTS Workspace','graduation-cap'],['journal','Learning Journal','notebook-pen']];
+const SR_GROUPS = [['vocab','Vocabulary','book-a'],['colloc','Collocations','link-2'],['phrasal','Phrasal verbs','corner-down-right'],['linking','Linking phrases','link'],['idioms','Idioms & expressions','message-square-quote'],['grammar','Grammar','languages'],['structures','Sentence structures','quote'],['mistakes','Common mistakes','triangle-alert'],['reading','Reading list','newspaper'],['ielts','IELTS Workspace','graduation-cap'],['journal','Learning Journal','notebook-pen']];
 /* accent-insensitive folding that keeps string length, so highlights line up (giảm ↔ giam) */
 const srFold = t => { let o = ''; const x = String(t || ''); for (let i = 0; i < x.length; i++) { const c = x[i], f = c.normalize('NFD').replace(/[̀-ͯ]/g, ''); o += (f[0] || c) === 'đ' || c === 'đ' || c === 'Đ' ? 'd' : (f[0] || c).toLowerCase(); } return o; };
 const srToks = q => srFold(q).split(/\s+/).filter(Boolean);
@@ -3303,7 +3303,7 @@ function srStatic(){
   const docs = [];
   Object.values(WORDS).forEach(w => {
     const cats = (w.cols || []).map(c => COLL[c] && COLL[c].cat);
-    const g = /phrasal verb/i.test(w.pos) ? 'phrasal' : cats.includes('structures') ? 'structures' : cats.includes('phrases') ? 'colloc' : 'vocab';
+    const g = cats.includes('linking') ? 'linking' : /phrasal verb/i.test(w.pos) ? 'phrasal' : cats.includes('structures') ? 'structures' : cats.includes('phrases') ? 'colloc' : 'vocab';
     docs.push({g, title:w.term, label:'Library', prev:[w.vi, w.def, w.ex], hay:[w.term, w.vi, w.def, (w.ex || '')], act:'open-word', id:w.id});
   });
   Object.values(LESSONS).forEach(l => docs.push({g:'grammar', title:l.title, label:'Grammar topic', prev:[l.summary], hay:[l.title, l.summary, l.vi, ...(l.explain || []), ...(l.form || []).flat(), ...(l.examples || [])], href:'#lesson-' + l.id, lid:l.id}));
@@ -3316,11 +3316,11 @@ function srDocs(){
     const pr = d.lid ? Store.get('lp-' + d.lid) : d.sid ? Store.get('sp-' + d.sid) : null;
     return pr && (pr.notes || pr.myExamples) ? {...d, fh:d.fh + ' ' + srFold(pr.notes + ' ' + pr.myExamples), note:pr.notes} : d;
   });
-  const colG = {vocabulary:'vocab', idioms:'idioms', grammar:'grammar', structures:'structures', mistakes:'mistakes'};
+  const colG = {vocabulary:'vocab', idioms:'idioms', grammar:'grammar', structures:'structures', mistakes:'mistakes', linking:'linking'};
   items().forEach(r => {
     const g = r.col === 'collocations' ? (r.vtype === 'phrasal' || /phrasal verb/i.test(r.pos || '') ? 'phrasal' : 'colloc') : colG[r.col] || 'vocab';
-    const hay = [r.term, r.vi, r.def, r.examples, r.notes, r.context, r.category, (r.tags || []).join(' '), (r.synonyms || []).join(' '), (r.collocations || []).join(' ')];
-    docs.push({g, title:r.term, label:'My Knowledge', mine:true, prev:[r.vi, r.def, r.examples, r.notes, r.context], hay, act:'open-item', id:r.id});
+    const hay = [r.term, r.vi, r.def, r.examples, r.notes, r.context, r.category, (r.tags || []).join(' '), (r.synonyms || []).join(' '), (r.collocations || []).join(' '), linkFuncLabel(r.func)];
+    docs.push({g, title:r.term, label:'My Collections', mine:true, prev:[r.vi, r.def, r.examples, r.notes, r.context], hay, act:'open-item', id:r.id});
   });
   articles().forEach(a => docs.push({g:'reading', title:a.title || a.url || 'Untitled article', label:a.source || 'Article', mine:true, prev:[a.notes, a.topic, a.text], hay:[a.title, a.source, a.topic, a.notes, a.url, a.text], href:'#article-' + a.id}));
   all().filter(r => r.kind === 'note').forEach(n => docs.push({g:'ielts', title:n.title || n.topic || (SEC[n.section] || {}).label || 'IELTS note', label:`${(SK[n.skill] || {}).label || 'IELTS'} · ${(SEC[n.section] || {}).label || 'Note'}`, mine:true, prev:[n.body, n.answer, n.topic], hay:[n.title, n.topic, n.body, n.answer, (n.tags || []).join(' ')], act:'goto-note', id:n.id}));
@@ -3730,7 +3730,7 @@ function lkDupHTML(word){
   const mine = items().find(x => termKey(x.term) === k);
   const lib = WORDS['w-' + slug(word)];
   let h = '';
-  if (mine) h += `<div class="lk-dup">${ic('copy-check')}<div><b>Already in My Knowledge</b><span>“${esc(mine.term)}” is saved in ${esc(COLS[mine.col].label)}${mine.vi ? ` — ${esc(mine.vi)}` : ''}.</span></div><div class="lk-dup-a"><button type="button" class="btn sm" data-lk="open-mine" data-id="${mine.id}">${ic('book-open')} Open entry</button>${LK.last && termKey(LK.last.word) === k ? `<button type="button" class="btn sm" data-lk="merge" data-id="${mine.id}">${ic('combine')} Fill its empty fields</button>` : ''}</div></div>`;
+  if (mine) h += `<div class="lk-dup">${ic('copy-check')}<div><b>Already in My Collections</b><span>“${esc(mine.term)}” is saved in ${esc(COLS[mine.col].label)}${mine.vi ? ` — ${esc(mine.vi)}` : ''}.</span></div><div class="lk-dup-a"><button type="button" class="btn sm" data-lk="open-mine" data-id="${mine.id}">${ic('book-open')} Open entry</button>${LK.last && termKey(LK.last.word) === k ? `<button type="button" class="btn sm" data-lk="merge" data-id="${mine.id}">${ic('combine')} Fill its empty fields</button>` : ''}</div></div>`;
   if (lib) h += `<div class="lk-dup lib">${ic('library')}<div><b>Already in the library</b><span>“${esc(lib.term)}” is in ${esc(COLL[lib.cols[0]].name)}${cardOf(lib.id) ? ' and in your reviews' : ''}.</span></div><div class="lk-dup-a"><button type="button" class="btn sm" data-lk="open-lib" data-id="${lib.id}">${ic('book-open')} Open</button>${cardOf(lib.id) ? '' : `<button type="button" class="btn sm" data-lk="add-lib" data-id="${lib.id}">${ic('plus')} Add to my reviews</button>`}</div></div>`;
   return h;
 }
@@ -3885,6 +3885,7 @@ function avStatus(el, state, word, x){
     done: `${ic('circle-check')} <span>${answered} of ${asked} sources answered. Shaded fields came from the dictionaries, so check and edit them before saving.</span>`,
     none: `${ic('search-x')} <span><b>No dictionary entry for “${esc(word)}”.</b> Check the spelling or try the base form. Automatic lookup covers English for now, so for other languages fill the fields in yourself.</span>`,
     unavailable: `${ic('plug')} <span>Automatic lookup isn’t available here. Fill the fields in yourself.</span>`,
+    sentence: `${ic('text-quote')} <span>Sentences aren’t looked up in the dictionary. Add a translation or note on when to use it.</span>`,
     error: `${ic('triangle-alert')} <span></span>`,
   }[state] || '';
   if (state === 'error') st.innerHTML = lkErrorHTML(x);
@@ -3961,28 +3962,31 @@ function avQueue(el, now){
   const word = f.elements.term.value.trim().replace(/\s+/g, ' ');
   $('#lk-dup', el).innerHTML = word.length >= 2 ? lkDupHTML(word) : ''; drawIcons();
   if (word.length < 2) { ++AV.token; if (LK.ctrl) LK.ctrl.abort(); if (AV.cur || LK.last) avReset(el); return; }
+  if (f.dataset.vt === 'sentence') return;       // sentences aren't dictionary entries
   if (termKey(word) === AV.cur) return;          // already showing or fetching this word
   AV.timer = setTimeout(() => avLookup(el, word), now ? 0 : 500);
 }
-const AV_TYPES = [['word','Word','type'],['collocation','Collocation','link-2'],['phrasal','Phrasal verb','corner-down-right']];
-const AV_PH = {word:'Type a word or phrase, e.g. mitigate', collocation:'Type a collocation, e.g. pose a threat to', phrasal:'Type a phrasal verb, e.g. put off'};
+const AV_TYPES = [['word','Word','type'],['collocation','Collocation','link-2'],['phrasal','Phrasal verb','corner-down-right'],['sentence','Sentence','text-quote'],['linking','Linking phrase','link']];
+const AV_COL = {word:'vocabulary', collocation:'collocations', phrasal:'collocations', sentence:'structures', linking:'linking'};
+const AV_PH = {word:'Type a word or phrase, e.g. mitigate', collocation:'Type a collocation, e.g. pose a threat to', phrasal:'Type a phrasal verb, e.g. put off', sentence:'Type or paste a sentence, e.g. Not only does it save time, but it also …', linking:'Type a linking phrase, e.g. in turn'};
 /* switch the visible fields for Word / Collocation / Phrasal verb; values are kept while switching */
 function avSetType(el, vt){
   const f = $('#item-form', el); if (!f) return;
   f.dataset.vt = vt; f.elements.vtype.value = vt;
   el.querySelectorAll('button[data-vt]').forEach(b => { const on = b.dataset.vt === vt; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); });
   if (!AV.colTouched) {
-    const sel = el.querySelector('select[name=col]'), want = vt === 'word' ? 'vocabulary' : 'collocations';
+    const sel = el.querySelector('select[name=col]'), want = AV_COL[vt] || 'vocabulary';
     if (sel && sel.value !== want) { sel.value = want; AV.autoCol = true; sel.dispatchEvent(new Event('change', {bubbles:true})); AV.autoCol = false; }
   }
   f.elements.term.placeholder = AV_PH[vt];
-  const sv = $('#item-save', el); if (sv) sv.lastChild.textContent = ' ' + {word:'Save word', collocation:'Save collocation', phrasal:'Save phrasal verb'}[vt];
+  const sv = $('#item-save', el); if (sv) sv.lastChild.textContent = ' ' + {word:'Save word', collocation:'Save collocation', phrasal:'Save phrasal verb', sentence:'Save sentence', linking:'Save linking phrase'}[vt];
+  if (vt === 'sentence') { ++AV.token; if (LK.ctrl) LK.ctrl.abort(); avStatus(el, 'sentence'); } else if (f.elements.term.value.trim().length >= 2) { AV.cur = ''; avQueue(el, true); }
   el.querySelectorAll('[data-vtl-word]').forEach(x => x.textContent = x.dataset['vtl' + cap(vt)] || x.dataset.vtlWord);
   const pos = f.elements.pos; pos.placeholder = pos.dataset['ph' + cap(vt)] || pos.dataset.phWord; pos.setAttribute('list', vt === 'collocation' ? 'dl-pat' : 'dl-pos');
 }
 function avHTML(d, preset){
   const lst = a => esc((a || []).join(', '));
-  const vt = preset.vtype || (d.col === 'collocations' ? 'collocation' : 'word');
+  const vt = preset.vtype || {collocations:'collocation', linking:'linking', structures:'sentence'}[d.col] || 'word';
   return `<div class="av-head"><h3>Add vocabulary</h3>
     <div class="seg av-type" role="radiogroup" aria-label="What are you adding?">${AV_TYPES.map(([k, l, icn]) => `<button type="button" role="radio" aria-checked="${vt===k}" class="${vt===k?'on':''}" data-vt="${k}">${ic(icn)} ${l}</button>`).join('')}</div>
     <button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>
@@ -3997,26 +4001,27 @@ function avHTML(d, preset){
     </div>
     <section id="lk-res" class="av-res" aria-live="polite"></section>
     <div class="av-core">
-      <div class="grid2 vt-hide-collocation vt-hide-phrasal">
+      <div class="grid2 vt-hide-collocation vt-hide-phrasal vt-hide-sentence vt-hide-linking">
         <label class="fld"><span>IPA · British <small class="av-src" data-for="ipa"></small></span><input name="ipa" class="ipa-in" value="${esc(d.ipa || '')}" placeholder="/ˈmɪtɪɡeɪt/" autocomplete="off" autocapitalize="none" autocorrect="off"></label>
         <label class="fld"><span>IPA · American <small class="av-src" data-for="ipaUS"></small><button type="button" class="av-kbd" data-lk="kbd" aria-expanded="false" title="IPA symbols">${ic('keyboard')} Symbols</button></span><input name="ipaUS" class="ipa-in" value="${esc(d.ipaUS || '')}" placeholder="/ˈmɪt̬əɡeɪt/" autocomplete="off" autocapitalize="none" autocorrect="off"></label>
       </div>
-      <div class="ipakeys vt-hide-collocation vt-hide-phrasal" aria-label="IPA symbols" hidden>${IPA_KEYS.map(k => `<button type="button" data-ipa="${k}" tabindex="-1">${k}</button>`).join('')}</div>
+      <div class="ipakeys vt-hide-collocation vt-hide-phrasal vt-hide-sentence vt-hide-linking" aria-label="IPA symbols" hidden>${IPA_KEYS.map(k => `<button type="button" data-ipa="${k}" tabindex="-1">${k}</button>`).join('')}</div>
       <div class="grid2 av-posvi">
-        <label class="fld vt-hide-phrasal"><span><span data-vtl-word="Part of speech" data-vtl-collocation="Pattern">Part of speech</span> <small class="av-src" data-for="pos"></small></span><input name="pos" value="${esc(d.pos || '')}" placeholder="noun, verb…" data-ph-word="noun, verb…" data-ph-collocation="e.g. verb + noun" list="dl-pos" autocapitalize="none" autocorrect="off"></label>
-        <div class="fld"><label for="av-vi"><span>Vietnamese meaning <small class="av-src" data-for="vi"></small></span></label><input id="av-vi" name="vi" value="${esc(d.vi || '')}" placeholder="nghĩa tiếng Việt"><div class="av-chips" id="lk-vi"></div></div>
+        <label class="fld vt-hide-phrasal vt-hide-sentence vt-hide-linking"><span><span data-vtl-word="Part of speech" data-vtl-collocation="Pattern">Part of speech</span> <small class="av-src" data-for="pos"></small></span><input name="pos" value="${esc(d.pos || '')}" placeholder="noun, verb…" data-ph-word="noun, verb…" data-ph-collocation="e.g. verb + noun" list="dl-pos" autocapitalize="none" autocorrect="off"></label>
+        <label class="fld vt-only-linking"><span>Function</span><select name="func" aria-label="What this phrase does"><option value="">Choose…</option>${LINK_FUNCS.map(([k, l]) => `<option value="${k}" ${d.func===k?'selected':''}>${l}</option>`).join('')}</select></label>
+        <div class="fld"><label for="av-vi"><span><span data-vtl-word="Vietnamese meaning" data-vtl-sentence="Vietnamese translation">Vietnamese meaning</span> <small class="av-src" data-for="vi"></small></span></label><input id="av-vi" name="vi" value="${esc(d.vi || '')}" placeholder="nghĩa tiếng Việt"><div class="av-chips" id="lk-vi"></div></div>
       </div>
-      <label class="fld"><span><span data-l="def">Definition</span> <small class="av-src" data-for="def"></small></span><textarea name="def" rows="2">${esc(d.def || '')}</textarea></label>
-      <label class="fld"><span>Examples <em>one per line</em> <small class="av-src" data-for="examples"></small></span><textarea name="examples" rows="2">${esc(d.examples || '')}</textarea></label>
+      <label class="fld"><span><span data-l="def" data-vtl-word="Definition" data-vtl-collocation="Meaning" data-vtl-phrasal="Meaning" data-vtl-sentence="Meaning or when to use it" data-vtl-linking="Meaning">Definition</span> <small class="av-src" data-for="def"></small></span><textarea name="def" rows="2">${esc(d.def || '')}</textarea></label>
+      <label class="fld"><span><span data-vtl-word="Examples" data-vtl-sentence="More examples">Examples</span> <em>one per line</em> <small class="av-src" data-for="examples"></small></span><textarea name="examples" rows="2">${esc(d.examples || '')}</textarea></label>
     </div>
-    <details class="av-sec" id="av-rel"><summary>${ic('git-branch')}<b>Word relationships</b><span id="av-rel-sum">none yet</span>${ic('chevron-down', 'av-chev')}</summary>
+    <details class="av-sec vt-hide-sentence" id="av-rel"><summary>${ic('git-branch')}<b>Word relationships</b><span id="av-rel-sum">none yet</span>${ic('chevron-down', 'av-chev')}</summary>
       <div class="av-in">
         <div class="grid2">
-          <label class="fld"><span><span data-vtl-word="Synonyms" data-vtl-collocation="Similar expressions" data-vtl-phrasal="Synonyms or one-word equivalent">Synonyms</span> <em>commas</em> <small class="av-src" data-for="synonyms"></small></span><input name="synonyms" value="${lst(d.synonyms)}" autocapitalize="none" autocorrect="off"></label>
-          <label class="fld vt-hide-collocation"><span>Antonyms <em>commas</em> <small class="av-src" data-for="antonyms"></small></span><input name="antonyms" value="${lst(d.antonyms)}" autocapitalize="none" autocorrect="off"></label>
+          <label class="fld"><span><span data-vtl-word="Synonyms" data-vtl-collocation="Similar expressions" data-vtl-phrasal="Synonyms or one-word equivalent" data-vtl-linking="Similar phrases">Synonyms</span> <em>commas</em> <small class="av-src" data-for="synonyms"></small></span><input name="synonyms" value="${lst(d.synonyms)}" autocapitalize="none" autocorrect="off"></label>
+          <label class="fld vt-hide-collocation vt-hide-linking"><span>Antonyms <em>commas</em> <small class="av-src" data-for="antonyms"></small></span><input name="antonyms" value="${lst(d.antonyms)}" autocapitalize="none" autocorrect="off"></label>
         </div>
-        <label class="fld vt-hide-collocation"><span>Collocations <em>commas</em> <small class="av-src" data-for="collocations"></small></span><input name="collocations" value="${lst(d.collocations)}" placeholder="e.g. mitigate the effects, mitigate risk" autocapitalize="none" autocorrect="off"></label>
-        <label class="fld"><span>Related words and forms <em>commas</em> <small class="av-src" data-for="related"></small></span><input name="related" value="${lst(d.related)}" placeholder="e.g. mitigation, unmitigated" autocapitalize="none" autocorrect="off"></label>
+        <label class="fld vt-hide-collocation vt-hide-linking"><span>Collocations <em>commas</em> <small class="av-src" data-for="collocations"></small></span><input name="collocations" value="${lst(d.collocations)}" placeholder="e.g. mitigate the effects, mitigate risk" autocapitalize="none" autocorrect="off"></label>
+        <label class="fld vt-hide-linking"><span>Related words and forms <em>commas</em> <small class="av-src" data-for="related"></small></span><input name="related" value="${lst(d.related)}" placeholder="e.g. mitigation, unmitigated" autocapitalize="none" autocorrect="off"></label>
       </div></details>
     <details class="av-sec" id="av-org" ${d.context || d.category || (d.ielts || []).length ? 'open' : ''}><summary>${ic('folder')}<b>Organise</b><span id="av-org-sum"></span>${ic('chevron-down', 'av-chev')}</summary>
       <div class="av-in">
@@ -4054,7 +4059,7 @@ function itemForm(r, preset={}){
   const lst = a => esc((a || []).join(', '));
   const hasMore = (d.synonyms||[]).length || (d.antonyms||[]).length || (d.collocations||[]).length || (d.related||[]).length;
   const form = `<form class="form" id="item-form" novalidate>
-    ${withLookup ? '' : `<div class="form-head"><h3>${isNew ? 'Add to My Knowledge' : 'Edit entry'}</h3><button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>`}
+    ${withLookup ? '' : `<div class="form-head"><h3>${isNew ? 'Add to My Collections' : 'Edit entry'}</h3><button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>`}
     <div class="seg" role="radiogroup" aria-label="Collection">${Object.entries(COLS).map(([k,o]) => `<label><input type="radio" name="col" value="${k}" ${d.col===k?'checked':''}><span>${ic(COLIC[k])} ${o.label}</span></label>`).join('')}</div>
     <label class="fld big"><span data-l="term">${c.term}</span><input name="term" value="${esc(d.term||'')}" placeholder="${esc(c.ph)}" required ${withLookup?'':'autofocus'} autocomplete="off" autocapitalize="none" autocorrect="off"><div class="warn" id="dup" hidden></div></label>
     <div class="grid2">
@@ -4066,6 +4071,7 @@ function itemForm(r, preset={}){
       <label class="fld"><span>Part of speech</span><input name="pos" value="${esc(d.pos||'')}" placeholder="noun, verb…" list="dl-pos" autocapitalize="none" autocorrect="off"></label>
       <label class="fld"><span>Vietnamese meaning</span><input name="vi" value="${esc(d.vi||'')}" placeholder="nghĩa tiếng Việt"></label>
     </div>
+    <label class="fld fld-func" ${d.col === 'linking' ? '' : 'hidden'}><span>Function</span><select name="func" aria-label="What this phrase does"><option value="">Choose…</option>${LINK_FUNCS.map(([k, l]) => `<option value="${k}" ${d.func===k?'selected':''}>${l}</option>`).join('')}</select></label>
     <label class="fld"><span data-l="def">${c.def}</span><textarea name="def" rows="2">${esc(d.def||'')}</textarea></label>
     <label class="fld"><span>Example sentences <em>one per line</em></span><textarea name="examples" rows="3">${esc(d.examples||'')}</textarea></label>
     <details class="more" ${hasMore ? 'open' : ''}><summary>${ic('list-plus')} Synonyms, antonyms, collocations and related words</summary>
@@ -4098,7 +4104,8 @@ function itemForm(r, preset={}){
     const f = $('#item-form', el), ipa = f.elements.ipa;
     let ipaTarget = ipa;
     [f.elements.ipa, f.elements.ipaUS].forEach(x => x.addEventListener('focus', () => { ipaTarget = x; }));
-    const relabel = () => { const cc = COLS[f.elements.col.value]; $('[data-l=term]', f).textContent = cc.term; $('[data-l=def]', f).textContent = cc.def; f.elements.term.placeholder = cc.ph; checkDup(); };
+    const relabel = () => { const cc = COLS[f.elements.col.value]; $('[data-l=term]', f).textContent = cc.term; $('[data-l=def]', f).textContent = cc.def; f.elements.term.placeholder = cc.ph; checkDup();   const ff = f.querySelector('.fld-func'); if (ff) ff.hidden = f.elements.col.value !== 'linking';
+  };
     const dupOf = () => { const k = termKey(f.elements.term.value); return k && items().find(x => x.col === f.elements.col.value && termKey(x.term) === k && (!r || x.id !== r.id)); };
     const checkDup = () => {
       const ex = dupOf(), w = $('#dup', f);
@@ -4139,11 +4146,14 @@ function itemForm(r, preset={}){
       const rec = r ? clone(r) : {id:newId(), kind:'item', createdAt:now, srs:{ease:2.5, interval:0, reps:0, lapses:0, due:now}, reviews:0};
       const list = x => String(x || '').split(',').map(t => t.trim()).filter(Boolean);
       Object.assign(rec, {col:v.col, term:v.term.trim(), ipa:v.ipa.trim(), ipaUS:v.ipaUS.trim(), pos:v.pos.trim(), vi:v.vi.trim(), def:v.def.trim(), examples:v.examples.trim(), synonyms:list(v.synonyms), antonyms:list(v.antonyms), collocations:list(v.collocations), related:list(v.related), context:v.context.trim(), category:v.category.trim(), tags:splitTags(v.tags), ielts:new FormData(f).getAll('ielts'), notes:v.notes.trim()});
+      if (v.col === 'linking') rec.func = LINK_FUNCS.some(([k]) => k === v.func) ? v.func : (rec.func || '');
       if (v.vtype) {
         rec.vtype = v.vtype;
         if (v.vtype !== 'word') { rec.ipa = ''; rec.ipaUS = ''; }
         if (v.vtype === 'collocation') { rec.antonyms = []; rec.collocations = []; }
         if (v.vtype === 'phrasal') rec.pos = 'phrasal verb';
+        if (v.vtype === 'linking') { rec.pos = 'linking phrase'; rec.antonyms = []; rec.collocations = []; rec.related = []; }
+        if (v.vtype === 'sentence') { rec.pos = ''; rec.synonyms = []; rec.antonyms = []; rec.collocations = []; rec.related = []; }
       }
       try { const lk = JSON.parse(v.lkSources || 'null'); if (lk && lk.sources && lk.sources.length && termKey(lk.word) === termKey(rec.term)) { rec.sources = lk.sources; rec.lookupAt = lk.at; } } catch {}
       const prevStatus = r ? (r.status||'new') : null;
@@ -4172,7 +4182,7 @@ function itemDetail(id){
   openModal(`<div class="detail">
     <div class="dh"><span class="muted" style="font:italic 15px var(--f-serif)">${c.label}${r.category?' · '+esc(r.category):''}</span><button class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>
     <div class="hw" ${mistake?'style="text-decoration:line-through;text-decoration-color:var(--pen)"':''}>${esc(r.term)}</div>
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">${r.pos?`<span class="chip">${esc(r.pos)}</span>`:''}${r.ipa?`<span class="ipa" style="font-size:18px">${r.ipaUS?'<small class="acc">UK</small>':''}${esc(r.ipa)}</span>`:''}${r.ipaUS?`<span class="ipa" style="font-size:18px"><small class="acc">US</small>${esc(r.ipaUS)}</span>`:''}<button class="btn sm" data-act="speak" data-t="${esc(mistake ? (r.def||r.term) : r.term)}">${ICON.speak} Listen</button>${statusPill(r)}${r.difficult?'<span class="chip" style="color:var(--pen)">difficult</span>':''}</div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">${r.pos?`<span class="chip">${esc(r.pos)}</span>`:''}${r.func?`<span class="chip">${ic('link')} ${esc(linkFuncLabel(r.func))}</span>`:''}${r.ipa?`<span class="ipa" style="font-size:18px">${r.ipaUS?'<small class="acc">UK</small>':''}${esc(r.ipa)}</span>`:''}${r.ipaUS?`<span class="ipa" style="font-size:18px"><small class="acc">US</small>${esc(r.ipaUS)}</span>`:''}<button class="btn sm" data-act="speak" data-t="${esc(mistake ? (r.def||r.term) : r.term)}">${ICON.speak} Listen</button>${statusPill(r)}${r.difficult?'<span class="chip" style="color:var(--pen)">difficult</span>':''}</div>
     ${mistake ? (r.def?`<div class="vi" style="color:var(--leaf)">✓ ${esc(r.def)}</div>`:'') : `${r.vi?`<div class="vi">${esc(r.vi)}</div>`:''}${r.def?`<div class="def">${esc(r.def)}</div>`:''}`}
     ${exs.length ? `<h5>Examples</h5><ol>${exs.map(e => `<li>${hl(e, r.term)}</li>`).join('')}</ol>` : ''}
     ${[['synonyms','Synonyms'],['antonyms','Antonyms'],['collocations','Collocations'],['related','Related words']].filter(([k]) => (r[k]||[]).length).map(([k,l]) => `<h5>${l}</h5><div class="lk-chips">${r[k].map(x => `<span>${esc(x)}</span>`).join('')}</div>`).join('')}
@@ -4417,7 +4427,7 @@ const ACT = {
   'r-filter': el => { S.rFilter = el.dataset.v; render(); },
   'a-status': el => { const a = Store.get(el.dataset.id); if (a) { const n = clone(a); n.status = el.dataset.v; Store.put(n); } },
   'a-edit': el => articleForm(Store.get(el.dataset.id)),
-  'a-del': async el => { const a = Store.get(el.dataset.id); if (a && await confirmBox('Delete this article?', `“${a.title}” will be removed. Words you saved from it stay in My Knowledge.`)) { Store.del(a.id); toast('Article deleted'); go('reading'); } },
+  'a-del': async el => { const a = Store.get(el.dataset.id); if (a && await confirmBox('Delete this article?', `“${a.title}” will be removed. Words you saved from it stay in My Collections.`)) { Store.del(a.id); toast('Article deleted'); go('reading'); } },
   'save-sel': () => saveSelection(),
   'rv-style': el => { Store.put({...clone(settings()), reviewStyle:el.dataset.v}); },
   's-learn': el => sessionAct('learn', el), 's-known': el => sessionAct('known', el), 's-mc': el => sessionAct('mc', el),
@@ -4431,7 +4441,7 @@ const ACT = {
   'gl-level': el => { S.glLevel = el.dataset.v; render(); },
   'gl-clear': () => { S.glQ = ''; S.glLevel = 'all'; S.glStatus = 'all'; render(); },
   'tp-mark': el => topicUpdate(el.dataset.k, el.dataset.id, r => { const v = el.dataset.v; r.mark = v; r.markedAt = Date.now(); if (v === 'learning') { if (r.status !== 'done') r.status = 'started'; } else { if (r.status !== 'done') r.completedAt = Date.now(); r.status = 'done'; } }),
-  'tp-save': el => { let on; topicUpdate(el.dataset.k, el.dataset.id, r => { r.saved = on = !r.saved; r.savedAt = Date.now(); }); toast(on ? 'Saved to My Knowledge' : 'Removed from My Knowledge'); },
+  'tp-save': el => { let on; topicUpdate(el.dataset.k, el.dataset.id, r => { r.saved = on = !r.saved; r.savedAt = Date.now(); }); toast(on ? 'Saved to My Collections' : 'Removed from My Collections'); },
   'k-clear': () => { Object.assign(S, {kQ:'', kStatus:'all', kTag:'', kLink:'any'}); render(); },
   'sk-tab': el => { S.skillTab = el.dataset.v; S.topic = ''; render(); },
   topic: el => { S.topic = el.dataset.v; render(); },

@@ -629,6 +629,85 @@ lesson('nominalisation', {title:'Nominalisation', summary:'Turning verbs and adj
  mistakes:[['There was a sharp increase of prices.','There was a sharp increase in prices.','Increase, decrease, rise and fall take “in”.'],['The develop of cities …','The development of cities …','Use the noun form.']],
  quiz:[['Prices rose dramatically. → There was a dramatic ___ prices.',['rise of','rise in','rising of','rose in'],1,'rise in + noun.'],['People can access the internet easily. → ___ to the internet is easy.',['Access','Accessing of','Accessible','Accessed'],0,'The noun “access” + to.'],['The number of cars decreased slightly. → There was a slight ___ the number of cars.',['decrease of','decreasing in','decrease in','decreased in'],2,'decrease in + noun.'],['Choose the nominalised version of “Cities developed quickly.”',['Cities quickly developed.','The rapid development of cities …','Cities were developing quickly.','Developing cities quickly …'],1,'“The rapid development of cities” turns the verb into a noun phrase.']]});
 
+/* ---------------- Linking phrases (shared library) ---------------- */
+col({id:'link-cause', cat:'linking', group:'Linking phrases', name:'Cause & Effect', icon:'arrow-right-left', level:'B1–B2',
+desc:'Show why something happens and what it leads to.',
+words:`as a result||linking phrase|do đó, kết quả là|introduces the result of something mentioned before|Fuel prices rose sharply. As a result, many people started cycling to work.
+consequently||linking phrase|vì vậy, hệ quả là|as a result; formal, often at the start of a sentence|The factory closed. Consequently, hundreds of workers lost their jobs.
+therefore||linking phrase|vì thế, do đó|for that reason; introduces a logical conclusion|The data is incomplete; therefore, the results should be treated with caution.
+in turn||linking phrase|đến lượt nó, từ đó|as a result of the previous step in a chain of events|Higher wages increase spending, which in turn creates more jobs.
+due to||linking phrase|do, bởi vì (+ danh từ)|because of; followed by a noun phrase|The match was cancelled due to heavy rain.
+owing to||linking phrase|do, vì (+ danh từ)|because of; slightly more formal than “due to” at the start of a sentence|Owing to rising costs, the project was delayed.
+as a consequence of||linking phrase|do hậu quả của|because of; stresses a negative or serious result|As a consequence of the drought, food prices doubled.
+this leads to||linking phrase|điều này dẫn đến|introduces a result in the next sentence|More people work from home. This leads to less traffic in city centres.
+for this reason||linking phrase|vì lý do này|introduces a result based on the reason just given|Tuition fees are high. For this reason, many students work part-time.
+thus||linking phrase|vì vậy, như thế|as a result; formal and academic|The policy reduced emissions, thus improving air quality.`});
+
+col({id:'link-contrast', cat:'linking', group:'Linking phrases', name:'Contrast', icon:'split', level:'B1–B2',
+desc:'Compare different ideas and introduce the other side of an argument.',
+words:`on the other hand||linking phrase|mặt khác|introduces a contrasting point, often after “on the one hand”|City life is exciting. On the other hand, it can be very stressful.
+however||linking phrase|tuy nhiên|introduces a contrast with the previous sentence|Online courses are flexible. However, they require a lot of self-discipline.
+in contrast||linking phrase|ngược lại|shows that two things are clearly different|Rents rose in the capital. In contrast, they fell in smaller cities.
+whereas||linking phrase|trong khi (đối lập)|joins two contrasting clauses in one sentence|Men preferred football, whereas most women chose swimming.
+nevertheless||linking phrase|tuy vậy, dù sao|despite what has just been said; formal|The plan is expensive. Nevertheless, it is worth trying.
+even so||linking phrase|dù vậy|despite that; a little less formal than “nevertheless”|The hotel was old. Even so, it was very comfortable.
+despite||linking phrase|mặc dù (+ danh từ / V-ing)|without being affected by; followed by a noun or -ing|Despite the bad weather, the festival went ahead.
+although||linking phrase|mặc dù (+ mệnh đề)|introduces a contrasting clause|Although the test was difficult, most students passed.
+on the contrary||linking phrase|trái lại|rejects the previous idea and states the opposite|The policy did not reduce crime. On the contrary, it increased it.
+by comparison||linking phrase|khi so sánh, so ra thì|when compared with the thing just mentioned|Car ownership is high in the US. By comparison, it is low in Japan.`});
+
+col({id:'link-addition', cat:'linking', group:'Linking phrases', name:'Addition', icon:'plus', level:'B1–B2',
+desc:'Add further points and build up an argument.',
+words:`in addition||linking phrase|ngoài ra, thêm vào đó|adds another point to what has been said|The flat is close to the station. In addition, it has a large balcony.
+moreover||linking phrase|hơn nữa|adds a stronger or more important point; formal|The plan is cheap. Moreover, it can be introduced quickly.
+furthermore||linking phrase|hơn nữa, thêm nữa|adds another point; formal, common in essays|Exercise improves fitness. Furthermore, it reduces stress.
+what is more||linking phrase|hơn thế nữa|adds a point that strengthens the argument|The course is free. What is more, it comes with a certificate.
+not only … but also||linking phrase|không những … mà còn|adds a second, often stronger, point|Cycling is not only cheap but also good for the environment.
+as well as||linking phrase|cũng như, cùng với|and also; followed by a noun or -ing|The city offers museums as well as beautiful parks.
+besides||linking phrase|bên cạnh đó, ngoài ra|in addition; common in speaking|I don't want to go out. Besides, it's raining.
+additionally||linking phrase|ngoài ra|in addition; formal|Additionally, the report recommends lowering speed limits.
+along with||linking phrase|cùng với|together with; followed by a noun|Along with housing, transport is a major cost for families.
+likewise||linking phrase|tương tự, cũng vậy|in the same way; adds a similar point|Parents should limit screen time. Likewise, schools should teach digital skills.`});
+
+col({id:'link-example', cat:'linking', group:'Linking phrases', name:'Example', icon:'list', level:'B1',
+desc:'Support your ideas with examples and illustrations.',
+words:`for example||linking phrase|ví dụ|introduces an example|Many countries, for example Norway, rely on renewable energy.
+for instance||linking phrase|chẳng hạn|introduces an example; same as “for example”|Some jobs are easy to automate. For instance, data entry is already done by software.
+such as||linking phrase|như là|introduces examples inside a sentence; followed by nouns|Fast food, such as burgers and fries, is high in fat.
+to illustrate||linking phrase|để minh họa|introduces an example that explains a point more clearly|To illustrate, a single flight can produce more CO₂ than a year of driving.
+a case in point is||linking phrase|một ví dụ điển hình là|introduces a typical, convincing example|A case in point is Singapore, which charges drivers to enter the city centre.
+including||linking phrase|bao gồm|introduces some of the members of a group|Several sports, including tennis and golf, are popular with older people.
+in particular||linking phrase|đặc biệt là|introduces the most important example|Young people, in particular, spend a lot of time online.
+namely||linking phrase|cụ thể là|introduces the exact thing or things you mean|Two countries, namely Japan and Korea, have very low birth rates.
+this is clearly seen in||linking phrase|điều này thể hiện rõ ở|introduces an example that proves a point|This is clearly seen in the rapid growth of online shopping.
+take … for example||linking phrase|lấy … làm ví dụ|introduces an example, common in speaking|Take my hometown, for example: it has changed completely in ten years.`});
+
+col({id:'link-sequence', cat:'linking', group:'Linking phrases', name:'Sequencing', icon:'list-ordered', level:'B1',
+desc:'Order your points and describe steps in a process.',
+words:`firstly||linking phrase|thứ nhất, đầu tiên|introduces the first point in a list|Firstly, public transport reduces pollution.
+secondly||linking phrase|thứ hai|introduces the second point in a list|Secondly, it saves people money.
+first of all||linking phrase|trước hết|introduces the first and often most important point|First of all, I'd like to thank everyone for coming.
+then||linking phrase|sau đó|introduces the next step|The leaves are dried. Then they are crushed into powder.
+after that||linking phrase|sau đó|introduces the next step in a sequence|After that, the mixture is heated for ten minutes.
+subsequently||linking phrase|sau đó, tiếp theo|afterwards; formal|The company was fined and subsequently closed.
+meanwhile||linking phrase|trong khi đó|at the same time as something else happens|Car sales fell. Meanwhile, bicycle sales doubled.
+at the same time||linking phrase|đồng thời|happening together; also used to add a balancing point|Prices rose. At the same time, wages stayed the same.
+finally||linking phrase|cuối cùng|introduces the last point or step|Finally, the product is packed and shipped.
+lastly||linking phrase|sau cùng|introduces the last point in a list|Lastly, governments should invest in education.`});
+
+col({id:'link-conclusion', cat:'linking', group:'Linking phrases', name:'Conclusion', icon:'flag', level:'B1–B2',
+desc:'Summarise your argument and close an essay or answer.',
+words:`in conclusion||linking phrase|tóm lại, kết luận lại|introduces the final summary of an essay|In conclusion, the advantages of tourism outweigh its disadvantages.
+to sum up||linking phrase|tóm lại|introduces a short summary of the main points|To sum up, both approaches have their merits.
+overall||linking phrase|nhìn chung|introduces a general summary; common in Task 1 overviews|Overall, coal use fell while renewable energy rose.
+all in all||linking phrase|nói chung, tóm lại|considering everything; slightly informal|All in all, it was a great experience.
+in short||linking phrase|nói ngắn gọn|introduces a brief summary|In short, the plan is too expensive.
+to conclude||linking phrase|để kết luận|introduces the conclusion; formal|To conclude, governments must act quickly.
+on balance||linking phrase|cân nhắc mọi mặt|after considering all the arguments|On balance, I believe the benefits are greater.
+taking everything into account||linking phrase|xét mọi yếu tố|after considering all the points mentioned|Taking everything into account, remote work is here to stay.
+in summary||linking phrase|tóm tắt lại|introduces a summary; formal|In summary, the data show a clear upward trend.
+for these reasons||linking phrase|vì những lý do này|introduces a conclusion based on the reasons given|For these reasons, I support the ban on single-use plastics.`});
+
 /* ---------------- Grammar library: new topics ---------------- */
 /* level: basic | intermediate | advanced · group: fund | tenses | inter | adv · vi: Vietnamese explanation · rel: related structure topics */
 
