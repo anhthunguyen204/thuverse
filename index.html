@@ -1039,6 +1039,15 @@ body.auth-open .app{visibility:hidden}
 }
 @media (prefers-reduced-motion:reduce){.app.side-anim{transition:none}.side{transition:none !important}}
 
+
+/* Add vocabulary: content type */
+.av-head{flex-wrap:wrap}
+.av-head h3{margin-right:auto}
+.av-type{order:3;flex-basis:100%;margin-top:12px}
+.av-type button{flex:1;justify-content:center}
+#item-form[data-vt=phrasal] .av-posvi{grid-template-columns:minmax(0,1fr)}
+#item-form[data-vt=collocation] .vt-hide-collocation,#item-form[data-vt=phrasal] .vt-hide-phrasal{display:none !important}
+
 /* ---------- responsive */
 @media (max-width:1180px){
   .d3{grid-template-columns:minmax(0,1fr)}
@@ -1100,8 +1109,7 @@ body.auth-open .app{visibility:hidden}
       <div class="search"><i data-lucide="search" class="ic" aria-hidden="true"></i><input id="gsearch" type="search" placeholder="Search words, notes, journal…  ( / )" autocomplete="off" aria-label="Search everything"></div>
       <div class="grow"></div>
       <div class="newwrap">
-        <button class="btn primary" data-act="new-menu" aria-haspopup="true"><i data-lucide="plus" class="ic" aria-hidden="true"></i><span class="lbl">Add</span></button>
-        <div class="newmenu" id="newmenu" hidden></div>
+        <button class="btn primary" data-act="new" data-type="item" data-col="vocabulary" title="Add vocabulary (N)" aria-label="Add vocabulary"><i data-lucide="plus" class="ic" aria-hidden="true"></i><span class="lbl">Add</span></button>
       </div>
       <div class="topstats" id="topstats"></div>
     </header>
@@ -3804,10 +3812,30 @@ function avQueue(el, now){
   if (termKey(word) === AV.cur) return;          // already showing or fetching this word
   AV.timer = setTimeout(() => avLookup(el, word), now ? 0 : 500);
 }
+const AV_TYPES = [['word','Word','type'],['collocation','Collocation','link-2'],['phrasal','Phrasal verb','corner-down-right']];
+const AV_PH = {word:'Type a word or phrase, e.g. mitigate', collocation:'Type a collocation, e.g. pose a threat to', phrasal:'Type a phrasal verb, e.g. put off'};
+/* switch the visible fields for Word / Collocation / Phrasal verb; values are kept while switching */
+function avSetType(el, vt){
+  const f = $('#item-form', el); if (!f) return;
+  f.dataset.vt = vt; f.elements.vtype.value = vt;
+  el.querySelectorAll('button[data-vt]').forEach(b => { const on = b.dataset.vt === vt; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); });
+  if (!AV.colTouched) {
+    const sel = el.querySelector('select[name=col]'), want = vt === 'word' ? 'vocabulary' : 'collocations';
+    if (sel && sel.value !== want) { sel.value = want; AV.autoCol = true; sel.dispatchEvent(new Event('change', {bubbles:true})); AV.autoCol = false; }
+  }
+  f.elements.term.placeholder = AV_PH[vt];
+  const sv = $('#item-save', el); if (sv) sv.lastChild.textContent = ' ' + {word:'Save word', collocation:'Save collocation', phrasal:'Save phrasal verb'}[vt];
+  el.querySelectorAll('[data-vtl-word]').forEach(x => x.textContent = x.dataset['vtl' + cap(vt)] || x.dataset.vtlWord);
+  const pos = f.elements.pos; pos.placeholder = pos.dataset['ph' + cap(vt)] || pos.dataset.phWord; pos.setAttribute('list', vt === 'collocation' ? 'dl-pat' : 'dl-pos');
+}
 function avHTML(d, preset){
   const lst = a => esc((a || []).join(', '));
-  return `<div class="av-head"><h3>Add vocabulary</h3><button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>
-  <form class="av-body" id="item-form" novalidate autocomplete="off">
+  const vt = preset.vtype || (d.col === 'collocations' ? 'collocation' : 'word');
+  return `<div class="av-head"><h3>Add vocabulary</h3>
+    <div class="seg av-type" role="radiogroup" aria-label="What are you adding?">${AV_TYPES.map(([k, l, icn]) => `<button type="button" role="radio" aria-checked="${vt===k}" class="${vt===k?'on':''}" data-vt="${k}">${ic(icn)} ${l}</button>`).join('')}</div>
+    <button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>
+  <form class="av-body" id="item-form" data-vt="${vt}" novalidate autocomplete="off">
+    <input type="hidden" name="vtype" value="${vt}">
     <div class="av-q">
       <label class="av-term"><span class="vh" data-l="term">Word or phrase</span>${ic('search', 'av-i')}${ic('loader-circle', 'av-spin')}
         <input name="term" id="lk-q" value="${esc(d.term || '')}" placeholder="Type a word or phrase, e.g. mitigate" autofocus autocomplete="off" spellcheck="false" aria-describedby="lk-status"></label>
@@ -3817,13 +3845,13 @@ function avHTML(d, preset){
     </div>
     <section id="lk-res" class="av-res" aria-live="polite"></section>
     <div class="av-core">
-      <div class="grid2">
+      <div class="grid2 vt-hide-collocation vt-hide-phrasal">
         <label class="fld"><span>IPA · British <small class="av-src" data-for="ipa"></small></span><input name="ipa" class="ipa-in" value="${esc(d.ipa || '')}" placeholder="/ˈmɪtɪɡeɪt/" autocomplete="off"></label>
         <label class="fld"><span>IPA · American <small class="av-src" data-for="ipaUS"></small><button type="button" class="av-kbd" data-lk="kbd" aria-expanded="false" title="IPA symbols">${ic('keyboard')} Symbols</button></span><input name="ipaUS" class="ipa-in" value="${esc(d.ipaUS || '')}" placeholder="/ˈmɪt̬əɡeɪt/" autocomplete="off"></label>
       </div>
-      <div class="ipakeys" aria-label="IPA symbols" hidden>${IPA_KEYS.map(k => `<button type="button" data-ipa="${k}" tabindex="-1">${k}</button>`).join('')}</div>
-      <div class="grid2">
-        <label class="fld"><span>Part of speech <small class="av-src" data-for="pos"></small></span><input name="pos" value="${esc(d.pos || '')}" placeholder="noun, verb…" list="dl-pos"></label>
+      <div class="ipakeys vt-hide-collocation vt-hide-phrasal" aria-label="IPA symbols" hidden>${IPA_KEYS.map(k => `<button type="button" data-ipa="${k}" tabindex="-1">${k}</button>`).join('')}</div>
+      <div class="grid2 av-posvi">
+        <label class="fld vt-hide-phrasal"><span><span data-vtl-word="Part of speech" data-vtl-collocation="Pattern">Part of speech</span> <small class="av-src" data-for="pos"></small></span><input name="pos" value="${esc(d.pos || '')}" placeholder="noun, verb…" data-ph-word="noun, verb…" data-ph-collocation="e.g. verb + noun" list="dl-pos"></label>
         <div class="fld"><label for="av-vi"><span>Vietnamese meaning <small class="av-src" data-for="vi"></small></span></label><input id="av-vi" name="vi" value="${esc(d.vi || '')}" placeholder="nghĩa tiếng Việt"><div class="av-chips" id="lk-vi"></div></div>
       </div>
       <label class="fld"><span><span data-l="def">Definition</span> <small class="av-src" data-for="def"></small></span><textarea name="def" rows="2">${esc(d.def || '')}</textarea></label>
@@ -3832,10 +3860,10 @@ function avHTML(d, preset){
     <details class="av-sec" id="av-rel"><summary>${ic('git-branch')}<b>Word relationships</b><span id="av-rel-sum">none yet</span>${ic('chevron-down', 'av-chev')}</summary>
       <div class="av-in">
         <div class="grid2">
-          <label class="fld"><span>Synonyms <em>commas</em> <small class="av-src" data-for="synonyms"></small></span><input name="synonyms" value="${lst(d.synonyms)}"></label>
-          <label class="fld"><span>Antonyms <em>commas</em> <small class="av-src" data-for="antonyms"></small></span><input name="antonyms" value="${lst(d.antonyms)}"></label>
+          <label class="fld"><span><span data-vtl-word="Synonyms" data-vtl-collocation="Similar expressions" data-vtl-phrasal="Synonyms or one-word equivalent">Synonyms</span> <em>commas</em> <small class="av-src" data-for="synonyms"></small></span><input name="synonyms" value="${lst(d.synonyms)}"></label>
+          <label class="fld vt-hide-collocation"><span>Antonyms <em>commas</em> <small class="av-src" data-for="antonyms"></small></span><input name="antonyms" value="${lst(d.antonyms)}"></label>
         </div>
-        <label class="fld"><span>Collocations <em>commas</em> <small class="av-src" data-for="collocations"></small></span><input name="collocations" value="${lst(d.collocations)}" placeholder="e.g. mitigate the effects, mitigate risk"></label>
+        <label class="fld vt-hide-collocation"><span>Collocations <em>commas</em> <small class="av-src" data-for="collocations"></small></span><input name="collocations" value="${lst(d.collocations)}" placeholder="e.g. mitigate the effects, mitigate risk"></label>
         <label class="fld"><span>Related words and forms <em>commas</em> <small class="av-src" data-for="related"></small></span><input name="related" value="${lst(d.related)}" placeholder="e.g. mitigation, unmitigated"></label>
       </div></details>
     <details class="av-sec" id="av-org" ${d.context || d.category || (d.ielts || []).length ? 'open' : ''}><summary>${ic('folder')}<b>Organise</b><span id="av-org-sum"></span>${ic('chevron-down', 'av-chev')}</summary>
@@ -3854,7 +3882,7 @@ function avHTML(d, preset){
     <details class="av-sec" id="av-src"><summary>${ic('database')}<b>Sources</b><span>where each field came from, and where to check it</span>${ic('chevron-down', 'av-chev')}</summary>
       <div class="av-in" id="av-srcs"></div></details>
     <input type="hidden" name="lkSources" value="">
-    ${datalist('dl-cat', items().map(x => x.category))}${datalist('dl-ctx', items().map(x => x.context))}${datalist('dl-tag', items().flatMap(x => x.tags || []))}${datalist('dl-pos', ['noun','verb','adjective','adverb','phrase','phrasal verb','idiom','preposition','conjunction'])}
+    ${datalist('dl-cat', items().map(x => x.category))}${datalist('dl-ctx', items().map(x => x.context))}${datalist('dl-tag', items().flatMap(x => x.tags || []))}${datalist('dl-pos', ['noun','verb','adjective','adverb','phrase','phrasal verb','idiom','preposition','conjunction'])}${datalist('dl-pat', ['verb + noun','adjective + noun','adverb + adjective','adverb + verb','noun + noun','verb + preposition','noun + of + noun','verb + adverb'])}
   </form>
   <div class="av-foot">
     <label class="av-col"><span>Save to</span><select name="col" form="item-form" aria-label="Collection">${Object.entries(COLS).map(([k, o]) => `<option value="${k}" ${d.col === k ? 'selected' : ''}>${esc(o.label)}</option>`).join('')}</select></label>
@@ -3931,14 +3959,16 @@ function itemForm(r, preset={}){
     $('.ipakeys', el).addEventListener('click', e => { const b = e.target.closest('[data-ipa]'); if (!b) return; const t = ipaTarget, s0 = t.selectionStart ?? t.value.length, en = t.selectionEnd ?? s0; t.value = t.value.slice(0,s0) + b.dataset.ipa + t.value.slice(en); t.focus(); t.setSelectionRange(s0 + b.dataset.ipa.length, s0 + b.dataset.ipa.length); });
     if (withLookup) {
       LK.paint = o => avPaint(el, o);
-      AV.cur = ''; ++AV.token;
+      AV.cur = ''; ++AV.token; AV.colTouched = false;
+      el.addEventListener('click', e => { const b = e.target.closest('button[data-vt]'); if (b) { avSetType(el, b.dataset.vt); f.elements.term.focus(); } });
+      el.addEventListener('change', e => { if (e.target.name === 'col' && !AV.autoCol) AV.colTouched = true; });
       el.addEventListener('click', e => { const b = e.target.closest('[data-lk]'); if (b) lkAction(el, b); });
       const term = f.elements.term;
       term.addEventListener('input', () => avQueue(el, false));
       term.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); AV.cur = AV.cur === termKey(term.value) && !LK.last ? '' : AV.cur; avQueue(el, true); } });
       el.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); f.requestSubmit(); } });
       f.addEventListener('input', e => { if (e.target.name !== 'term') { avMarks(f, LK.last); avOrgSummary(el); } });
-      avReset(el); avOrgSummary(el);
+      avReset(el); avOrgSummary(el); avSetType(el, f.dataset.vt);
       if (d.term) avQueue(el, true);
     }
     if (false) {
@@ -3957,6 +3987,12 @@ function itemForm(r, preset={}){
       const rec = r ? clone(r) : {id:newId(), kind:'item', createdAt:now, srs:{ease:2.5, interval:0, reps:0, lapses:0, due:now}, reviews:0};
       const list = x => String(x || '').split(',').map(t => t.trim()).filter(Boolean);
       Object.assign(rec, {col:v.col, term:v.term.trim(), ipa:v.ipa.trim(), ipaUS:v.ipaUS.trim(), pos:v.pos.trim(), vi:v.vi.trim(), def:v.def.trim(), examples:v.examples.trim(), synonyms:list(v.synonyms), antonyms:list(v.antonyms), collocations:list(v.collocations), related:list(v.related), context:v.context.trim(), category:v.category.trim(), tags:splitTags(v.tags), ielts:new FormData(f).getAll('ielts'), notes:v.notes.trim()});
+      if (v.vtype) {
+        rec.vtype = v.vtype;
+        if (v.vtype !== 'word') { rec.ipa = ''; rec.ipaUS = ''; }
+        if (v.vtype === 'collocation') { rec.antonyms = []; rec.collocations = []; }
+        if (v.vtype === 'phrasal') rec.pos = 'phrasal verb';
+      }
       try { const lk = JSON.parse(v.lkSources || 'null'); if (lk && lk.sources && lk.sources.length && termKey(lk.word) === termKey(rec.term)) { rec.sources = lk.sources; rec.lookupAt = lk.at; } } catch {}
       const prevStatus = r ? (r.status||'new') : null;
       rec.status = v.status;
@@ -4120,13 +4156,6 @@ function journalToVocab(id){
 }
 
 /* ---------- New menu */
-function newMenu(open){
-  const m = $('#newmenu');
-  if (open === false || (!m.hidden && open === undefined)) { m.hidden = true; return; }
-  m.innerHTML = `<button data-act="new" data-type="item" data-col="vocabulary"><span>${ic(COLIC.vocabulary)} Add vocabulary</span><small>N</small></button>`;
-  drawIcons();
-  m.hidden = false;
-}
 
 /* =========================================================
    Speech
@@ -4199,9 +4228,7 @@ const ACT = {
   'side-toggle': () => { if (isDrawerMode()) setDrawer(false); else setSideCollapsed(!document.querySelector('.app').classList.contains('side-collapsed'), true); },
   theme: () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'),
   'set-theme': el => { setTheme(el.dataset.v); toast(`Appearance: ${THEME_LBL[el.dataset.v]}`); },
-  'new-menu': () => newMenu(),
   new: el => {
-    newMenu(false);
     const t = el.dataset.type;
     if (t === 'item') itemForm(null, {col:el.dataset.col, ielts:el.dataset.ielts, term:el.dataset.term});
     else if (t === 'note') noteForm(null, {skill:el.dataset.skill || (S.view==='ielts'?S.skill:'writing2'), section:el.dataset.section || (S.view==='ielts' && SEC[S.skillTab] && SK[S.skill].sections.includes(S.skillTab) ? S.skillTab : undefined)});
@@ -4248,7 +4275,6 @@ const ACT = {
   'k-status': el => { S.kStatus = el.dataset.v; render(); },
   'k-tag': el => { S.kTag = S.kTag === el.dataset.v ? '' : el.dataset.v; render(); },
   'k-more': () => { S.kLimit += 150; render(); },
-  'menu-nav': el => { newMenu(false); location.hash = el.getAttribute('href'); },
   'gl-level': el => { S.glLevel = el.dataset.v; render(); },
   'gl-clear': () => { S.glQ = ''; S.glLevel = 'all'; S.glStatus = 'all'; render(); },
   'tp-mark': el => topicUpdate(el.dataset.k, el.dataset.id, r => { const v = el.dataset.v; r.mark = v; r.markedAt = Date.now(); if (v === 'learning') { if (r.status !== 'done') r.status = 'started'; } else { if (r.status !== 'done') r.completedAt = Date.now(); r.status = 'done'; } }),
@@ -4276,7 +4302,7 @@ const ACT = {
 };
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-act]');
-  if (!e.target.closest('.newwrap')) newMenu(false);
+
   if (!el) return;
   const fn = ACT[el.dataset.act]; if (!fn) return;
   if (el.tagName !== 'A' || el.dataset.act !== 'close-nav') e.preventDefault();
@@ -4288,7 +4314,6 @@ document.addEventListener('keydown', e => {
   const modal = !!$('#modal-root').firstElementChild;
   if (e.key === 'Escape') {
     if (modal) { closeModal(); return; }
-    if (!$('#newmenu').hidden) { newMenu(false); return; }
     if (S.search) { S.search = ''; $('#gsearch').value = ''; $('#gsearch').blur(); render(); return; }
     if (S.view === 'study' && Store.get('session')) { ACT['s-exit'](); return; }
   }
