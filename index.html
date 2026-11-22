@@ -589,10 +589,40 @@ h1.ih{display:flex;align-items:center;gap:16px}
 .lnav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:36px;padding-top:18px;border-top:1px solid var(--border)}
 
 /* ---------- reading */
-.arow{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 18px;border-top:1px solid var(--border-2);text-decoration:none}
+.arow{display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 18px;border-top:1px solid var(--border-2);text-decoration:none}
 .arow:first-child{border-top:0}
 .arow:hover{background:var(--surface-2)}
 .arow .tic{background:var(--red-soft);color:var(--red)}
+.athumb{position:relative;width:96px;aspect-ratio:16/10;border-radius:10px;overflow:hidden;background:var(--surface-2);border:1px solid var(--border-2);display:grid;place-items:center;color:var(--muted);flex:none}
+.athumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+.athumb.lg{width:132px}
+.athumb .ph>.ic{width:22px;height:22px}
+.sic{position:relative;width:44px;height:44px;border-radius:12px;display:inline-grid;place-items:center;overflow:hidden;flex:none;font:750 19px var(--f-ui)}
+.sic img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:9px;background:var(--surface);box-sizing:border-box;border:1px solid var(--border-2);border-radius:inherit}
+.sic.sm{width:32px;height:32px;border-radius:9px;font-size:15px}.sic.sm img{padding:6px}
+.sic.xs{width:20px;height:20px;border-radius:6px;font-size:11px;vertical-align:-5px;margin-right:6px}.sic.xs img{padding:2px}
+.asrc{display:inline-flex;align-items:center}
+.scats{margin:-4px 0 18px}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.srccard{display:flex;flex-direction:column;gap:12px;background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--border-strong);border-radius:16px;padding:18px 18px 16px}
+.srccard-h{display:flex;gap:12px;align-items:center}
+.srccard h3{font:700 17px/1.25 var(--f-ui);margin:0;overflow-wrap:anywhere}
+.shost{font-size:13px;color:var(--muted)}
+.srccard-x{display:flex;margin:-6px -8px 0 0}
+.srccard>p{margin:0;color:var(--text-2);font-size:14.5px;line-height:1.5;flex:1}
+.srccard-tags{display:flex;gap:6px;flex-wrap:wrap}
+.srccard-f{display:flex;gap:8px;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--border-2)}
+.apreview{display:flex;gap:14px;align-items:center;background:var(--surface-2);border-radius:14px;padding:10px 12px;margin:-2px 0 12px}
+.apreview[hidden]{display:none}
+.ap-t{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0}
+.fmeta{font-size:13.5px;color:var(--text-2);margin:0}
+.fmeta:empty{display:none}
+.fmeta.busy{color:var(--muted)}.fmeta.ok{color:var(--green)}.fmeta.warn{color:var(--amber)}
+#src-form .fmeta{margin:-6px 0 12px}
+.ahero{margin:16px 0 0;aspect-ratio:1.91/1;max-height:380px;width:100%;border-radius:18px;overflow:hidden;background:var(--surface-2)}
+.ahero img{width:100%;height:100%;object-fit:cover;display:block}
+.ahero:not(:has(img)){display:none}
+@media (max-width:640px){.arow{grid-template-columns:64px minmax(0,1fr)}.arow>div:last-child{grid-column:2;text-align:left!important}.athumb{width:64px}.sgrid{grid-template-columns:1fr}}
 .reader{max-width:740px}
 .reader h1{font:750 36px/1.2 var(--f-ui);letter-spacing:-.025em;margin:4px 0 10px}
 .rtext{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px 34px}
@@ -1696,7 +1726,7 @@ const S = {
   view:'dashboard', glQ:'', glLevel:'all', glStatus:'all', structId:'', kCol:'all', kQ:'', kStatus:'all', kTag:'', kSort:'new', kLink:'any', kLimit:150,
   skill:'writing2', skillTab:null, topic:'',
   rv:{reverse:false, queue:null, idx:0, flipped:false, tally:[0,0,0,0], label:''},
-  jSel:null, search:'', libCat:'', colId:null, cFilter:'all', cQ:'', lessonId:null, lq:null, rFilter:'active', artId:null, ui:{}, summary:null,
+  jSel:null, search:'', libCat:'', colId:null, cFilter:'all', cQ:'', lessonId:null, lq:null, rFilter:'active', rSrc:'', srcQ:'', srcCat:'', srcLang:'', artId:null, ui:{}, summary:null,
 };
 function route(){
   const h = (location.hash || '').slice(1), k = h.indexOf('-');
@@ -1709,7 +1739,7 @@ function route(){
   else if (v === 'lesson' && LESSONS[sub]) { S.view = 'lesson'; S.lessonId = sub; openLesson(sub); }
   else if (v === 'structure' && STRUCTS[sub]) { S.view = 'structure'; S.structId = sub; openStructure(sub); }
   else if (v === 'article') { S.view = 'article'; S.artId = sub; openArticle(sub); }
-  else if (['dashboard','review','journal','preferences','reading','study'].includes(v)) S.view = v;
+  else if (['dashboard','review','journal','preferences','reading','sources','study'].includes(v)) S.view = v;
   else S.view = 'dashboard';
   if (S.view !== 'study') S.summary = null;
   if (S.search) { S.search = ''; $('#gsearch').value = ''; }
@@ -1729,7 +1759,7 @@ function render(){
   const a = document.activeElement, id = a && a.id && $('#view').contains(a) ? a.id : null;
   let ss = null, se = null; try { ss = a.selectionStart; se = a.selectionEnd; } catch {}
   renderNav();
-  const v = S.search ? vSearch() : ({dashboard:vDashboard, library:vLibrary, collection:vCollection, lesson:vLesson, structure:vStructure, reading:vReading, article:vArticle, study:vStudy, knowledge:vKnowledge, ielts:vIelts, review:vReview, journal:vJournal, preferences:vPrefs}[S.view] || vDashboard)();
+  const v = S.search ? vSearch() : ({dashboard:vDashboard, library:vLibrary, collection:vCollection, lesson:vLesson, structure:vStructure, reading:vReading, sources:vSources, article:vArticle, study:vStudy, knowledge:vKnowledge, ielts:vIelts, review:vReview, journal:vJournal, preferences:vPrefs}[S.view] || vDashboard)();
   $('#view').innerHTML = v;
   const nm = settings().name; $('#brand-sub').textContent = nm ? nm + '’s language universe' : 'Your language universe';
   if (id) { const n = document.getElementById(id); if (n) { n.focus(); try { if (ss !== null) n.setSelectionRange(ss, se); } catch {} } }
@@ -1743,7 +1773,7 @@ function renderNav(){
   const its = items();
   const groups = [[null, [['dashboard','Dashboard','layout-dashboard']]], ['Learn', [['library','Library','library'],['review','Review','repeat-2']]],
     ['My learning', [['collections','My Collections','bookmark'],['reading','Reading list','newspaper'],['ielts','IELTS Workspace','graduation-cap'],['journal','Learning Journal','notebook-pen']]]];
-  const active = {collection:'library', lesson:'library', structure:'library', article:'reading', study:'review', knowledge:'collections'}[S.view] || S.view;
+  const active = {collection:'library', lesson:'library', structure:'library', article:'reading', sources:'reading', study:'review', knowledge:'collections'}[S.view] || S.view;
   let h = '';
   groups.forEach(([g, list]) => {
     if (g) h += `<div class="navgroup">${g}</div>`;
@@ -1752,6 +1782,7 @@ function renderNav(){
       h += `<a href="#${k}" class="nav-item ${on?'on':''}" data-tip="${l}${k==='review'&&due?` · ${due} due`:''}" ${on?'aria-current="page"':''}>${ic(icon)}<span>${l}</span>${k==='review'&&due?`<span class="badge" title="${due} due">${due}</span>`:''}</a>`;
       if (k === 'library' && on) h += '<div class="subnav">' + CATS.map(c => `<a href="#library-${c.id}" class="${S.view==='library'&&S.libCat===c.id || (S.view==='collection'&&COLL[S.colId]&&COLL[S.colId].cat===c.id) || (S.view==='lesson'&&c.id==='grammar')?'on':''}"><span>${ic(c.icon)} ${c.name}</span></a>`).join('') + '</div>';
       if (k === 'collections' && on) h += '<div class="subnav">' + Object.entries(COLS).map(([c,o]) => `<a href="#collections-${c}" class="${S.kCol===c?'on':''}"><span>${ic(COLIC[c])} ${o.label}</span><small>${its.filter(r=>r.col===c).length}</small></a>`).join('') + '</div>';
+      if (k === 'reading' && on) h += '<div class="subnav">' + [['reading','My reading list','newspaper',articles().length],['sources','Sources','globe',allSources().length]].map(([v,l,i,n]) => `<a href="#${v}" class="${S.view===v || (v==='reading'&&S.view==='article')?'on':''}"><span>${ic(i)} ${l}</span><small>${n}</small></a>`).join('') + '</div>';
       if (k === 'ielts' && on) h += '<div class="subnav">' + Object.entries(SK).map(([s,o]) => `<a href="#ielts-${s}" class="${S.skill===s?'on':''}"><span>${ic(o.icon)} ${o.label}</span></a>`).join('') + '</div>';
     });
   });
@@ -2685,44 +2716,196 @@ function answerLesson(qi, oi){
 }
 
 /* ---------- Reading list */
+/* ---------- reading sources (curated ones are shared content; custom ones are private records of kind 'source') */
+const SOURCES = (CONTENT.sources || []).map(s => ({...s, curated:true}));
+const SRC_TONES = [['--blue-soft','--blue'],['--green-soft','--green'],['--amber-soft','--amber'],['--primary-soft','--primary'],['--red-soft','--red']];
+const IMG_BAD = new Set();
+function urlParts(u){ try { const x = new URL(u); if (!/^https?:$/.test(x.protocol)) return null; return {origin:x.origin, host:x.hostname.toLowerCase().replace(/^www\./,''), path:x.pathname.replace(/\/+$/,'').toLowerCase()}; } catch { return null; } }
+function normUrl(raw){ let s = String(raw || '').trim(); if (!s) return ''; if (!/^[a-z][a-z0-9+.-]*:/i.test(s)) s = 'https://' + s.replace(/^\/+/, ''); return urlParts(s) ? new URL(s).href : ''; }
+const customSources = () => all().filter(r => r.kind === 'source').sort((a,b) => (a.name||'').localeCompare(b.name||''));
+const allSources = () => [...SOURCES, ...customSources()];
+const sourceById = id => id ? allSources().find(s => s.id === id) || null : null;
+function sourceForUrl(url){
+  const p = urlParts(url); if (!p) return null; let best = null, bl = -1;
+  for (const s of allSources()) { const q = urlParts(s.url); if (!q) continue;
+    const hostOk = p.host === q.host || p.host.endsWith('.' + q.host), pathOk = !q.path || p.path === q.path || p.path.startsWith(q.path + '/');
+    if (hostOk && pathOk && q.path.length > bl) { best = s; bl = q.path.length; } }
+  return best;
+}
+const sourceByName = n => { const k = String(n || '').trim().toLowerCase(); return k ? allSources().find(s => s.name.toLowerCase() === k) || null : null; };
+const articleSource = a => sourceById(a.sourceId) || (a.url && sourceForUrl(a.url)) || sourceByName(a.source);
+const srcArticles = s => articles().filter(a => { const x = articleSource(a); return x && x.id === s.id; });
+const okImg = u => !!u && /^https?:\/\//i.test(u) && !IMG_BAD.has(u);
+function srcIcon(s, cls = 'sic'){
+  const name = ((s && s.name) || '?').trim(); let h = 0; for (const c of name) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  const t = SRC_TONES[h % SRC_TONES.length], p = s && urlParts(s.url), icon = (s && s.icon) || (p ? p.origin + '/favicon.ico' : '');
+  return `<span class="${cls}" style="background:var(${t[0]});color:var(${t[1]})" aria-hidden="true"><b>${esc(name.charAt(0).toUpperCase())}</b>${okImg(icon) ? `<img src="${esc(icon)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-fb>` : ''}</span>`;
+}
+function articleThumb(a){
+  const s = articleSource(a);
+  return `<span class="athumb">${okImg(a.image) ? `<img src="${esc(a.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-fb>` : ''}<span class="ph">${s ? srcIcon(s, 'sic sm') : ic('newspaper')}</span></span>`;
+}
+function readingTabs(){
+  return `<div class="tabs" role="tablist" aria-label="Reading">${[['reading','My reading list','newspaper', articles().length],['sources','Sources','globe', allSources().length]].map(([v,l,i,n]) =>
+    `<a class="tab ${S.view===v?'on':''}" href="#${v}" role="tab" aria-selected="${S.view===v}">${ic(i)} ${l} <small>${n}</small></a>`).join('')}</div>`;
+}
+const META_CACHE = new Map();
+const metaAvailable = () => !isClaude() && !!Web.sb;
+async function fetchMeta(url){
+  if (META_CACHE.has(url)) return META_CACHE.get(url);
+  let token = '';
+  try { const {data} = await Web.sb.auth.getSession(); token = (data && data.session && data.session.access_token) || ''; } catch {}
+  let r;
+  try { r = await fetch('/api/meta?url=' + enc(url), {headers: token ? {Authorization:'Bearer ' + token} : {}, signal: AbortSignal.timeout(10000)}); }
+  catch { throw new Error('The preview service couldn’t be reached.'); }
+  const b = await r.json().catch(() => null);
+  if (!r.ok || !b) throw new Error({invalid_url:'That isn’t a public web address.', blocked_address:'That address can’t be previewed.', sign_in_required:'Sign in again to load previews.', timeout:'The site took too long to answer.', not_a_web_page:'That link isn’t a web page.', site_not_found:'That site couldn’t be found.'}[b && b.error] || 'The site didn’t share a preview.');
+  META_CACHE.set(url, b); return b;
+}
+function vSources(){
+  const q = (S.srcQ || '').trim().toLowerCase(), list = allSources();
+  const cats = [...new Set(list.map(s => s.category).filter(Boolean))].sort(), langs = [...new Set(list.map(s => s.lang).filter(Boolean))].sort();
+  const cat = cats.includes(S.srcCat) ? S.srcCat : '', lang = langs.includes(S.srcLang) ? S.srcLang : '';
+  const shown = list.filter(s => (!cat || s.category === cat) && (!lang || s.lang === lang) && (!q || [s.name, s.desc, s.category, s.lang, s.url].join(' ').toLowerCase().includes(q)));
+  return `<h1 class="page">Sources</h1>${readingTabs()}
+  <p class="lede">Websites worth reading. Open one, choose an article, then save it to your reading list. Its link, title and preview image come with it.</p>
+  <div class="toolbar">
+    <label class="sbox">${ic('search')}<input class="fsearch" id="srcq" type="search" placeholder="Search sources" value="${esc(S.srcQ || '')}" data-input="srcQ" aria-label="Search sources"></label>
+    ${langs.length > 1 ? `<span class="sel">${ic('languages')}<select data-change="srcLang" aria-label="Language"><option value="">All languages</option>${langs.map(l => `<option ${l===lang?'selected':''}>${esc(l)}</option>`).join('')}</select></span>` : ''}
+    <button class="btn" data-act="src-new">${ic('plus')} Add source</button>
+  </div>
+  <div class="seg scats" role="group" aria-label="Category">${['', ...cats].map(c => `<button class="${cat===c?'on':''}" data-act="src-cat" data-v="${esc(c)}">${c ? esc(c) : 'All categories'}</button>`).join('')}</div>
+  ${shown.length ? `<div class="sgrid">${shown.map(srcCard).join('')}</div>`
+  : `<div class="empty">${ic('search-x')}<h3>No sources match</h3><p>Try another word or category, or add the website yourself.</p><button class="btn" data-act="src-clear">Clear filters</button> <button class="btn primary" data-act="src-new">Add source</button></div>`}`;
+}
+function srcCard(s){
+  const n = srcArticles(s).length, p = urlParts(s.url) || {host:''};
+  return `<div class="srccard" data-src="${esc(s.id)}">
+    <div class="srccard-h">${srcIcon(s)}<div style="min-width:0;flex:1"><h3 dir="auto">${esc(s.name)}</h3><span class="shost">${esc(p.host)}</span></div>
+      ${s.curated ? '' : `<div class="srccard-x"><button class="icon-btn" data-act="src-edit" data-id="${esc(s.id)}" aria-label="Edit ${esc(s.name)}">${ICON.edit}</button><button class="icon-btn" data-act="src-del" data-id="${esc(s.id)}" aria-label="Remove ${esc(s.name)}">${ICON.del}</button></div>`}</div>
+    <p dir="auto">${esc(s.desc || 'No description yet.')}</p>
+    <div class="srccard-tags">${s.category ? `<span class="chip">${esc(s.category)}</span>` : ''}${s.lang ? `<span class="chip">${ic('languages')} ${esc(s.lang)}</span>` : ''}${s.curated ? '' : '<span class="chip">Added by you</span>'}</div>
+    <div class="srccard-f"><a class="btn sm primary" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${ic('external-link')} Visit website</a>
+      <button class="btn sm" data-act="new" data-type="article" data-source="${esc(s.id)}">${ic('plus')} Save an article</button>
+      ${n ? `<a class="btn sm ghost" href="#reading" data-act="src-arts" data-id="${esc(s.id)}">${ic('newspaper')} ${plural(n, 'saved article')}</a>` : ''}</div>
+  </div>`;
+}
+const SRC_LANGS = ['English','Vietnamese','French','German','Spanish','Italian','Portuguese','Chinese','Japanese','Korean'];
+function sourceForm(r){
+  const d = r || {lang:'English'};
+  openModal(`<form class="form" id="src-form" novalidate>
+    <div class="form-head"><h3>${r ? 'Edit source' : 'Add a source'}</h3><button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>
+    <label class="fld big"><span>Website address</span><input name="url" inputmode="url" autocomplete="off" autocapitalize="none" value="${esc(d.url || '')}" placeholder="e.g. https://www.economist.com" required autofocus></label>
+    <p class="fmeta" id="src-meta" aria-live="polite"></p>
+    <label class="fld"><span>Name</span><input name="name" value="${esc(d.name || '')}" required dir="auto"></label>
+    <div class="grid2">
+      <label class="fld"><span>Category</span><input name="category" value="${esc(d.category || '')}" list="dl-scat" placeholder="e.g. News"></label>
+      <label class="fld"><span>Language</span><input name="lang" value="${esc(d.lang || '')}" list="dl-slang" placeholder="e.g. English"></label>
+    </div>
+    <label class="fld"><span>Short description <em>optional</em></span><textarea name="desc" rows="3" dir="auto">${esc(d.desc || '')}</textarea></label>
+    <input type="hidden" name="icon" value="${esc(d.icon || '')}">
+    ${datalist('dl-scat', allSources().map(s => s.category))}${datalist('dl-slang', [...SRC_LANGS, ...allSources().map(s => s.lang)])}
+    <div class="form-foot"><button type="button" class="btn ghost" data-act="close">Cancel</button><button class="btn primary">${r ? 'Save changes' : 'Add source'}</button></div>
+  </form>`, {onMount: el => { const f = $('#src-form', el);
+    f.url.addEventListener('change', () => sourceMetaFill(f, r));
+    f.addEventListener('submit', e => {
+      e.preventDefault(); const v = Object.fromEntries(new FormData(f)), url = normUrl(v.url), p = urlParts(url);
+      if (!p) { toast('Enter the website’s address, for example https://www.economist.com', true); f.url.focus(); return; }
+      const dup = allSources().find(s => (!r || s.id !== r.id) && (() => { const q = urlParts(s.url); return q && q.host === p.host && q.path === p.path; })());
+      if (dup) { toast(`${dup.name} is already in your sources.`, true); return; }
+      const name = v.name.trim() || p.host;
+      const id = r ? r.id : 'src-' + (p.host + p.path).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
+      Store.put({...(r ? clone(r) : {addedAt:Date.now()}), id, kind:'source', name, url, host:p.host, category:v.category.trim(), lang:v.lang.trim(), desc:v.desc.trim(), icon:okImg(v.icon) ? v.icon : ''});
+      closeModal(); toast(r ? 'Source updated' : `${name} added to your sources`);
+    });
+  }});
+}
+async function sourceMetaFill(f, r){
+  const st = $('#src-meta', f), url = normUrl(f.url.value);
+  if (!url) { st.textContent = ''; return; }
+  if (!metaAvailable()) { st.textContent = 'Fill in the name and description yourself. Automatic details work in the web app.'; return; }
+  const seq = (f._seq = (f._seq || 0) + 1);
+  st.className = 'fmeta busy'; st.textContent = 'Reading the website…';
+  try {
+    const m = await fetchMeta(url); if (seq !== f._seq) return;
+    if (!f.name.value.trim()) f.name.value = m.siteName || (m.host || '').replace(/^www\./, '');
+    if (!f.desc.value.trim() && m.description) f.desc.value = m.description;
+    if (m.icon) f.icon.value = m.icon;
+    st.className = 'fmeta ok'; st.textContent = 'Details filled from the website. Check them before saving.';
+  } catch (x) { if (seq !== f._seq) return; st.className = 'fmeta warn'; st.textContent = x.message + ' You can fill in the details yourself.'; }
+}
 function vReading(){
-  const all_ = articles(), f = S.rFilter;
-  const list = all_.filter(a => f === 'all' || (f === 'active' ? a.status !== 'done' : a.status === f));
+  const all_ = articles(), f = S.rFilter, used = allSources().filter(x => srcArticles(x).length), rs = used.find(x => x.id === S.rSrc) ? S.rSrc : '';
+  const list = all_.filter(a => (f === 'all' || (f === 'active' ? a.status !== 'done' : a.status === f)) && (!rs || (articleSource(a) || {}).id === rs));
   const st = {saved:['To read','bookmark'], reading:['Reading','book-open'], done:['Finished','circle-check']};
-  return `<h1 class="page">Reading list</h1>
+  return `<h1 class="page">Reading list</h1>${readingTabs()}
   <p class="lede">Save articles to read later. Paste the text in, and while you read, select any word or phrase to save it to your vocabulary with the sentence it came from.</p>
   <div class="toolbar">
     <div class="seg" role="group" aria-label="Filter">${[['active','To read & reading','bookmark'],['done','Finished','circle-check'],['all','All','list']].map(([v,l,i]) => `<button class="${f===v?'on':''}" data-act="r-filter" data-v="${v}">${ic(i)} ${l}</button>`).join('')}</div>
+    ${used.length ? `<span class="sel">${ic('globe')}<select data-change="rSrc" aria-label="Source"><option value="">All sources</option>${used.map(x => `<option value="${esc(x.id)}" ${rs===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select></span>` : ''}
     <span style="flex:1"></span><button class="btn primary" data-act="new" data-type="article">${ic('plus')} Save article</button>
   </div>
-  ${list.length ? `<div class="wlist">${list.map(a => { const n = items().filter(r => r.articleId === a.id).length;
-    return `<a class="arow" href="#article-${a.id}"><span class="tic">${ic(st[a.status||'saved'][1])}</span><div style="min-width:0"><b class="wt" style="font-size:17px">${esc(a.title)}</b>
-      <div class="wvi">${[a.source, a.topic, a.minutes ? a.minutes + ' min read' : '', a.text ? '' : 'no text pasted'].filter(Boolean).map(esc).join(' · ')}</div></div>
+  ${list.length ? `<div class="wlist">${list.map(a => { const n = items().filter(r => r.articleId === a.id).length, src = articleSource(a);
+    return `<a class="arow" href="#article-${a.id}">${articleThumb(a)}<div style="min-width:0"><b class="wt" style="font-size:17px" dir="auto">${esc(a.title)}</b>
+      <div class="wvi">${[a.source || (src && src.name), a.topic, a.minutes ? a.minutes + ' min read' : '', a.text ? '' : 'no text pasted'].filter(Boolean).map(esc).join(' · ')}</div></div>
       <div style="text-align:right"><span class="wst ${a.status==='done'?'mastered':a.status==='reading'?'learning':''}">${ic(st[a.status||'saved'][1])} ${st[a.status||'saved'][0]}</span>${n?`<div class="muted" style="font-size:13px;margin-top:4px">${plural(n,'word')} saved</div>`:''}</div></a>`; }).join('')}</div>`
-  : `<div class="empty">${ic('newspaper')}<h3>${all_.length ? 'Nothing here' : 'No saved articles yet'}</h3><p>Good sources: BBC Future, The Guardian Science, National Geographic, The Conversation.</p><button class="btn primary" data-act="new" data-type="article">Save article</button></div>`}`;
+  : `<div class="empty">${ic('newspaper')}<h3>${all_.length ? 'Nothing here' : 'No saved articles yet'}</h3><p>${all_.length ? 'No articles match these filters.' : 'Find something to read in Sources, then save it here with its link.'}</p>${all_.length && rs ? `<button class="btn" data-act="r-src-clear">Show all sources</button> ` : `<a class="btn" href="#sources">${ic('globe')} Browse sources</a> `}<button class="btn primary" data-act="new" data-type="article">Save article</button></div>`}`;
 }
-function articleForm(r){
-  const d = r || {status:'saved'};
+function articleForm(r, preset = {}){
+  const pre = sourceById(preset.sourceId);
+  const d = r || {status:'saved', source: pre ? pre.name : ''};
   openModal(`<form class="form" id="art-form">
     <div class="form-head"><h3>${r ? 'Edit article' : 'Save an article'}</h3><button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>
-    <label class="fld big"><span>Title</span><input name="title" value="${esc(d.title||'')}" required autofocus></label>
-    <label class="fld"><span>Link <em>optional</em></span><input name="url" type="url" value="${esc(d.url||'')}" placeholder="https://"></label>
+    <label class="fld"><span>Link ${pre ? `<em>paste the article’s address from ${esc(pre.name)}</em>` : '<em>optional — paste it first to fill in the title and image</em>'}</span><input name="url" inputmode="url" autocomplete="off" autocapitalize="none" value="${esc(d.url||'')}" placeholder="https://" ${pre && !r ? 'autofocus' : ''}></label>
+    <div class="apreview" id="art-prev" aria-live="polite"></div>
+    <label class="fld big"><span>Title</span><input name="title" value="${esc(d.title||'')}" required ${pre && !r ? '' : 'autofocus'} dir="auto"></label>
     <div class="grid2">
-      <label class="fld"><span>Source</span><input name="source" value="${esc(d.source||'')}" placeholder="e.g. BBC Future"></label>
+      <label class="fld"><span>Source</span><input name="source" value="${esc(d.source||'')}" placeholder="e.g. The Guardian" list="dl-asrc"></label>
       <label class="fld"><span>Topic</span><input name="topic" value="${esc(d.topic||'')}" placeholder="e.g. Environment" list="dl-atopic"></label>
     </div>
-    <label class="fld"><span>Article text <em>optional — paste it to read here and save words as you go</em></span><textarea name="text" rows="8" style="font-family:var(--f-serif);font-size:15.5px">${esc(d.text||'')}</textarea></label>
-    ${datalist('dl-atopic', [...CONTENT.collections.filter(c=>c.group==='Topic vocabulary').map(c=>c.name), ...articles().map(a => a.topic)])}
+    <label class="fld"><span>Article text <em>optional — paste it to read here and save words as you go</em></span><textarea name="text" rows="8" style="font-family:var(--f-serif);font-size:15.5px" dir="auto">${esc(d.text||'')}</textarea></label>
+    <input type="hidden" name="image" value="${esc(d.image||'')}"><input type="hidden" name="desc" value="${esc(d.desc||'')}">
+    ${datalist('dl-atopic', [...CONTENT.collections.filter(c=>c.group==='Topic vocabulary').map(c=>c.name), ...articles().map(a => a.topic)])}${datalist('dl-asrc', [...allSources().map(x => x.name), ...articles().map(a => a.source)])}
     <div class="form-foot"><button type="button" class="btn ghost" data-act="close">Cancel</button><button class="btn primary">${r ? 'Save changes' : 'Save article'}</button></div>
-  </form>`, {onMount: el => $('#art-form', el).addEventListener('submit', e => {
-    e.preventDefault(); const v = Object.fromEntries(new FormData(e.target));
+  </form>`, {onMount: el => { const f = $('#art-form', el);
+    artPreview(f, '');
+    f.url.addEventListener('change', () => articleMetaFill(f));
+    f.addEventListener('click', e => { if (e.target.closest('[data-ap="clear"]')) { f.image.value = ''; artPreview(f, ''); } });
+    f.addEventListener('submit', e => {
+    e.preventDefault(); const v = Object.fromEntries(new FormData(f));
     if (!v.title.trim()) { toast('Add a title first.', true); return; }
-    const text = v.text.trim();
+    const text = v.text.trim(), url = v.url.trim() ? (normUrl(v.url) || v.url.trim()) : '';
+    const src = sourceByName(v.source) || (url && sourceForUrl(url)) || null;
     const rec = r ? clone(r) : {id:newId(), kind:'article', status:'saved', createdAt:Date.now(), notes:''};
-    Object.assign(rec, {title:v.title.trim(), url:v.url.trim(), source:v.source.trim(), topic:v.topic.trim(), text, minutes: text ? Math.max(1, Math.round(text.split(/\s+/).length / 200)) : (rec.minutes || '')});
+    Object.assign(rec, {title:v.title.trim(), url, source:v.source.trim() || (src ? src.name : ''), sourceId: src ? src.id : '', image: okImg(v.image) ? v.image : '', desc: v.desc.trim().slice(0, 500), topic:v.topic.trim(), text, minutes: text ? Math.max(1, Math.round(text.split(/\s+/).length / 200)) : (rec.minutes || '')});
     Store.put(rec); closeModal(); toast(r ? 'Changes saved' : 'Saved to your reading list');
     if (!r) go('article-' + rec.id);
-  })});
+  }); }});
+}
+function artPreview(f, msg, cls = ''){
+  const box = $('#art-prev', f), img = f.image.value, src = sourceByName(f.source.value) || sourceForUrl(normUrl(f.url.value));
+  if (!img && !msg) { box.innerHTML = ''; box.hidden = true; return; }
+  box.hidden = false;
+  box.innerHTML = `<span class="athumb lg">${okImg(img) ? `<img src="${esc(img)}" alt="" referrerpolicy="no-referrer" data-fb>` : ''}<span class="ph">${src ? srcIcon(src, 'sic sm') : ic('image')}</span></span>
+    <div class="ap-t"><span class="fmeta ${cls}">${esc(msg || 'Preview image from the page.')}</span>${img ? `<button type="button" class="btn sm ghost" data-ap="clear">${ic('image-off')} Don’t use this image</button>` : ''}</div>`;
+  drawIcons();
+}
+async function articleMetaFill(f){
+  const url = normUrl(f.url.value);
+  if (!url) { artPreview(f, f.url.value.trim() ? 'That doesn’t look like a web address.' : '', 'warn'); return; }
+  const local = sourceForUrl(url);
+  if (local && !f.source.value.trim()) f.source.value = local.name;
+  if (!metaAvailable()) { artPreview(f, 'Add the title yourself. Titles and images are filled in automatically in the web app.'); return; }
+  const seq = (f._seq = (f._seq || 0) + 1);
+  artPreview(f, 'Reading the page…', 'busy');
+  try {
+    const m = await fetchMeta(url); if (seq !== f._seq) return;
+    if (!f.title.value.trim() && m.title) f.title.value = m.title;
+    if (!f.source.value.trim()) f.source.value = (sourceForUrl(m.finalUrl || url) || {}).name || m.siteName || (m.host || '').replace(/^www\./, '');
+    if (m.description && !f.desc.value) f.desc.value = m.description;
+    f.image.value = okImg(m.image) ? m.image : '';
+    artPreview(f, m.image ? 'Title and image filled from the page. Check them before saving.' : 'Title filled from the page. It has no preview image, so a placeholder will be used.', 'ok');
+  } catch (x) { if (seq !== f._seq) return; artPreview(f, x.message + ' Add the title yourself.', 'warn'); }
 }
 function vArticle(){
   const a = Store.get(S.artId);
@@ -2737,8 +2920,9 @@ function vArticle(){
   const st = [['saved','To read','bookmark'],['reading','Reading','book-open'],['done','Finished','circle-check']];
   return `<div class="reader">
     <div class="crumb"><a href="#reading">Reading list</a></div>
-    <h1>${esc(a.title)}</h1>
-    <div class="jmeta">${a.source?`<span>${esc(a.source)}</span>`:''}${a.topic?`<span class="chip sk">${esc(a.topic)}</span>`:''}${a.minutes?`<span>${a.minutes} min read</span>`:''}${a.url?`<a class="link" href="${esc(a.url)}" target="_blank" rel="noopener">${ic('external-link')} Open original</a>`:''}</div>
+    <h1 dir="auto">${esc(a.title)}</h1>
+    <div class="jmeta">${a.source || articleSource(a) ? `<span class="asrc">${articleSource(a) ? srcIcon(articleSource(a), 'sic xs') : ''}${esc(a.source || articleSource(a).name)}</span>`:''}${a.topic?`<span class="chip sk">${esc(a.topic)}</span>`:''}${a.minutes?`<span>${a.minutes} min read</span>`:''}${a.url?`<a class="link" href="${esc(a.url)}" target="_blank" rel="noopener">${ic('external-link')} Open original</a>`:''}</div>
+    ${okImg(a.image) ? `<figure class="ahero"><img src="${esc(a.image)}" alt="" referrerpolicy="no-referrer" data-fb></figure>` : ''}
     <div class="toolbar" style="margin-top:14px"><div class="seg" role="group" aria-label="Status">${st.map(([v,l,i]) => `<button class="${(a.status||'saved')===v?'on':''}" data-act="a-status" data-id="${a.id}" data-v="${v}">${ic(i)} ${l}</button>`).join('')}</div><span style="flex:1"></span>
       <button class="btn sm ghost" data-act="a-edit" data-id="${a.id}">${ic('pencil')} Edit</button><button class="btn sm ghost danger" data-act="a-del" data-id="${a.id}">${ic('trash-2')} Delete</button></div>
     ${a.text ? `<p class="muted" style="font-size:14px;margin:16px 0 6px">${ic('mouse-pointer-click')} Select a word or phrase to save it.</p><div class="rtext" id="rtext">${body}</div>`
@@ -2903,7 +3087,7 @@ function noteCard(r){
     ${meta.answer ? (r.answer ? `<details><summary>${ic('message-square-text')} My answer</summary><div class="ans">${fmt(r.answer)}</div></details>` : `<button class="link" style="align-self:flex-start;font-size:13.5px" data-act="edit-note" data-id="${r.id}">+ Write my answer</button>`) : ''}
     ${r.url ? `<a class="url mi" href="${esc(r.url)}" target="_blank" rel="noopener">${ic('external-link')} ${esc(r.url)}</a>` : ''}
     <div class="foot">${r.topic ? `<span class="chip sk">${ic('tag')} ${esc(r.topic)}</span>` : ''}${(r.tags||[]).map(t => `<span class="chip">#${esc(t)}</span>`).join('')}<span style="margin-left:auto">${fmtD(r.createdAt)}</span></div>
-  </article>`;
+  </div>`;
 }
 
 /* ---------- Review Center */
@@ -3206,7 +3390,7 @@ function journalDoc(j){
     ${sec('Difficulties and mistakes', j.challenges, 'triangle-alert')}
     ${sec('Next time', j.next, 'arrow-right')}
     ${(added.length || reviews) ? `<h3 class="si">${ic('calendar-days')} Also on this day</h3><p class="muted" style="margin:0 0 6px;font-size:14px">${added.length?plural(added.length,'entry','entries')+' added':''}${added.length&&reviews?', ':''}${reviews?plural(reviews,'card')+' reviewed':''}</p>${added.length?`<div class="mini">${added.slice(0,12).map(r => miniRow(r)).join('')}</div>`:''}` : ''}
-  </article>`;
+  </div>`;
 }
 
 /* ---------- Preferences */
@@ -3987,7 +4171,7 @@ function avSetType(el, vt){
 function avHTML(d, preset){
   const lst = a => esc((a || []).join(', '));
   const vt = preset.vtype || {collocations:'collocation', linking:'linking', structures:'sentence'}[d.col] || 'word';
-  return `<div class="av-head"><h3>Add vocabulary</h3>
+  return `<div class="av-head"><h3>Add to My Collections</h3>
     <div class="seg av-type" role="radiogroup" aria-label="What are you adding?">${AV_TYPES.map(([k, l, icn]) => `<button type="button" role="radio" aria-checked="${vt===k}" class="${vt===k?'on':''}" data-vt="${k}">${ic(icn)} ${l}</button>`).join('')}</div>
     <button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>
   <form class="av-body" id="item-form" data-vt="${vt}" novalidate autocomplete="off">
@@ -4097,7 +4281,7 @@ function itemForm(r, preset={}){
   </form>`;
   const html = withLookup ? avHTML(d, preset) : form;
   const _old = withLookup ? `<div class="lk">
-    <div class="lk-head"><div><h3>Add vocabulary</h3><p>Type a word or phrase and look it up. Check the results, edit the form, then save.</p></div><button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>
+    <div class="lk-head"><div><h3>Add to My Collections</h3><p>Type a word or phrase and look it up. Check the results, edit the form, then save.</p></div><button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>
     <form class="lk-search" id="lk-form" autocomplete="off"><label class="sbox">${ic('search')}<input id="lk-q" class="fsearch" placeholder="Word or phrase, e.g. mitigate" value="${esc(d.term||'')}" autofocus aria-label="Word or phrase to look up"></label><button class="btn primary lg">${ic('search')} Look up</button></form>
     <div class="lk-body"><section class="lk-res" id="lk-res" aria-live="polite">${lkIntroHTML()}</section><section class="lk-formcol">${form}</section></div></div>` : form;
   openModal(html, {size: withLookup ? 'av' : '', onMount: el => {
@@ -4395,7 +4579,7 @@ const ACT = {
     if (t === 'item') itemForm(null, {col:el.dataset.col, ielts:el.dataset.ielts, term:el.dataset.term});
     else if (t === 'note') noteForm(null, {skill:el.dataset.skill || (S.view==='ielts'?S.skill:'writing2'), section:el.dataset.section || (S.view==='ielts' && SEC[S.skillTab] && SK[S.skill].sections.includes(S.skillTab) ? S.skillTab : undefined)});
     else if (t === 'score') scoreForm(el.dataset.main || 'listening');
-    else if (t === 'article') articleForm(null);
+    else if (t === 'article') articleForm(null, {sourceId: el.dataset.source});
     else if (t === 'journal') { const today = journals().find(j => j.date === ymd()); journalForm(today && !el.dataset.fresh ? today : null); }
   },
   close: () => closeModal(),
@@ -4425,6 +4609,13 @@ const ACT = {
   'lq-reset': () => { S.lq = {lid:S.lessonId, answers:{}}; render(); },
   'lesson-done': el => { const s0 = Store.get('lp-' + el.dataset.id) || {id:'lp-' + el.dataset.id, kind:'lesson', lid:el.dataset.id, createdAt:Date.now()}; const s1 = clone(s0); s1.status = 'done'; s1.completedAt = Date.now(); Store.put(s1); toast('Lesson complete'); },
   'r-filter': el => { S.rFilter = el.dataset.v; render(); },
+  'r-src-clear': () => { S.rSrc = ''; render(); },
+  'src-cat': el => { S.srcCat = el.dataset.v; render(); },
+  'src-clear': () => { S.srcQ = ''; S.srcCat = ''; S.srcLang = ''; render(); },
+  'src-new': () => sourceForm(null),
+  'src-edit': el => { const r = Store.get(el.dataset.id); if (r && r.kind === 'source') sourceForm(r); },
+  'src-del': async el => { const r = Store.get(el.dataset.id); if (r && r.kind === 'source' && await confirmBox('Remove this source?', `“${r.name}” will be removed from your sources. Articles you saved from it stay in your reading list.`, 'Remove')) { Store.del(r.id); toast('Source removed'); } },
+  'src-arts': el => { S.rSrc = el.dataset.id; S.rFilter = 'all'; go('reading'); },
   'a-status': el => { const a = Store.get(el.dataset.id); if (a) { const n = clone(a); n.status = el.dataset.v; Store.put(n); } },
   'a-edit': el => articleForm(Store.get(el.dataset.id)),
   'a-del': async el => { const a = Store.get(el.dataset.id); if (a && await confirmBox('Delete this article?', `“${a.title}” will be removed. Words you saved from it stay in My Collections.`)) { Store.del(a.id); toast('Article deleted'); go('reading'); } },
@@ -4524,6 +4715,7 @@ function saveSelection(){
 document.addEventListener('mouseup', e => { if (e.target.closest('#selbtn')) return; setTimeout(showSel, 10); });
 document.addEventListener('keyup', e => { if (e.shiftKey && S.view === 'article') showSel(); });
 document.addEventListener('scroll', () => hideSel(), true);
+document.addEventListener('error', e => { const t = e.target; if (t && t.tagName === 'IMG' && t.hasAttribute('data-fb')) { IMG_BAD.add(t.getAttribute('src')); t.remove(); } }, true);
 document.addEventListener('focusout', e => { if (e.target.id === 'a-notes') { const a = Store.get(e.target.dataset.id); if (a && (a.notes||'') !== e.target.value) { const n = clone(a); n.notes = e.target.value; Store.put(n); toast('Notes saved'); } } });
 document.addEventListener('input', e => {
   const k = e.target.dataset && e.target.dataset.input;

@@ -1090,5 +1090,20 @@ pat('s-speak', {title:'IELTS Speaking patterns', group:'IELTS patterns', level:'
 
 const STRUCTS = S;
 
-return {collections:C, lessons:L, structures:STRUCTS};
+
+/* ---------------- Reading sources (shared, curated; stable ids) ---------------- */
+const SOURCES = [
+ {id:'bbc-learning-english', name:'BBC Learning English', url:'https://www.bbc.co.uk/learningenglish', host:'bbc.co.uk', category:'English Learning', lang:'English', icon:'https://www.bbc.co.uk/favicon.ico',
+  desc:'Free lessons, news-based vocabulary, audio and graded materials from the BBC for learners of English.'},
+ {id:'the-conversation', name:'The Conversation', url:'https://theconversation.com/', host:'theconversation.com', category:'News & Analysis', lang:'English', icon:'https://theconversation.com/favicon.ico',
+  desc:'Short, clear articles written by academics and researchers about science, society, health and the economy.'},
+ {id:'the-guardian', name:'The Guardian', url:'https://www.theguardian.com/', host:'theguardian.com', category:'News', lang:'English', icon:'https://www.theguardian.com/favicon.ico',
+  desc:'Daily news, opinion, science, environment and culture from a major UK newspaper, free to read online.'},
+ {id:'breaking-news-english', name:'Breaking News English', url:'https://breakingnewsenglish.com/', host:'breakingnewsenglish.com', category:'Graded Reading', lang:'English', icon:'https://breakingnewsenglish.com/favicon.ico',
+  desc:'Current news stories rewritten at several difficulty levels, with listening and exercises for each lesson.'},
+ {id:'national-geographic', name:'National Geographic', url:'https://www.nationalgeographic.com/', host:'nationalgeographic.com', category:'Science & Environment', lang:'English', icon:'https://www.nationalgeographic.com/favicon.ico',
+  desc:'Stories about nature, science, the environment, history and travel, with strong photography.'},
+];
+
+return {collections:C, lessons:L, structures:STRUCTS, sources:SOURCES};
 })();
