@@ -3094,7 +3094,7 @@ function vStudy(){
       <div class="stop"><span>${ic('keyboard')} ${step.t === 'rev' ? 'Review · type the word' : 'Type the word'}</span><span>${esc(v.pos||'')}</span></div>
       ${v.vi ? `<div class="svi" style="margin-top:18px">${esc(v.vi)}</div>` : ''}<div class="sdef">${esc(v.def||'')}</div>
       ${ex ? `<blockquote class="sex">${ex}</blockquote>` : ''}
-      <form class="typebox" id="typeform" autocomplete="off"><input id="typein" ${res?'disabled':''} value="${esc(res ? res.val : '')}" placeholder="Starts with “${esc(v.term.charAt(0))}” · ${v.term.split(' ').length > 1 ? plural(v.term.split(' ').length,'word') : plural(v.term.length,'letter')}" autocapitalize="off" spellcheck="false" aria-label="Type the word">${res?'':'<button class="btn primary">Check</button>'}</form>
+      <form class="typebox" id="typeform" autocomplete="off"><input id="typein" ${res?'disabled':''} value="${esc(res ? res.val : '')}" placeholder="Starts with “${esc(v.term.charAt(0))}” · ${v.term.split(' ').length > 1 ? plural(v.term.split(' ').length,'word') : plural(v.term.length,'letter')}" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Type the word">${res?'':'<button class="btn primary">Check</button>'}</form>
       ${!res ? `<button class="link" style="margin-top:10px;font-size:14px" data-act="s-giveup">I don’t remember</button>` : ''}
     </div>
     ${res ? `<div class="fb ${res.ok?'ok':'no'}"><span>${res.ok ? `${ic('check')} ${res.almost ? `Almost — it’s spelled <b>${esc(v.term)}</b>` : 'Correct'}` : `${ic('x')} The answer is <b>${esc(v.term)}</b>`} ${listen(v.term)}</span>
@@ -3990,7 +3990,7 @@ function avHTML(d, preset){
     <input type="hidden" name="vtype" value="${vt}">
     <div class="av-q">
       <label class="av-term"><span class="vh" data-l="term">Word or phrase</span>${ic('search', 'av-i')}${ic('loader-circle', 'av-spin')}
-        <input name="term" id="lk-q" value="${esc(d.term || '')}" placeholder="Type a word or phrase, e.g. mitigate" autofocus autocomplete="off" spellcheck="false" aria-describedby="lk-status"></label>
+        <input name="term" id="lk-q" value="${esc(d.term || '')}" placeholder="Type a word or phrase, e.g. mitigate" autofocus autocomplete="off" spellcheck="false" aria-describedby="lk-status" autocapitalize="none" autocorrect="off"></label>
       <div class="av-status idle" id="lk-status" aria-live="polite"></div>
       <div class="warn" id="dup" hidden></div>
       <div id="lk-dup" class="av-dup"></div>
@@ -3998,12 +3998,12 @@ function avHTML(d, preset){
     <section id="lk-res" class="av-res" aria-live="polite"></section>
     <div class="av-core">
       <div class="grid2 vt-hide-collocation vt-hide-phrasal">
-        <label class="fld"><span>IPA · British <small class="av-src" data-for="ipa"></small></span><input name="ipa" class="ipa-in" value="${esc(d.ipa || '')}" placeholder="/ˈmɪtɪɡeɪt/" autocomplete="off"></label>
-        <label class="fld"><span>IPA · American <small class="av-src" data-for="ipaUS"></small><button type="button" class="av-kbd" data-lk="kbd" aria-expanded="false" title="IPA symbols">${ic('keyboard')} Symbols</button></span><input name="ipaUS" class="ipa-in" value="${esc(d.ipaUS || '')}" placeholder="/ˈmɪt̬əɡeɪt/" autocomplete="off"></label>
+        <label class="fld"><span>IPA · British <small class="av-src" data-for="ipa"></small></span><input name="ipa" class="ipa-in" value="${esc(d.ipa || '')}" placeholder="/ˈmɪtɪɡeɪt/" autocomplete="off" autocapitalize="none" autocorrect="off"></label>
+        <label class="fld"><span>IPA · American <small class="av-src" data-for="ipaUS"></small><button type="button" class="av-kbd" data-lk="kbd" aria-expanded="false" title="IPA symbols">${ic('keyboard')} Symbols</button></span><input name="ipaUS" class="ipa-in" value="${esc(d.ipaUS || '')}" placeholder="/ˈmɪt̬əɡeɪt/" autocomplete="off" autocapitalize="none" autocorrect="off"></label>
       </div>
       <div class="ipakeys vt-hide-collocation vt-hide-phrasal" aria-label="IPA symbols" hidden>${IPA_KEYS.map(k => `<button type="button" data-ipa="${k}" tabindex="-1">${k}</button>`).join('')}</div>
       <div class="grid2 av-posvi">
-        <label class="fld vt-hide-phrasal"><span><span data-vtl-word="Part of speech" data-vtl-collocation="Pattern">Part of speech</span> <small class="av-src" data-for="pos"></small></span><input name="pos" value="${esc(d.pos || '')}" placeholder="noun, verb…" data-ph-word="noun, verb…" data-ph-collocation="e.g. verb + noun" list="dl-pos"></label>
+        <label class="fld vt-hide-phrasal"><span><span data-vtl-word="Part of speech" data-vtl-collocation="Pattern">Part of speech</span> <small class="av-src" data-for="pos"></small></span><input name="pos" value="${esc(d.pos || '')}" placeholder="noun, verb…" data-ph-word="noun, verb…" data-ph-collocation="e.g. verb + noun" list="dl-pos" autocapitalize="none" autocorrect="off"></label>
         <div class="fld"><label for="av-vi"><span>Vietnamese meaning <small class="av-src" data-for="vi"></small></span></label><input id="av-vi" name="vi" value="${esc(d.vi || '')}" placeholder="nghĩa tiếng Việt"><div class="av-chips" id="lk-vi"></div></div>
       </div>
       <label class="fld"><span><span data-l="def">Definition</span> <small class="av-src" data-for="def"></small></span><textarea name="def" rows="2">${esc(d.def || '')}</textarea></label>
@@ -4012,17 +4012,17 @@ function avHTML(d, preset){
     <details class="av-sec" id="av-rel"><summary>${ic('git-branch')}<b>Word relationships</b><span id="av-rel-sum">none yet</span>${ic('chevron-down', 'av-chev')}</summary>
       <div class="av-in">
         <div class="grid2">
-          <label class="fld"><span><span data-vtl-word="Synonyms" data-vtl-collocation="Similar expressions" data-vtl-phrasal="Synonyms or one-word equivalent">Synonyms</span> <em>commas</em> <small class="av-src" data-for="synonyms"></small></span><input name="synonyms" value="${lst(d.synonyms)}"></label>
-          <label class="fld vt-hide-collocation"><span>Antonyms <em>commas</em> <small class="av-src" data-for="antonyms"></small></span><input name="antonyms" value="${lst(d.antonyms)}"></label>
+          <label class="fld"><span><span data-vtl-word="Synonyms" data-vtl-collocation="Similar expressions" data-vtl-phrasal="Synonyms or one-word equivalent">Synonyms</span> <em>commas</em> <small class="av-src" data-for="synonyms"></small></span><input name="synonyms" value="${lst(d.synonyms)}" autocapitalize="none" autocorrect="off"></label>
+          <label class="fld vt-hide-collocation"><span>Antonyms <em>commas</em> <small class="av-src" data-for="antonyms"></small></span><input name="antonyms" value="${lst(d.antonyms)}" autocapitalize="none" autocorrect="off"></label>
         </div>
-        <label class="fld vt-hide-collocation"><span>Collocations <em>commas</em> <small class="av-src" data-for="collocations"></small></span><input name="collocations" value="${lst(d.collocations)}" placeholder="e.g. mitigate the effects, mitigate risk"></label>
-        <label class="fld"><span>Related words and forms <em>commas</em> <small class="av-src" data-for="related"></small></span><input name="related" value="${lst(d.related)}" placeholder="e.g. mitigation, unmitigated"></label>
+        <label class="fld vt-hide-collocation"><span>Collocations <em>commas</em> <small class="av-src" data-for="collocations"></small></span><input name="collocations" value="${lst(d.collocations)}" placeholder="e.g. mitigate the effects, mitigate risk" autocapitalize="none" autocorrect="off"></label>
+        <label class="fld"><span>Related words and forms <em>commas</em> <small class="av-src" data-for="related"></small></span><input name="related" value="${lst(d.related)}" placeholder="e.g. mitigation, unmitigated" autocapitalize="none" autocorrect="off"></label>
       </div></details>
     <details class="av-sec" id="av-org" ${d.context || d.category || (d.ielts || []).length ? 'open' : ''}><summary>${ic('folder')}<b>Organise</b><span id="av-org-sum"></span>${ic('chevron-down', 'av-chev')}</summary>
       <div class="av-in">
         <div class="grid2">
           <label class="fld"><span>Category or topic</span><input name="category" value="${esc(d.category || '')}" placeholder="e.g. Environment" list="dl-cat"></label>
-          <label class="fld"><span>Tags <em>commas</em></span><input name="tags" value="${esc((d.tags || []).join(', '))}" placeholder="academic, verb" list="dl-tag"></label>
+          <label class="fld"><span>Tags <em>commas</em></span><input name="tags" value="${esc((d.tags || []).join(', '))}" placeholder="academic, verb" list="dl-tag" autocapitalize="none" autocorrect="off"></label>
         </div>
         <div class="fld"><span>IELTS skills</span><div class="pick">${Object.entries(SK).map(([k, o]) => `<label><input type="checkbox" name="ielts" value="${k}" ${(d.ielts || []).includes(k) ? 'checked' : ''}><span>${ic(o.icon)} ${o.label}</span></label>`).join('')}</div></div>
         <div class="grid2">
@@ -4056,31 +4056,31 @@ function itemForm(r, preset={}){
   const form = `<form class="form" id="item-form" novalidate>
     ${withLookup ? '' : `<div class="form-head"><h3>${isNew ? 'Add to My Knowledge' : 'Edit entry'}</h3><button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>`}
     <div class="seg" role="radiogroup" aria-label="Collection">${Object.entries(COLS).map(([k,o]) => `<label><input type="radio" name="col" value="${k}" ${d.col===k?'checked':''}><span>${ic(COLIC[k])} ${o.label}</span></label>`).join('')}</div>
-    <label class="fld big"><span data-l="term">${c.term}</span><input name="term" value="${esc(d.term||'')}" placeholder="${esc(c.ph)}" required ${withLookup?'':'autofocus'} autocomplete="off"><div class="warn" id="dup" hidden></div></label>
+    <label class="fld big"><span data-l="term">${c.term}</span><input name="term" value="${esc(d.term||'')}" placeholder="${esc(c.ph)}" required ${withLookup?'':'autofocus'} autocomplete="off" autocapitalize="none" autocorrect="off"><div class="warn" id="dup" hidden></div></label>
     <div class="grid2">
-      <label class="fld"><span>IPA · British</span><input name="ipa" class="ipa-in" value="${esc(d.ipa||'')}" placeholder="/ˈmɪtɪɡeɪt/" autocomplete="off"></label>
-      <label class="fld"><span>IPA · American</span><input name="ipaUS" class="ipa-in" value="${esc(d.ipaUS||'')}" placeholder="/ˈmɪt̬əɡeɪt/" autocomplete="off"></label>
+      <label class="fld"><span>IPA · British</span><input name="ipa" class="ipa-in" value="${esc(d.ipa||'')}" placeholder="/ˈmɪtɪɡeɪt/" autocomplete="off" autocapitalize="none" autocorrect="off"></label>
+      <label class="fld"><span>IPA · American</span><input name="ipaUS" class="ipa-in" value="${esc(d.ipaUS||'')}" placeholder="/ˈmɪt̬əɡeɪt/" autocomplete="off" autocapitalize="none" autocorrect="off"></label>
     </div>
     <div class="ipakeys" aria-label="IPA symbols">${IPA_KEYS.map(k => `<button type="button" data-ipa="${k}" tabindex="-1">${k}</button>`).join('')}</div>
     <div class="grid2">
-      <label class="fld"><span>Part of speech</span><input name="pos" value="${esc(d.pos||'')}" placeholder="noun, verb…" list="dl-pos"></label>
+      <label class="fld"><span>Part of speech</span><input name="pos" value="${esc(d.pos||'')}" placeholder="noun, verb…" list="dl-pos" autocapitalize="none" autocorrect="off"></label>
       <label class="fld"><span>Vietnamese meaning</span><input name="vi" value="${esc(d.vi||'')}" placeholder="nghĩa tiếng Việt"></label>
     </div>
     <label class="fld"><span data-l="def">${c.def}</span><textarea name="def" rows="2">${esc(d.def||'')}</textarea></label>
     <label class="fld"><span>Example sentences <em>one per line</em></span><textarea name="examples" rows="3">${esc(d.examples||'')}</textarea></label>
     <details class="more" ${hasMore ? 'open' : ''}><summary>${ic('list-plus')} Synonyms, antonyms, collocations and related words</summary>
       <div class="grid2">
-        <label class="fld"><span>Synonyms <em>commas</em></span><input name="synonyms" value="${lst(d.synonyms)}"></label>
-        <label class="fld"><span>Antonyms <em>commas</em></span><input name="antonyms" value="${lst(d.antonyms)}"></label>
+        <label class="fld"><span>Synonyms <em>commas</em></span><input name="synonyms" value="${lst(d.synonyms)}" autocapitalize="none" autocorrect="off"></label>
+        <label class="fld"><span>Antonyms <em>commas</em></span><input name="antonyms" value="${lst(d.antonyms)}" autocapitalize="none" autocorrect="off"></label>
       </div>
-      <label class="fld"><span>Common collocations <em>commas</em></span><input name="collocations" value="${lst(d.collocations)}" placeholder="e.g. mitigate the effects, mitigate risk"></label>
-      <label class="fld"><span>Related words and word forms <em>commas</em></span><input name="related" value="${lst(d.related)}" placeholder="e.g. mitigation, unmitigated"></label>
+      <label class="fld"><span>Common collocations <em>commas</em></span><input name="collocations" value="${lst(d.collocations)}" placeholder="e.g. mitigate the effects, mitigate risk" autocapitalize="none" autocorrect="off"></label>
+      <label class="fld"><span>Related words and word forms <em>commas</em></span><input name="related" value="${lst(d.related)}" placeholder="e.g. mitigation, unmitigated" autocapitalize="none" autocorrect="off"></label>
     </details>
     <div class="grid2">
       <label class="fld"><span>Where I learned it</span><input name="context" value="${esc(d.context||'')}" placeholder="e.g. Cambridge 18, Reading Test 2" list="dl-ctx"></label>
       <label class="fld"><span>Category or topic</span><input name="category" value="${esc(d.category||'')}" placeholder="e.g. Environment" list="dl-cat"></label>
     </div>
-    <label class="fld"><span>Tags <em>separate with commas</em></span><input name="tags" value="${esc((d.tags||[]).join(', '))}" placeholder="academic, verb" list="dl-tag"></label>
+    <label class="fld"><span>Tags <em>separate with commas</em></span><input name="tags" value="${esc((d.tags||[]).join(', '))}" placeholder="academic, verb" list="dl-tag" autocapitalize="none" autocorrect="off"></label>
     <div class="fld"><span>Also file under IELTS</span><div class="pick">${Object.entries(SK).map(([k,o]) => `<label><input type="checkbox" name="ielts" value="${k}" ${(d.ielts||[]).includes(k)?'checked':''}><span>${ic(o.icon)} ${o.label}</span></label>`).join('')}</div></div>
     <label class="fld"><span>Personal notes</span><textarea name="notes" rows="2" placeholder="Memory tricks, register, common errors…">${esc(d.notes||'')}</textarea></label>
     <div class="fld"><span>Learning status</span><div class="seg" role="radiogroup" style="align-self:flex-start">${STATUSES.map(s => `<label><input type="radio" name="status" value="${s}" ${(d.status||'new')===s?'checked':''}><span>${ic(PILLIC[s])} ${cap(s)}</span></label>`).join('')}</div></div>
@@ -4211,7 +4211,7 @@ function noteForm(r, preset={}){
     <label class="fld"><span data-l="body"></span><textarea name="body" rows="4">${esc(d.body||'')}</textarea></label>
     <label class="fld" data-w="answer"><span>My answer</span><textarea name="answer" rows="6" style="font-family:var(--f-serif);font-size:16px" placeholder="Write the answer you would give, in your own words.">${esc(d.answer||'')}</textarea></label>
     <label class="fld" data-w="url"><span>Link</span><input name="url" type="url" value="${esc(d.url||'')}" placeholder="https://"></label>
-    <label class="fld"><span>Tags <em>separate with commas</em></span><input name="tags" value="${esc((d.tags||[]).join(', '))}"></label>
+    <label class="fld"><span>Tags <em>separate with commas</em></span><input name="tags" value="${esc((d.tags||[]).join(', '))}" autocapitalize="none" autocorrect="off"></label>
     ${datalist('dl-topic', all().filter(x => x.kind==='note').map(x => x.topic))}
     <div class="form-foot">${isNew ? `<label class="chk"><input type="checkbox" name="another" ${preset.another?'checked':''}> Add another after saving</label>` : ''}<button type="button" class="btn ghost" data-act="close">Cancel</button><button class="btn primary" type="submit">${isNew?'Save note':'Save changes'}</button></div>
   </form>`;
