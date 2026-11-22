@@ -1048,6 +1048,34 @@ body.auth-open .app{visibility:hidden}
 #item-form[data-vt=phrasal] .av-posvi{grid-template-columns:minmax(0,1fr)}
 #item-form[data-vt=collocation] .vt-hide-collocation,#item-form[data-vt=phrasal] .vt-hide-phrasal{display:none !important}
 
+
+/* ---------- global search popover */
+.search .sr-spin{display:none;animation:spin 1s linear infinite;color:var(--primary)}
+.search.busy .sr-i{display:none}.search.busy .sr-spin{display:block}
+.srpop{position:absolute;top:calc(100% + 6px);left:0;right:0;min-width:min(320px,calc(100vw - 32px));max-height:min(68vh,540px);overflow-y:auto;overscroll-behavior:contain;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:0 18px 40px -18px rgba(18,18,22,.35);z-index:60;padding:6px}
+.sr-g+.sr-g{border-top:1px solid var(--border);margin-top:4px;padding-top:4px}
+.sr-gh{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:650;color:var(--muted);padding:8px 10px 4px}
+.sr-gh .ic{width:14px;height:14px}
+.sr-gh span{margin-left:auto;font-weight:500}
+.sr-opt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:8px 10px;border-radius:10px;color:inherit;text-decoration:none;cursor:pointer}
+.sr-opt:hover,.sr-opt[aria-selected=true]{background:var(--surface-2)}
+.sr-t{font-weight:600;font-size:14.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sr-lbl{font-size:11.5px;color:var(--muted);align-self:center;white-space:nowrap;max-width:160px;overflow:hidden;text-overflow:ellipsis}
+.sr-p{grid-column:1/-1;font-size:13px;color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sr-opt mark,.sr-list mark{background:var(--primary-soft);color:var(--primary-ink);border-radius:3px;padding:0 1px}
+.sr-all{display:flex;align-items:center;gap:8px;justify-content:center;border-top:1px solid var(--border);border-radius:0 0 10px 10px;margin-top:6px;padding:10px;font-size:13.5px;font-weight:600;color:var(--primary-ink)}
+.sr-all .ic{width:15px;height:15px}
+.sr-empty{display:flex;gap:10px;align-items:flex-start;padding:14px 12px;font-size:14px}
+.sr-empty .ic{width:18px;height:18px;color:var(--muted);margin-top:1px}
+.sr-empty div{display:flex;flex-direction:column;gap:3px}.sr-empty span{color:var(--muted);font-size:13.5px}
+.sr-list{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:16px;background:var(--surface);overflow:hidden}
+.sr-list .sr-opt{border-radius:0;border-top:1px solid var(--border);padding:11px 14px}
+.sr-list .sr-opt:first-child{border-top:0}
+.sr-list .sr-p{white-space:normal}
+.sr-jump{display:flex;flex-wrap:wrap;gap:8px;margin:-6px 0 18px}
+.sr-jump span{font-size:13px;color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:3px 10px}
+.sr-jump b{color:var(--text);font-weight:650}
+
 /* ---------- responsive */
 @media (max-width:1180px){
   .d3{grid-template-columns:minmax(0,1fr)}
@@ -1106,7 +1134,7 @@ body.auth-open .app{visibility:hidden}
   <main class="main">
     <header class="top">
       <button class="icon-btn menu-btn" data-act="menu" aria-label="Open navigation" aria-controls="side" aria-expanded="false" title="Menu"><i data-lucide="menu" class="ic" aria-hidden="true"></i></button>
-      <div class="search"><i data-lucide="search" class="ic" aria-hidden="true"></i><input id="gsearch" type="search" placeholder="Search words, notes, journal…  ( / )" autocomplete="off" aria-label="Search everything"></div>
+      <div class="search"><i data-lucide="search" class="ic sr-i" aria-hidden="true"></i><i data-lucide="loader-circle" class="ic sr-spin" aria-hidden="true"></i><input id="gsearch" type="search" role="combobox" aria-autocomplete="list" aria-controls="srpop" aria-expanded="false" placeholder="Search words, notes, journal…  ( / )" autocomplete="off" aria-label="Search everything"><div class="srpop" id="srpop" role="listbox" aria-label="Search results" hidden></div></div>
       <div class="grow"></div>
       <div class="newwrap">
         <button class="btn primary" data-act="new" data-type="item" data-col="vocabulary" title="Add vocabulary (N)" aria-label="Add vocabulary"><i data-lucide="plus" class="ic" aria-hidden="true"></i><span class="lbl">Add</span></button>
@@ -3244,18 +3272,142 @@ ${Web.cfg ? `<p style="margin:0;color:var(--text-2)">When you add vocabulary, Th
 }
 
 /* ---------- Search */
+
+/* =========================================================
+   Global search: results popover as you type, plus a full results page.
+   Runs in the page over the person's own synced records (already limited to
+   their account by row-level security) and the built-in library, so typing
+   never sends a database query.
+   ========================================================= */
+const SR = {q:'', key:'', timer:0, res:null, active:-1, open:false};
+const SR_GROUPS = [['vocab','Vocabulary','book-a'],['colloc','Collocations','link-2'],['phrasal','Phrasal verbs','corner-down-right'],['idioms','Idioms & expressions','message-square-quote'],['grammar','Grammar','languages'],['structures','Sentence structures','quote'],['mistakes','Common mistakes','triangle-alert'],['reading','Reading list','newspaper'],['ielts','IELTS Workspace','graduation-cap'],['journal','Learning Journal','notebook-pen']];
+/* accent-insensitive folding that keeps string length, so highlights line up (giảm ↔ giam) */
+const srFold = t => { let o = ''; const x = String(t || ''); for (let i = 0; i < x.length; i++) { const c = x[i], f = c.normalize('NFD').replace(/[̀-ͯ]/g, ''); o += (f[0] || c) === 'đ' || c === 'đ' || c === 'Đ' ? 'd' : (f[0] || c).toLowerCase(); } return o; };
+const srToks = q => srFold(q).split(/\s+/).filter(Boolean);
+function srHL(text, toks, max){
+  let t = String(text || '').replace(/\s+/g, ' ').trim();
+  if (max && t.length > max) {                         // centre the snippet on the first match
+    const f = srFold(t), i = Math.max(0, Math.min(...toks.map(k => { const j = f.indexOf(k); return j < 0 ? 1e9 : j; })));
+    const st = i > max * .4 && i < 1e9 ? Math.max(0, i - Math.round(max * .3)) : 0;
+    t = (st ? '…' : '') + t.slice(st, st + max).trim() + (st + max < t.length ? '…' : '');
+  }
+  const f = srFold(t), marks = new Array(t.length).fill(false);
+  toks.forEach(k => { let j = f.indexOf(k); while (k && j >= 0) { for (let n = j; n < j + k.length; n++) marks[n] = true; j = f.indexOf(k, j + k.length); } });
+  let out = '', on = false;
+  for (let i = 0; i < t.length; i++) { if (marks[i] !== on) { out += on ? '</mark>' : '<mark>'; on = marks[i]; } out += esc(t[i]); }
+  return out + (on ? '</mark>' : '');
+}
+let SR_STATIC = null;                                  // the built-in library never changes, so index it once
+function srStatic(){
+  if (SR_STATIC) return SR_STATIC;
+  const docs = [];
+  Object.values(WORDS).forEach(w => {
+    const cats = (w.cols || []).map(c => COLL[c] && COLL[c].cat);
+    const g = /phrasal verb/i.test(w.pos) ? 'phrasal' : cats.includes('structures') ? 'structures' : cats.includes('phrases') ? 'colloc' : 'vocab';
+    docs.push({g, title:w.term, label:'Library', prev:[w.vi, w.def, w.ex], hay:[w.term, w.vi, w.def, (w.ex || '')], act:'open-word', id:w.id});
+  });
+  Object.values(LESSONS).forEach(l => docs.push({g:'grammar', title:l.title, label:'Grammar topic', prev:[l.summary], hay:[l.title, l.summary, l.vi, ...(l.explain || []), ...(l.form || []).flat(), ...(l.examples || [])], href:'#lesson-' + l.id, lid:l.id}));
+  Object.values(STRUCTS).forEach(t => docs.push({g:'structures', title:t.title, label:'Sentence patterns', prev:[t.summary], hay:[t.title, t.summary, t.explain, t.vi, ...t.patterns.flat(2)], href:'#structure-' + t.id, sid:t.id}));
+  docs.forEach(d => { d.ft = srFold(d.title); d.fh = srFold(d.hay.join(' ')); });
+  return SR_STATIC = docs;
+}
+function srDocs(){
+  const docs = srStatic().map(d => {                   // personal notes on built-in topics are searchable too
+    const pr = d.lid ? Store.get('lp-' + d.lid) : d.sid ? Store.get('sp-' + d.sid) : null;
+    return pr && (pr.notes || pr.myExamples) ? {...d, fh:d.fh + ' ' + srFold(pr.notes + ' ' + pr.myExamples), note:pr.notes} : d;
+  });
+  const colG = {vocabulary:'vocab', idioms:'idioms', grammar:'grammar', structures:'structures', mistakes:'mistakes'};
+  items().forEach(r => {
+    const g = r.col === 'collocations' ? (r.vtype === 'phrasal' || /phrasal verb/i.test(r.pos || '') ? 'phrasal' : 'colloc') : colG[r.col] || 'vocab';
+    const hay = [r.term, r.vi, r.def, r.examples, r.notes, r.context, r.category, (r.tags || []).join(' '), (r.synonyms || []).join(' '), (r.collocations || []).join(' ')];
+    docs.push({g, title:r.term, label:'My Knowledge', mine:true, prev:[r.vi, r.def, r.examples, r.notes, r.context], hay, act:'open-item', id:r.id});
+  });
+  articles().forEach(a => docs.push({g:'reading', title:a.title || a.url || 'Untitled article', label:a.source || 'Article', mine:true, prev:[a.notes, a.topic, a.text], hay:[a.title, a.source, a.topic, a.notes, a.url, a.text], href:'#article-' + a.id}));
+  all().filter(r => r.kind === 'note').forEach(n => docs.push({g:'ielts', title:n.title || n.topic || (SEC[n.section] || {}).label || 'IELTS note', label:`${(SK[n.skill] || {}).label || 'IELTS'} · ${(SEC[n.section] || {}).label || 'Note'}`, mine:true, prev:[n.body, n.answer, n.topic], hay:[n.title, n.topic, n.body, n.answer, (n.tags || []).join(' ')], act:'goto-note', id:n.id}));
+  journals().forEach(j => docs.push({g:'journal', title:fmtD(j.date), label:'Journal entry', mine:true, prev:[j.learned, j.newVocab, j.challenges, j.next], hay:[j.learned, j.newVocab, j.challenges, j.next, j.date], act:'goto-journal', id:j.id}));
+  docs.forEach(d => { if (d.ft === undefined) { d.ft = srFold(d.title); d.fh = srFold(d.hay.join(' ')); } });
+  return docs;
+}
+/* rank: exact title, title starts with, a word in the title, title contains, then other fields */
+function srRun(q){
+  const toks = srToks(q), phrase = toks.join(' ');
+  const groups = {}; let total = 0;
+  if (!toks.length) return {q, toks, groups, total};
+  srDocs().forEach(d => {
+    if (!toks.every(k => d.ft.includes(k) || d.fh.includes(k))) return;
+    let sc = d.ft === phrase ? 100 : d.ft.startsWith(phrase) ? 80 : new RegExp('(^|[^a-z0-9])' + phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).test(d.ft) ? 65 : d.ft.includes(phrase) ? 55 : toks.every(k => d.ft.includes(k)) ? 45 : 20;
+    if (d.mine) sc += 4;
+    (groups[d.g] = groups[d.g] || []).push({...d, sc});
+    total++;
+  });
+  Object.values(groups).forEach(a => a.sort((x, y) => y.sc - x.sc || x.title.length - y.title.length));
+  return {q, toks, groups, total};
+}
+function srPreview(d, toks){
+  const p = d.prev.filter(Boolean), hit = p.find(t => toks.some(k => srFold(t).includes(k)));
+  if (d.note && toks.some(k => srFold(d.note).includes(k)) && !hit) return 'Your note: ' + d.note;
+  return hit || p[0] || '';
+}
+function srRow(d, toks, i, big){
+  const attrs = d.href ? `href="${d.href}"` : `href="#" data-act="${d.act}" data-id="${esc(d.id)}"`;
+  const pv = srPreview(d, toks);
+  return `<a class="sr-opt" id="sr-o${i}" role="option" aria-selected="false" ${attrs} data-sr="1">
+    <span class="sr-t">${srHL(d.title, toks, 70)}</span><span class="sr-lbl">${esc(d.label)}</span>
+    ${pv ? `<span class="sr-p">${srHL(pv, toks, big ? 220 : 110)}</span>` : ''}</a>`;
+}
+const SR_LIMIT = {vocab:4};
+function srPopHTML(res){
+  if (!res.total) return `<div class="sr-empty">${ic('search-x')}<div><b>No results for “${esc(res.q.trim())}”</b><span>Check the spelling, or <button type="button" class="link" data-act="new" data-type="item" data-col="vocabulary" data-term="${esc(res.q.trim())}">add it as a new word</button>.</span></div></div>`;
+  let i = 0;
+  const body = SR_GROUPS.filter(([g]) => res.groups[g]).map(([g, name, icn]) => {
+    const list = res.groups[g], lim = SR_LIMIT[g] || 3;
+    return `<div class="sr-g" role="group" aria-label="${name}"><div class="sr-gh">${ic(icn)} ${name}<span>${list.length}</span></div>${list.slice(0, lim).map(d => srRow(d, res.toks, i++)).join('')}</div>`;
+  }).join('');
+  return body + `<a class="sr-opt sr-all" id="sr-o${i}" role="option" aria-selected="false" href="#" data-act="sr-all" data-sr="1">${ic('search')} View all ${plural(res.total, 'result')} for “${esc(res.q.trim())}”${ic('arrow-right')}</a>`;
+}
+function srShow(open){
+  const pop = $('#srpop'), inp = $('#gsearch'); if (!pop) return;
+  SR.open = !!open && !S.search;
+  pop.hidden = !SR.open; inp.setAttribute('aria-expanded', String(SR.open));
+  if (!SR.open) { SR.active = -1; inp.removeAttribute('aria-activedescendant'); }
+}
+function srPaint(){
+  const pop = $('#srpop'); if (!pop || !SR.res) return;
+  pop.innerHTML = srPopHTML(SR.res); SR.active = -1; drawIcons(); srShow(true); pop.scrollTop = 0;
+}
+function srQuery(q, now){
+  clearTimeout(SR.timer);
+  const box = $('.top .search');
+  if (!q.trim()) { box.classList.remove('busy'); SR.key = ''; SR.res = null; srShow(false); if (S.search) { S.search = ''; render(); } return; }
+  const key = srToks(q).join(' ');
+  if (key === SR.key && SR.res) { if (!S.search) srShow(true); return; }   // same query: nothing to redo
+  box.classList.add('busy');
+  SR.timer = setTimeout(() => {
+    SR.key = key; SR.res = srRun(q); box.classList.remove('busy');
+    if (S.search) { S.search = q; render(); } else srPaint();
+  }, now ? 0 : 320);
+}
+function srMove(dir){
+  const opts = [...document.querySelectorAll('#srpop .sr-opt')]; if (!opts.length) return;
+  SR.active = (SR.active + dir + opts.length) % opts.length;
+  opts.forEach((o, i) => o.setAttribute('aria-selected', String(i === SR.active)));
+  const a = opts[SR.active]; a.scrollIntoView({block:'nearest'}); $('#gsearch').setAttribute('aria-activedescendant', a.id);
+}
+function srOpenAll(){
+  const q = $('#gsearch').value; if (!q.trim()) return;
+  clearTimeout(SR.timer); $('.top .search').classList.remove('busy');
+  SR.key = srToks(q).join(' '); SR.res = srRun(q); S.search = q; srShow(false); render(); scrollTo(0, 0);
+}
+
 function vSearch(){
-  const q = S.search.trim().toLowerCase();
-  const m = r => [r.term,r.vi,r.def,r.examples,r.notes,r.context,r.title,r.body,r.answer,r.topic,r.learned,r.newVocab,r.challenges,r.next,r.category,(r.tags||[]).join(' ')].join(' ').toLowerCase().includes(q);
-  const its = items().filter(m), ns = all().filter(r => r.kind === 'note' && m(r)), js = journals().filter(m);
-  const ws = Object.values(WORDS).filter(w => (w.term + ' ' + w.vi + ' ' + w.def).toLowerCase().includes(q)).slice(0, 40);
-  const n = its.length + ns.length + js.length + ws.length;
-  return `<h1 class="page">Results for “${esc(S.search.trim())}”</h1><p class="lede">${plural(n,'match','matches')}</p>
-  ${its.length ? `<div class="srgroup"><h3 class="si">${ic('book-a')} My Knowledge · ${its.length}</h3><div class="dict">${its.slice(0,60).map(r => entryRow(r,true)).join('')}</div></div>` : ''}
-  ${ws.length ? `<div class="srgroup"><h3 class="si">${ic('library')} Library · ${ws.length}</h3><div class="panel"><div class="mini">${ws.map(w => `<div class="r" data-act="open-word" data-id="${w.id}" role="button" tabindex="0"><span class="kind">${esc(w.pos.split(',')[0])}</span><span class="w">${esc(w.term)}</span><span class="m">${esc(w.vi)}</span><span class="d">${esc(STLABEL[wordStatus(w.id)])}</span></div>`).join('')}</div></div></div>` : ''}
-  ${ns.length ? `<div class="srgroup"><h3 class="si">${ic('graduation-cap')} IELTS notes · ${ns.length}</h3><div class="panel"><div class="mini">${ns.slice(0,40).map(r => miniRow(r, SEC[r.section]?'' : '')).join('')}</div></div></div>` : ''}
-  ${js.length ? `<div class="srgroup"><h3 class="si">${ic('notebook-pen')} Journal · ${js.length}</h3><div class="panel"><div class="mini">${js.map(r => miniRow(r)).join('')}</div></div></div>` : ''}
-  ${!n ? `<div class="empty">${ic('search-x')}<h3>Nothing found</h3><p>Not in your library yet. Save it now?</p><button class="btn primary" data-act="new" data-type="item" data-col="vocabulary" data-term="${esc(S.search.trim())}">${ic('plus')} Add “${esc(S.search.trim())}”</button></div>` : ''}`;
+  const res = SR.res && SR.key === srToks(S.search).join(' ') ? SR.res : srRun(S.search);
+  const q = esc(S.search.trim());
+  let i = 0;
+  const groups = SR_GROUPS.filter(([g]) => res.groups[g]).map(([g, name, icn]) => `<section class="srgroup"><h3 class="si">${ic(icn)} ${name} <span class="muted">${res.groups[g].length}</span></h3>
+    <div class="sr-list">${res.groups[g].slice(0, 60).map(d => srRow(d, res.toks, i++, true)).join('')}</div>${res.groups[g].length > 60 ? `<p class="muted" style="font-size:13px">Showing the 60 best matches. Add more words to narrow it down.</p>` : ''}</section>`).join('');
+  return `<h1 class="page">Results for “${q}”</h1><p class="lede">${plural(res.total, 'result')}${res.total ? ` in ${plural(Object.keys(res.groups).length, 'section')}` : ''}</p>
+  ${res.total ? `<nav class="sr-jump">${SR_GROUPS.filter(([g]) => res.groups[g]).map(([g, name]) => `<span>${name} <b>${res.groups[g].length}</b></span>`).join('')}</nav>` + groups
+    : `<div class="empty">${ic('search-x')}<h3>No results found</h3><p>Nothing in your library matches “${q}”. Save it now?</p><button class="btn primary" data-act="new" data-type="item" data-col="vocabulary" data-term="${q}">${ic('plus')} Add “${q}”</button></div>`}`;
 }
 
 /* =========================================================
@@ -4239,6 +4391,7 @@ const ACT = {
   close: () => closeModal(),
   'close-nav': () => closeModal(),
   'open-item': el => itemDetail(el.dataset.id),
+  'sr-all': () => srOpenAll(),
   'edit-item': el => itemForm(Store.get(el.dataset.id)),
   'del-item': async el => { const r = Store.get(el.dataset.id); if (r && await confirmBox('Delete this entry?', `“${r.term}” will be removed from your library and reviews.`)) { Store.del(r.id); toast('Entry deleted'); } },
   'cycle-status': el => { const r = Store.get(el.dataset.id); if (!r) return; const n = clone(r); n.status = STATUSES[(STATUSES.indexOf(r.status||'new') + 1) % 3]; setStatusSrs(n, n.status, false); Store.put(n); if ($('#modal-root .detail')) itemDetail(n.id); },
@@ -4379,7 +4532,15 @@ document.addEventListener('submit', e => {
   Store.put({...clone(settings()), name:v.name.trim(), avatar:String(v.avatar || ''), target:Number(v.target), examDate:v.examDate, accent:v.accent, dailyNew:Number(v.dailyNew)||10, reviewStyle:v.reviewStyle||'mix'});
   toast('Preferences saved');
 });
-$('#gsearch').addEventListener('input', e => { S.search = e.target.value; render(); });
+$('#gsearch').addEventListener('input', e => srQuery(e.target.value));
+$('#gsearch').addEventListener('focus', e => { if (e.target.value.trim() && SR.res && !S.search) srShow(true); });
+$('#gsearch').addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { if (!SR.open && e.target.value.trim()) srQuery(e.target.value, true); e.preventDefault(); srMove(e.key === 'ArrowDown' ? 1 : -1); }
+  else if (e.key === 'Enter') { e.preventDefault(); const a = SR.open && SR.active >= 0 && document.querySelectorAll('#srpop .sr-opt')[SR.active]; if (a) a.click(); else srOpenAll(); }
+  else if (e.key === 'Escape' && SR.open) { e.preventDefault(); e.stopPropagation(); srShow(false); }
+});
+document.addEventListener('mousedown', e => { if (SR.open && !e.target.closest('.top .search')) srShow(false); });
+document.addEventListener('click', e => { const a = e.target.closest('#srpop [data-sr]'); if (!a) return; if (a.dataset.act !== 'sr-all') { srShow(false); $('#gsearch').blur(); } });
 window.addEventListener('hashchange', route);
 
 /* =========================================================
