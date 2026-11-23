@@ -1505,6 +1505,8 @@ async function webStart(session){
   const sb = Web.sb, uid = session.user.id;
   if (Web.uid === uid) return;
   Web.uid = uid; Web.email = session.user.email || '';
+  try { sessionStorage.removeItem('thuverse.oauth'); } catch {}
+  authDebug('signed-in', {providers:((session.user.app_metadata || {}).providers || []).join(',')});
   authHide();
   // The browser cache belongs to one account. Another account's cache is dropped;
   // a cache made before signing in (no owner) is uploaded into this account.
@@ -1545,12 +1547,14 @@ async function webConnect(){
     else if (ev === 'SIGNED_OUT') authShow('in');
   });
   const cb = authCallbackInfo(), linkRet = linkReturnInfo();
-  const {data} = await sb.auth.getSession();          // also finishes any ?code= exchange from an email link
+  const {data, error:sessErr} = await sb.auth.getSession();          // also finishes any ?code= exchange (email link or Google)
+  authDebug('session', {hasSession:!!(data && data.session), error:sessErr && sessErr.message, provider:data && data.session && ((data.session.user.app_metadata || {}).provider || '')});
   if (cb.any) history.replaceState(null, '', location.pathname + (cb.routeHash || ''));
   if (data && data.session) { await webStart(data.session); if (linkRet) linkFinish(linkRet); }
   else {
     setMode('starting');
     if (cb.error) { AUTH.msg = cb.error; AUTH.err = true; }
+    else if (cb.code && cb.oauth) { AUTH.msg = `Google sign-in couldn’t finish in this browser${sessErr && sessErr.message ? ` (${sessErr.message})` : ''}. Please try again, and finish it in the same browser tab.`; AUTH.err = true; }
     else if (cb.code) { AUTH.msg = 'Your email is confirmed. This link was opened in a different browser from the one you signed up in, so sign in here to continue.'; AUTH.err = false; }
     authShow('in');
   }
@@ -1572,17 +1576,29 @@ async function webSignOut(){
 
 /* Email links come back to the site root as ?code=… (success) or with error=…
    in the query or the hash. Read them before the hash router or supabase-js touch them. */
+const authDebug = (step, info = {}) => { try { if (localStorage.getItem('thuverse.debugAuth') === '1') console.info('[auth]', step, info); } catch {} };
 function authCallbackInfo(){
   const q = new URLSearchParams(location.search), h = new URLSearchParams(location.hash.replace(/^#/, ''));
   const get = k => q.get(k) || h.get(k) || '';
   const code = q.get('code') || '', ec = get('error_code'), ed = get('error_description'), er = get('error');
+  // did this page load come back from a Google sign-in we started?
+  let oauth = ''; try { oauth = sessionStorage.getItem('thuverse.oauth') || ''; if (code || er || ec || ed) sessionStorage.removeItem('thuverse.oauth'); } catch {}
+  if (oauth && Date.now() - Number(oauth.split(':')[1] || 0) > 30 * 60e3) oauth = '';
+  authDebug('callback', {oauth:!!oauth, hasCode:!!code, error:er, errorCode:ec, description:ed});
   const hashIsAuth = /(^|&)(error|error_code|error_description|access_token|code)=/.test(location.hash.replace(/^#/, ''));
   let error = '';
-  if ((er === 'access_denied' && !/otp|expired/i.test(ec + ' ' + ed)) || /cancel/i.test(ed)) error = 'Google sign-in was cancelled. You can try again, or sign in with your email and password.';
+  const txt = (er + ' ' + ec + ' ' + ed).replace(/\+/g, ' ');
+  if (oauth && (er || ec || ed)) error =
+      /access_denied|cancel/i.test(txt) ? 'You cancelled Google sign-in. Nothing changed. Try again, or sign in with your email and password.'
+    : /bad_oauth_state|bad_oauth_callback|flow_state|state.*(invalid|expired|not found)|invalid.*state/i.test(txt) ? 'That Google sign-in expired or was finished in another tab. Please try again.'
+    : /provider.*not enabled|unsupported provider|validation_failed/i.test(txt) ? 'Google sign-in isn’t switched on for Thuverse yet. Use your email and password for now.'
+    : /signup.*disabled|signups not allowed/i.test(txt) ? 'New accounts can’t be created with Google right now. Sign up with your email instead.'
+    : `Google sign-in didn’t finish (${(ed || er || ec).replace(/\+/g, ' ')}). Try again, or use your email and password.`;
+  else if ((er === 'access_denied' && !/otp|expired/i.test(ec + ' ' + ed)) || /cancel/i.test(ed)) error = 'Google sign-in was cancelled. You can try again, or sign in with your email and password.';
   else if (er || ec || ed) error = /expired|otp_expired|invalid|not found/i.test(ec + ' ' + ed)
     ? 'That email link has expired or was already used. If you already confirmed your email, just sign in. Otherwise choose “Resend confirmation email”.'
     : `The email link didn’t work (${(ed || er || ec).replace(/\+/g, ' ')}). Sign in, or ask for a new link.`;
-  return {code, error, any: !!(code || error || hashIsAuth), routeHash: hashIsAuth ? '' : location.hash};
+  return {code, error, oauth:!!oauth, any: !!(code || error || hashIsAuth), routeHash: hashIsAuth ? '' : location.hash};
 }
 /* ---------- Login methods: link Google to the signed-in account (Supabase manual identity linking) */
 const LOGIN = {ids:null, loading:false, msg:'', err:false, busy:false};
@@ -1703,14 +1719,18 @@ document.addEventListener('click', async e => {
   if (Web.cfg && Web.cfg.providers && Web.cfg.providers.google === false) { AUTH.msg = 'Google sign-in isn’t switched on for Thuverse yet. Use your email and password for now.'; AUTH.err = true; authShow(); return; }
   AUTH.busy = 'google'; AUTH.msg = ''; authShow();
   try {
+    try { sessionStorage.setItem('thuverse.oauth', 'google:' + Date.now()); } catch {}
+    authDebug('google:start', {redirectTo:authBack()});
     const r = await Web.sb.auth.signInWithOAuth({provider:'google', options:{redirectTo:authBack(), queryParams:{prompt:'select_account'}}});
     if (r && r.error) throw r.error;
     // the browser now leaves for Google; if it hasn't after a while, let the person try again
     setTimeout(() => { if (AUTH.busy === 'google' && document.visibilityState === 'visible') { AUTH.busy = false; authShow(); } }, 15000);
   } catch (err) {
     AUTH.busy = false; AUTH.err = true;
+    try { sessionStorage.removeItem('thuverse.oauth'); } catch {}
     const m = String((err && err.message) || '');
-    AUTH.msg = /not enabled|unsupported provider/i.test(m) ? 'Google sign-in isn’t switched on for Thuverse yet. Use your email and password for now.' : 'Couldn’t reach Google. Check your connection and try again.';
+    authDebug('google:error', {message:m, status:err && err.status});
+    AUTH.msg = /not enabled|unsupported provider/i.test(m) ? 'Google sign-in isn’t switched on for Thuverse yet. Use your email and password for now.' : m && !/fetch|network/i.test(m) ? `Google sign-in couldn’t start: ${m}` : 'Couldn’t reach Google. Check your connection and try again.';
     authShow();
   }
 });
