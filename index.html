@@ -859,8 +859,23 @@ details.more .fld+.fld,details.more .grid2+.fld{margin-top:12px}
 
 /* sign-in screen (website only) */
 body.auth-open .app{visibility:hidden}
-#auth{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:24px;background:var(--bg);overflow:auto}
-.auth-card{width:min(400px,100%);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px 28px 22px}
+#auth{position:fixed;inset:0;z-index:200;background:#22195a;overflow:auto}
+.auth-sky{position:fixed;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges;display:block}
+.auth-in{position:relative;min-height:100%;display:grid;place-items:center;padding:24px}
+.auth-card{width:min(400px,100%);position:relative;background:color-mix(in srgb,var(--surface) 78%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);
+  border:1px solid color-mix(in srgb,#fff 45%,transparent);border-radius:22px;padding:28px 28px 0;
+  box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 24px 60px -18px rgba(20,8,60,.55),0 0 0 1px rgba(40,20,90,.06)}
+[data-theme=dark] .auth-card{background:color-mix(in srgb,var(--surface) 74%,transparent);border-color:rgba(200,185,255,.22);box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 24px 60px -18px rgba(0,0,0,.7)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.auth-card{background:var(--surface)}}
+.auth-alt{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:10px;border:0;background:none;color:var(--primary);font:600 14px var(--f-ui);padding:9px;border-radius:10px;cursor:pointer}
+.auth-alt:hover{background:color-mix(in srgb,var(--primary) 9%,transparent)}
+.auth-alt .ic{width:16px;height:16px}
+.auth-help{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 18px;margin:12px 0 0;font-size:13px;color:var(--muted)}
+.auth-help .link{font-size:13px;color:var(--text-2)}
+.auth-foot{margin:18px -28px 0;padding:14px 28px;border-top:1px solid color-mix(in srgb,var(--border) 80%,transparent);text-align:center;font-size:14px;color:var(--text-2);background:color-mix(in srgb,var(--surface-2) 45%,transparent);border-radius:0 0 22px 22px}
+.auth-foot .link{font-size:14px;font-weight:650;display:inline-flex;align-items:center;gap:4px}.auth-foot .ic{width:15px;height:15px}
+.auth-card>:last-child:not(.auth-foot){margin-bottom:24px}
+@media (max-width:520px){.auth-in{padding:16px;align-items:start;padding-top:max(16px,8vh)}.auth-card{padding:22px 20px 0}.auth-foot{margin:16px -20px 0;padding:13px 20px}}
 .auth-brand{display:flex;align-items:center;gap:10px;font:800 19px/1 var(--f-ui);letter-spacing:-.025em;margin-bottom:22px}
 .auth-card h1{font:750 22px/1.25 var(--f-ui);letter-spacing:-.02em;margin:0 0 6px}
 .auth-card>p{margin:0 0 18px;font-size:14.5px}
@@ -869,8 +884,6 @@ body.auth-open .app{visibility:hidden}
 .auth-msg{margin:0;font-size:14px;padding:9px 12px;border-radius:10px}
 .auth-msg.ok{background:var(--primary-soft);color:var(--primary-ink)}
 .auth-msg.err{background:color-mix(in srgb,#E5484D 12%,var(--surface));color:var(--text)}
-.auth-links{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:16px;font-size:14px;color:var(--muted)}
-.auth-links .link{font-size:14px}
 
 
 /* ---------- Add vocabulary (one column, lookup as you type) */
@@ -879,7 +892,21 @@ body.auth-open .app{visibility:hidden}
 .av-head h3{font:750 21px var(--f-ui);letter-spacing:-.02em;margin:0}
 .av-body{flex:1;min-height:0;overflow-y:auto;padding:14px 22px 18px;display:flex;flex-direction:column;gap:14px;overscroll-behavior:contain}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.av-q{display:flex;flex-direction:column;gap:8px}
+.av-q{display:flex;flex-direction:column;gap:6px}
+.av-qwrap{position:relative}
+.av-dd{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;max-height:min(360px,46vh);max-height:min(360px,46dvh);overflow-y:auto;overscroll-behavior:contain;
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-pop);padding:10px}
+.av-dd[hidden]{display:none}
+.av-dd .av-status{padding:4px 4px 6px}
+.av-dd .av-status.done{display:none}
+.av-dd .av-status:empty{display:none}
+.av-dd .av-status .btn{margin-left:auto;flex:none}
+.av-dd .av-status.error{flex-wrap:wrap}
+.av-dd .av-res{margin:0}
+.av-dd .av-dup .lk-dup{margin:0 0 8px}
+.av-none{display:flex;gap:8px;align-items:flex-start;margin:0;padding:4px;font-size:13.5px;color:var(--text-2)}.av-none .ic{width:16px;height:16px;flex:none;margin-top:2px;color:var(--amber)}
+.av-hint{font-size:13px;color:var(--muted);height:18px;line-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.av-hint.none,.av-hint.error{color:var(--amber)}
 .av-term{position:relative;display:flex;align-items:center;gap:10px;height:54px;padding:0 16px;background:var(--surface-2);border:1.5px solid transparent;border-radius:14px}
 .av-term:focus-within{border-color:var(--primary);background:var(--surface);box-shadow:0 0 0 3px var(--primary-soft)}
 .av-term .ic{width:19px;height:19px;color:var(--muted);flex:none}
@@ -1233,12 +1260,59 @@ body.auth-open .app{visibility:hidden}
 .bd-send{width:44px;height:44px;padding:0;flex:none;border-radius:12px;justify-content:center}
 @media (max-width:560px){.bd-panel:not(.min){right:8px;left:8px;bottom:8px;width:auto;height:calc(100dvh - 76px)}.bd-launch{right:14px;bottom:14px;width:54px;height:54px}}
 @media print{.bd-launch,.bd-panel{display:none!important}}
+/* ---------- language workspace switcher + TOPIK */
+.ws-slot{padding:0 0 6px}
+.ws-btn{display:flex;align-items:center;gap:10px;width:100%;border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:8px 10px;cursor:pointer;font:inherit;color:var(--text);text-align:left}
+.ws-btn:hover{border-color:var(--border-strong)}
+.ws-btn[aria-expanded=true]{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+.ws-flag{font-size:20px;line-height:1;width:24px;text-align:center;flex:none}
+.ws-txt{flex:1;min-width:0;display:flex;flex-direction:column}
+.ws-txt small{font-size:11.5px;color:var(--muted)}.ws-txt b{font-size:14.5px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ws-chev{width:16px;height:16px;color:var(--muted);flex:none}
+.wspop{width:250px}
+.wspop .mp-i .ws-flag{flex:none}
+.tp-last .big{font-size:34px;font-weight:750;letter-spacing:-.02em}
+@media (min-width:1001px){.side-collapsed .ws-btn{justify-content:center;padding:8px 0}.side-collapsed .ws-txt,.side-collapsed .ws-chev{display:none}}
+.tp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.tp-last{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:10px}
+.tp-lv{font-weight:700;font-size:18px;text-align:right}.tp-lv small{display:block;font-weight:400;font-size:13px;color:var(--muted)}.tp-lv.ok{color:var(--green)}
+.tp-secs{list-style:none;padding:0;margin:0 0 14px}.tp-secs li{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border-2)}
+.tp-notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.tp-note{width:100%;box-sizing:border-box;margin-top:8px;font:15px/1.5 var(--f-ui);color:var(--text);background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:10px;resize:vertical}
+.lm-list{list-style:none;margin:0;padding:0}
+.lm-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--border-2)}
+.lm-row:first-child{border-top:0}
+.lm-ic{width:36px;height:36px;border-radius:10px;background:var(--surface-2);display:grid;place-items:center;flex:none}
+.lm-ic .g-logo{width:20px;height:20px}
+.lm-t{flex:1;min-width:0;display:flex;flex-direction:column}.lm-t small{color:var(--muted);font-size:13px;overflow-wrap:anywhere}
+.lm-on{display:inline-flex;align-items:center;gap:5px;color:var(--green);font-size:13.5px;font-weight:600}.lm-on .ic{width:15px;height:15px}
+.gbtn{gap:8px}.gbtn .g-logo{width:16px;height:16px}
+.lm-msg{display:flex;gap:8px;align-items:flex-start;padding:10px 12px;border-radius:10px;font-size:14px;margin:0 0 12px}
+.lm-msg.ok{background:var(--green-soft);color:var(--green)}.lm-msg.err{background:var(--red-soft);color:var(--red)}
+.lm-msg .ic{width:16px;height:16px;flex:none;margin-top:2px}
+.uc-sec{margin:4px 0 26px}
+.uc-sec .block-h{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.uc-sec h2,.uc-bytype{font:700 18px var(--f-ui);margin:0}
+.uc-bytype{margin:0 0 12px;color:var(--text-2);font-size:15px}
+.uc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.uc-card{display:flex;flex-direction:column;gap:4px;padding:14px;border:1px solid var(--border);border-radius:14px;background:var(--surface);color:inherit;text-decoration:none;min-width:0}
+.uc-card:hover{border-color:var(--border-strong)}
+.uc-card b{font-size:15.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.uc-card small{color:var(--muted);font-size:13px}
+.uc-ic{width:32px;height:32px;border-radius:9px;background:var(--primary-soft);color:var(--primary);display:grid;place-items:center;margin-bottom:4px}.uc-ic .ic{width:17px;height:17px}
+.uc-types{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.uc-empty{margin:0;padding:14px;border:1px dashed var(--border);border-radius:14px;font-size:14px}
+.uc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.uc-head h1{margin-bottom:0}
+.uc-acts{display:flex;gap:6px;flex-wrap:wrap}
+.uc-pick{align-items:center}
+.uc-newin{border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:7px 10px;font:500 13.5px var(--f-ui);color:var(--text);min-width:0;width:190px}
+.uc-newin.plain{border-style:dashed;background:transparent;width:170px}
 </style>
 </head>
 <body>
 <div class="app">
   <aside class="side" id="side" aria-label="Main navigation">
     <div class="brand"><div class="mark" aria-hidden="true"><svg viewBox="0 0 36 36" width="36" height="36"><rect width="36" height="36" rx="10" class="mk-bg"/><rect x="9" y="9.5" width="18" height="4.4" rx="2.2" class="mk-t"/><rect x="15.8" y="9.5" width="4.4" height="17.5" rx="2.2" class="mk-t"/><circle cx="27.2" cy="25.2" r="2.6" class="mk-dot"/></svg></div><div><div class="brand-name">Thuverse</div><div class="brand-sub" id="brand-sub">Your language universe</div></div><button class="icon-btn side-toggle" id="side-toggle" data-act="side-toggle" aria-controls="side" aria-expanded="true" aria-label="Collapse sidebar" data-tip="Collapse sidebar"><i data-lucide="panel-left-close" class="ic st-collapse" aria-hidden="true"></i><i data-lucide="panel-left-open" class="ic st-expand" aria-hidden="true"></i><i data-lucide="x" class="ic st-close" aria-hidden="true"></i></button></div>
+    <div class="ws-slot" id="ws-slot"></div>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
       <a href="#preferences" class="nav-item" id="pref-link" data-tip="Preferences"><i data-lucide="settings" class="ic" aria-hidden="true"></i><span>Preferences</span></a>
@@ -1246,6 +1320,7 @@ body.auth-open .app{visibility:hidden}
   </aside>
   <div class="scrim" data-act="menu" aria-hidden="true"></div>
   <div class="mepop" id="mepop" role="menu" aria-label="Account" tabindex="-1" hidden></div>
+  <div class="mepop wspop" id="wspop" role="menu" aria-label="Language workspace" tabindex="-1" hidden></div>
   <div class="mepop mesub" id="mesub" role="menu" aria-label="Appearance" tabindex="-1" hidden></div>
   <main class="main">
     <header class="top">
@@ -1386,7 +1461,13 @@ async function webClient(){
     try { await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js'); }
     catch { await loadScript('https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js'); }
   }
-  Web.sb = window.supabase.createClient(Web.cfg.supabaseUrl, Web.cfg.supabaseAnonKey, {auth:{flowType:'pkce', persistSession:true, autoRefreshToken:true, detectSessionInUrl:true}});
+  // Data requests carry the active workspace so the database only returns and accepts that workspace's rows.
+  // English sends nothing (the database treats a missing header as English), exactly as before.
+  const wsFetch = (u, o = {}) => {
+    if (WS.active !== 'en' && String(u).includes('/rest/v1/')) { const h = new Headers(o.headers || {}); h.set('x-thuverse-workspace', WS.active); o = {...o, headers:h}; }
+    return fetch(u, o);
+  };
+  Web.sb = window.supabase.createClient(Web.cfg.supabaseUrl, Web.cfg.supabaseAnonKey, {auth:{flowType:'pkce', persistSession:true, autoRefreshToken:true, detectSessionInUrl:true}, global:{fetch:wsFetch}});
   return Web.sb;
 }
 const webErr = e => {
@@ -1404,7 +1485,7 @@ function webEmit(){
 async function webPull(){
   const out = new Map(); let from = 0;
   for (;;) {
-    const {data, error} = await Web.sb.from('records').select('id,body').eq('user_id', Web.uid).order('id').range(from, from + 999);
+    const {data, error} = await Web.sb.from('records').select('id,body').eq('user_id', Web.uid).in('workspace', [WS.active, '_shared']).order('id').range(from, from + 999);
     if (error) throw webErr(error);
     data.forEach(r => out.set(r.id, r.body || {}));
     if (data.length < 1000) break;
@@ -1417,12 +1498,12 @@ async function webPull(){
 const webCollection = {
   doc(id){ return {
     async set(body){
-      const {error} = await Web.sb.from('records').upsert({user_id:Web.uid, id, kind:String(body.kind || ''), body, updated_at:new Date().toISOString()}, {onConflict:'user_id,id'});
+      const {error} = await Web.sb.from('records').upsert({user_id:Web.uid, id, workspace:wsOfPhys(id), kind:String(body.kind || ''), body, updated_at:new Date().toISOString()}, {onConflict:'user_id,id'});
       if (error) throw webErr(error);
       Web.mirror.set(id, body);
     },
     async delete(){
-      const {error} = await Web.sb.from('records').delete().eq('user_id', Web.uid).eq('id', id);
+      const {error} = await Web.sb.from('records').delete().eq('user_id', Web.uid).eq('workspace', wsOfPhys(id)).eq('id', id);
       if (error) throw webErr(error);
       Web.mirror.delete(id);
     },
@@ -1433,7 +1514,7 @@ const webCollection = {
     Web.chan = Web.sb.channel('records-' + Web.uid)
       .on('postgres_changes', {event:'*', schema:'public', table:'records'}, p => {
         const row = p.eventType === 'DELETE' ? p.old : p.new;
-        if (!row || row.user_id !== Web.uid || !row.id) return;
+        if (!row || row.user_id !== Web.uid || !row.id || wsLogical(row.id) === null) return;   // another workspace
         if (p.eventType === 'DELETE') Web.mirror.delete(row.id); else Web.mirror.set(row.id, row.body || {});
         webEmit();
       })
@@ -1451,6 +1532,8 @@ async function webStart(session){
   const sb = Web.sb, uid = session.user.id;
   if (Web.uid === uid) return;
   Web.uid = uid; Web.email = session.user.email || '';
+  try { sessionStorage.removeItem('thuverse.oauth'); } catch {}
+  authDebug('signed-in', {providers:((session.user.app_metadata || {}).providers || []).join(',')});
   authHide();
   // The browser cache belongs to one account. Another account's cache is dropped;
   // a cache made before signing in (no owner) is uploaded into this account.
@@ -1490,13 +1573,15 @@ async function webConnect(){
     if (session && session.user) setTimeout(() => webStart(session), 0);
     else if (ev === 'SIGNED_OUT') authShow('in');
   });
-  const cb = authCallbackInfo();
-  const {data} = await sb.auth.getSession();          // also finishes any ?code= exchange from an email link
+  const cb = authCallbackInfo(), linkRet = linkReturnInfo();
+  const {data, error:sessErr} = await sb.auth.getSession();          // also finishes any ?code= exchange (email link or Google)
+  authDebug('session', {hasSession:!!(data && data.session), error:sessErr && sessErr.message, provider:data && data.session && ((data.session.user.app_metadata || {}).provider || '')});
   if (cb.any) history.replaceState(null, '', location.pathname + (cb.routeHash || ''));
-  if (data && data.session) await webStart(data.session);
+  if (data && data.session) { await webStart(data.session); if (linkRet) linkFinish(linkRet); }
   else {
     setMode('starting');
     if (cb.error) { AUTH.msg = cb.error; AUTH.err = true; }
+    else if (cb.code && cb.oauth) { AUTH.msg = `Google sign-in couldn’t finish in this browser${sessErr && sessErr.message ? ` (${sessErr.message})` : ''}. Please try again, and finish it in the same browser tab.`; AUTH.err = true; }
     else if (cb.code) { AUTH.msg = 'Your email is confirmed. This link was opened in a different browser from the one you signed up in, so sign in here to continue.'; AUTH.err = false; }
     authShow('in');
   }
@@ -1510,27 +1595,204 @@ async function webSignOut(){
   try { Web.sb.removeChannel(Web.chan); } catch {}
   Web.uid = null; Web.mirror = new Map(); Store.col = null;
   Store.recs.clear(); Store.dirty.clear(); Store.pending.clear(); Store.owner = null;
-  try { localStorage.removeItem(LS_KEY); } catch {}
+  try { Object.keys(WS_LIST).forEach(w => localStorage.removeItem(w === 'en' ? LS_KEY : `thuverse.${w}.v1`)); localStorage.removeItem('thuverse.ws'); } catch {}
+  WS.active = 'en'; WS.checked = false;
   await Web.sb.auth.signOut();
   authShow('in'); scheduleRender();
 }
 
 /* Email links come back to the site root as ?code=… (success) or with error=…
    in the query or the hash. Read them before the hash router or supabase-js touch them. */
+const authDebug = (step, info = {}) => { try { if (localStorage.getItem('thuverse.debugAuth') === '1') console.info('[auth]', step, info); } catch {} };
 function authCallbackInfo(){
   const q = new URLSearchParams(location.search), h = new URLSearchParams(location.hash.replace(/^#/, ''));
   const get = k => q.get(k) || h.get(k) || '';
   const code = q.get('code') || '', ec = get('error_code'), ed = get('error_description'), er = get('error');
+  // did this page load come back from a Google sign-in we started?
+  let oauth = ''; try { oauth = sessionStorage.getItem('thuverse.oauth') || ''; if (code || er || ec || ed) sessionStorage.removeItem('thuverse.oauth'); } catch {}
+  if (oauth && Date.now() - Number(oauth.split(':')[1] || 0) > 30 * 60e3) oauth = '';
+  authDebug('callback', {oauth:!!oauth, hasCode:!!code, error:er, errorCode:ec, description:ed});
   const hashIsAuth = /(^|&)(error|error_code|error_description|access_token|code)=/.test(location.hash.replace(/^#/, ''));
   let error = '';
-  if ((er === 'access_denied' && !/otp|expired/i.test(ec + ' ' + ed)) || /cancel/i.test(ed)) error = 'Google sign-in was cancelled. You can try again, or sign in with your email and password.';
+  const txt = (er + ' ' + ec + ' ' + ed).replace(/\+/g, ' ');
+  if (oauth && (er || ec || ed)) error =
+      /access_denied|cancel/i.test(txt) ? 'You cancelled Google sign-in. Nothing changed. Try again, or sign in with your email and password.'
+    : /bad_oauth_state|bad_oauth_callback|flow_state|state.*(invalid|expired|not found)|invalid.*state/i.test(txt) ? 'That Google sign-in expired or was finished in another tab. Please try again.'
+    : /provider.*not enabled|unsupported provider|validation_failed/i.test(txt) ? 'Google sign-in isn’t switched on for Thuverse yet. Use your email and password for now.'
+    : /signup.*disabled|signups not allowed/i.test(txt) ? 'New accounts can’t be created with Google right now. Sign up with your email instead.'
+    : `Google sign-in didn’t finish (${(ed || er || ec).replace(/\+/g, ' ')}). Try again, or use your email and password.`;
+  else if ((er === 'access_denied' && !/otp|expired/i.test(ec + ' ' + ed)) || /cancel/i.test(ed)) error = 'Google sign-in was cancelled. You can try again, or sign in with your email and password.';
   else if (er || ec || ed) error = /expired|otp_expired|invalid|not found/i.test(ec + ' ' + ed)
     ? 'That email link has expired or was already used. If you already confirmed your email, just sign in. Otherwise choose “Resend confirmation email”.'
     : `The email link didn’t work (${(ed || er || ec).replace(/\+/g, ' ')}). Sign in, or ask for a new link.`;
-  return {code, error, any: !!(code || error || hashIsAuth), routeHash: hashIsAuth ? '' : location.hash};
+  return {code, error, oauth:!!oauth, any: !!(code || error || hashIsAuth), routeHash: hashIsAuth ? '' : location.hash};
+}
+/* ---------- Login methods: link Google to the signed-in account (Supabase manual identity linking) */
+const LOGIN = {ids:null, loading:false, msg:'', err:false, busy:false};
+async function loginLoad(force){
+  if (!Web.sb || !Web.uid || (LOGIN.loading && !force)) return;
+  LOGIN.loading = true;
+  try { const {data, error} = await Web.sb.auth.getUserIdentities(); if (error) throw error; LOGIN.ids = (data && data.identities) || []; }
+  catch { LOGIN.ids = LOGIN.ids || []; }
+  LOGIN.loading = false; scheduleRender();
+}
+function loginMethodsHTML(){
+  if (!Web.uid || isClaude()) return '';
+  if (LOGIN.ids === null) { loginLoad(); }
+  const ids = LOGIN.ids || [], email = ids.find(i => i.provider === 'email'), google = ids.find(i => i.provider === 'google');
+  const googleOn = !(Web.cfg && Web.cfg.providers && Web.cfg.providers.google === false);
+  const row = (logo, title, sub, right) => `<li class="lm-row"><span class="lm-ic">${logo}</span><div class="lm-t"><b>${title}</b><small>${sub}</small></div>${right}</li>`;
+  const on = `<span class="lm-on">${ic('circle-check')} Connected</span>`;
+  return `<section class="panel" id="login-methods"><h2 class="sec si">${ic('key-round')} Login methods</h2>
+    <p class="muted" style="margin:0 0 12px;font-size:14px">Ways to sign in to this account. Your profile and learning data stay the same whichever you use.</p>
+    ${LOGIN.msg ? `<p class="lm-msg ${LOGIN.err ? 'err' : 'ok'}" role="status">${ic(LOGIN.err ? 'circle-alert' : 'circle-check')} ${esc(LOGIN.msg)}</p>` : ''}
+    ${LOGIN.ids === null ? `<p class="muted">Loading your login methods…</p>` : `<ul class="lm-list">
+      ${email || !google ? row(ic('mail'), 'Email and password', esc((email && email.identity_data && email.identity_data.email) || Web.email), on) : ''}
+      ${google ? row(GOOGLE_G, 'Google', esc((google.identity_data && google.identity_data.email) || 'Google account'), `${on}${ids.length > 1 ? `<button type="button" class="btn sm ghost" data-act="lm-unlink" data-id="${esc(google.identity_id || google.id)}">Disconnect</button>` : ''}`)
+        : row(GOOGLE_G, 'Google', googleOn ? 'Sign in with your Google account too.' : 'Not available yet: Google sign-in isn’t switched on for Thuverse.', `<button type="button" class="btn sm gbtn" data-act="lm-link" ${LOGIN.busy ? 'disabled' : ''}>${GOOGLE_G} Connect Google</button>`)}
+    </ul>`}
+  </section>`;
+}
+async function loginLink(){
+  if (!Web.sb || !Web.uid) return;
+  if (Web.cfg && Web.cfg.providers && Web.cfg.providers.google === false) { LOGIN.msg = 'Google sign-in isn’t switched on for Thuverse yet, so Google can’t be connected. Nothing was changed.'; LOGIN.err = true; render(); return; }
+  LOGIN.busy = true; LOGIN.msg = ''; render();
+  try { sessionStorage.setItem('thuverse.linking', 'google'); } catch {}
+  // Supabase links the Google identity to the user who is signed in now; it never creates a second account.
+  const {error} = await Web.sb.auth.linkIdentity({provider:'google', options:{redirectTo:location.origin + '/?linked=google'}});
+  if (error) {
+    try { sessionStorage.removeItem('thuverse.linking'); } catch {}
+    LOGIN.busy = false; LOGIN.err = true;
+    LOGIN.msg = /manual linking|linking.*disabled|not enabled/i.test(error.message || '') ? 'Connecting other login methods isn’t switched on in Supabase yet (Manual linking). Nothing was changed.' : `Couldn’t start connecting Google: ${error.message || 'unknown error'}. Nothing was changed.`;
+    render();
+  }
+}
+function linkReturnInfo(){
+  let flag = ''; try { flag = sessionStorage.getItem('thuverse.linking') || ''; sessionStorage.removeItem('thuverse.linking'); } catch {}
+  if (!flag) return null;
+  const q = new URLSearchParams(location.search), h = new URLSearchParams(location.hash.replace(/^#/, ''));
+  const g = k => q.get(k) || h.get(k) || '';
+  return {provider:flag, code:q.get('code') || '', ec:g('error_code'), ed:g('error_description').replace(/\+/g, ' '), er:g('error')};
+}
+async function linkFinish(r){
+  const txt = (r.ec + ' ' + r.ed + ' ' + r.er).toLowerCase();
+  if (r.er || r.ec || r.ed) {
+    LOGIN.err = true;
+    LOGIN.msg = /already|identity_exists|exists/.test(txt) ? 'That Google account is already connected to a different Thuverse account, so it wasn’t added here. Use another Google account, or sign in to the other account.'
+      : /cancel|access_denied/.test(txt) ? 'Connecting Google was cancelled. Nothing was changed.'
+      : /manual.*link|linking.*disabled/.test(txt) ? 'Connecting other login methods isn’t switched on in Supabase yet (Manual linking). Nothing was changed.'
+      : `Google couldn’t be connected (${r.ed || r.er || r.ec}). Nothing was changed.`;
+  } else {
+    LOGIN.ids = null; await loginLoad(true);
+    const g = (LOGIN.ids || []).find(i => i.provider === 'google');
+    LOGIN.err = !g;
+    LOGIN.msg = g ? `Google is connected. You can now sign in with ${(g.identity_data && g.identity_data.email) || 'your Google account'} as well as your email and password.` : 'Google didn’t finish connecting. Nothing was changed; try again.';
+  }
+  go('preferences');
+  setTimeout(() => { const n = $('#login-methods'); if (n) n.scrollIntoView({block:'center'}); }, 120);
 }
 /* where email links send people back to: the production site in production, the current site elsewhere */
 const authBack = () => ((Web.cfg && Web.cfg.siteUrl) || location.origin).replace(/\/*$/, '/');
+
+/* ---------- Sign-in backdrop: a pixel-art city at twilight, drawn on a small canvas and scaled up.
+   Dusk deepens into evening over the first minute while windows switch on; lights shimmer softly.
+   ~10 frames a second, paused when hidden; a single still frame when reduced motion is on. */
+const authSky = (() => {
+  let cv, cx, raf = 0, t0 = 0, last = 0, W = 0, H = 0, scene = null, onResize = null, still = false;
+  const rnd = seed => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let x = Math.imul(seed ^ seed >>> 15, 1 | seed); x = x + Math.imul(x ^ x >>> 7, 61 | x) ^ x; return ((x ^ x >>> 14) >>> 0) / 4294967296; };
+  const mix = (a, b, k) => { const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)); const x = p(a), y = p(b); return `rgb(${x.map((v, i) => Math.round(v + (y[i] - v) * k)).join(',')})`; };
+  const SKY = {dusk:['#2a1d5e', '#5b3f9e', '#b47bc4', '#f2b6c6'], night:['#0e0b2a', '#22195a', '#4a3291', '#8a5cb0']};
+  const LAYERS = [
+    {dusk:'#9c86d6', night:'#3b2d74', hMin:.26, hMax:.46, wMin:10, wMax:26, lit:.18, haze:.0},
+    {dusk:'#6a51ad', night:'#2a1f5c', hMin:.18, hMax:.36, wMin:12, wMax:30, lit:.32, haze:.0},
+    {dusk:'#3a2a72', night:'#170f38', hMin:.10, hMax:.24, wMin:14, wMax:34, lit:.45, haze:.0},
+  ];
+  const WARM = ['#ffd38a', '#ffbf7a', '#ffe2a8', '#f7a8cf', '#cdb9ff'];
+  function build(){
+    const r = rnd(7331), base = Math.min(W, H * 1.8);
+    const layers = LAYERS.map((L, li) => {
+      const blds = [], wins = [];
+      let x = -4 - Math.floor(r() * 8);
+      while (x < W + 4) {
+        const w = Math.round(L.wMin + r() * (L.wMax - L.wMin)), h = Math.round(base * (L.hMin + r() * (L.hMax - L.hMin)) * (H > W ? 1.25 : 1));
+        const top = H - h, b = {x, w, top, ant:r() < .25 ? Math.round(3 + r() * 7) : 0, step:r() < .3 ? Math.round(2 + r() * 4) : 0};
+        blds.push(b);
+        const cols = Math.floor((w - 3) / 3), rows = Math.floor((h - 4) / (li === 2 ? 4 : 3));
+        for (let cI = 0; cI < cols; cI++) for (let rI = 0; rI < rows; rI++) {
+          if (r() > L.lit + .25) continue;
+          wins.push({x:x + 2 + cI * 3, y:top + 3 + b.step + rI * (li === 2 ? 4 : 3), w:li === 2 ? 2 : 1, h:li === 2 ? 2 : 1, c:WARM[Math.floor(r() * WARM.length)], on:r(), ph:r() * 6.28, sp:.4 + r() * 1.2, fl:r() < .03});
+        }
+        x += w + Math.round(r() * 3) - 1;
+      }
+      return {L, blds, wins};
+    });
+    const stars = [...Array(Math.round(W * H / 260))].map(() => ({x:Math.floor(r() * W), y:Math.floor(r() * H * .55), ph:r() * 6.28, sp:.3 + r() * .9, big:r() < .08}));
+    const clouds = [...Array(5)].map((_, i) => ({x:r() * W, y:Math.round(H * (.1 + r() * .32)), w:Math.round(26 + r() * 36), sp:.6 + r() * 1.4, tone:i % 2}));
+    const moon = {x:Math.round(W * .8), y:Math.round(H * .16), r:Math.max(7, Math.round(Math.min(W, H) * .05))};
+    // crescent cut out on its own little canvas, so the sky shows through the shadowed side
+    const mi = document.createElement('canvas'); mi.width = mi.height = moon.r * 2 + 2; const mc = mi.getContext('2d');
+    mc.fillStyle = '#f4ecff'; mc.beginPath(); mc.arc(moon.r + 1, moon.r + 1, moon.r, 0, 6.29); mc.fill();
+    mc.globalCompositeOperation = 'destination-out'; mc.beginPath(); mc.arc(moon.r + 1 - moon.r * .5, moon.r + 1 - moon.r * .25, moon.r * .92, 0, 6.29); mc.fill();
+    scene = {layers, stars, clouds, moon, moonImg:mi};
+  }
+  function size(){
+    if (!cv) return;
+    W = Math.max(150, Math.min(400, Math.round(innerWidth / 4))); H = Math.max(110, Math.round(W * innerHeight / innerWidth));
+    cv.width = W; cv.height = H; cx = cv.getContext('2d'); cx.imageSmoothingEnabled = false; build(); draw(still ? 50 : (performance.now() - t0) / 1000);
+  }
+  // a stepped pixel cloud: a wide base and two rounded puffs on top
+  function cloud(x, y, w, c){ const h = Math.max(3, Math.round(w / 8)); cx.fillStyle = c;
+    cx.fillRect(x + 2, y, w - 4, h); cx.fillRect(x, y + 1, w, h - 1);
+    const p1 = Math.round(w * .2), p2 = Math.round(w * .48);
+    cx.fillRect(x + p1 + 1, y - h, Math.round(w * .3) - 2, h); cx.fillRect(x + p1, y - h + 1, Math.round(w * .3), h - 1);
+    cx.fillRect(x + p2 + 1, y - Math.round(h * 1.6), Math.round(w * .26) - 2, h); cx.fillRect(x + p2, y - Math.round(h * 1.6) + 1, Math.round(w * .26), h); }
+  function draw(sec){
+    if (!cx || !scene) return;
+    const k = Math.min(1, sec / 60) * .85;                       // 0 = dusk … .85 = evening
+    const g = cx.createLinearGradient(0, 0, 0, H);
+    SKY.dusk.forEach((c, i) => g.addColorStop(i / 3, mix(c, SKY.night[i], k)));
+    cx.fillStyle = g; cx.fillRect(0, 0, W, H);
+    // horizon glow
+    const hg = cx.createLinearGradient(0, H * .45, 0, H);
+    hg.addColorStop(0, 'rgba(255,170,200,0)'); hg.addColorStop(1, `rgba(255,170,200,${(.35 * (1 - k)).toFixed(3)})`);
+    cx.fillStyle = hg; cx.fillRect(0, H * .45, W, H * .55);
+    // stars brighten as the sky darkens
+    scene.stars.forEach(s => { const a = (.25 + .75 * k) * (.55 + .45 * Math.sin(sec * s.sp + s.ph)); cx.fillStyle = `rgba(255,248,255,${a.toFixed(3)})`; cx.fillRect(s.x, s.y, s.big ? 2 : 1, s.big ? 2 : 1); });
+    // moon with a soft halo
+    const m = scene.moon, halo = cx.createRadialGradient(m.x, m.y, m.r * .8, m.x, m.y, m.r * 3);
+    halo.addColorStop(0, `rgba(235,220,255,${(.18 + .1 * k).toFixed(3)})`); halo.addColorStop(1, 'rgba(235,220,255,0)');
+    cx.fillStyle = halo; cx.fillRect(m.x - m.r * 3, m.y - m.r * 3, m.r * 6, m.r * 6);
+    cx.drawImage(scene.moonImg, m.x - m.r - 1, m.y - m.r - 1);
+    // drifting clouds
+    scene.clouds.forEach(c => { const x = ((c.x + sec * c.sp) % (W + c.w * 2)) - c.w; cloud(Math.round(x), c.y, c.w, c.tone ? `rgba(246,190,226,${(.5 - .3 * k).toFixed(3)})` : `rgba(190,170,240,${(.45 - .25 * k).toFixed(3)})`); });
+    // skyline layers, back to front, windows switching on through the evening
+    scene.layers.forEach(({L, blds, wins}, li) => {
+      cx.fillStyle = mix(L.dusk, L.night, k);
+      blds.forEach(b => { cx.fillRect(b.x, b.top + b.step, b.w, H); if (b.step) cx.fillRect(b.x + 2, b.top, b.w - 4, b.step + 1); if (b.ant) cx.fillRect(b.x + Math.floor(b.w / 2), b.top - b.ant, 1, b.ant); });
+      wins.forEach(w => {
+        if (w.on > .35 + k * .75) return;                     // more windows light up as evening falls
+        let a = .78 + .22 * Math.sin(sec * w.sp + w.ph);
+        if (w.fl && Math.sin(sec * 2.3 + w.ph * 3) > .93) a *= .35;   // the odd flickering bulb
+        cx.globalAlpha = a * (li === 0 ? .55 : li === 1 ? .8 : 1); cx.fillStyle = w.c; cx.fillRect(w.x, w.y, w.w, w.h);
+      });
+      cx.globalAlpha = 1;
+      if (li < 2) { const hz = cx.createLinearGradient(0, H * .45, 0, H); hz.addColorStop(0, 'rgba(60,40,120,0)'); hz.addColorStop(1, `rgba(60,40,120,${(.22 + .12 * k).toFixed(3)})`); cx.fillStyle = hz; cx.fillRect(0, H * .45, W, H * .55); }   // haze between layers
+    });
+  }
+  function loop(now){
+    raf = requestAnimationFrame(loop);
+    if (document.hidden || now - last < 100) return;
+    last = now; draw((now - t0) / 1000);
+  }
+  return {
+    start(canvas){
+      cv = canvas; t0 = performance.now(); still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      size(); onResize = () => { clearTimeout(onResize.t); onResize.t = setTimeout(size, 150); }; addEventListener('resize', onResize);
+      if (!still) raf = requestAnimationFrame(loop);
+    },
+    stop(){ cancelAnimationFrame(raf); raf = 0; if (onResize) removeEventListener('resize', onResize); cv = cx = scene = null; },
+  };
+})();
 
 /* ---------- Sign-in screen (website only) */
 const AUTH = {mode:'in', busy:false, msg:'', err:false};
@@ -1543,14 +1805,16 @@ function authHTML(){
   const google = (m === 'in' || m === 'up') ? `<button type="button" class="btn block gbtn" data-auth-google ${AUTH.busy ? 'disabled' : ''} aria-busy="${AUTH.busy === 'google'}">${AUTH.busy === 'google' ? ic('loader-circle', 'spin') : GOOGLE_G}<span>${AUTH.busy === 'google' ? 'Connecting to Google…' : 'Continue with Google'}</span></button>
     <div class="auth-or"><span>or ${m === 'up' ? 'sign up' : 'sign in'} with email</span></div>` : '';
   const btn = {in:'Sign in', up:'Create account', link:'Email me a link', reset:'Save new password', forgot:'Email me a reset link', resend:'Send a new link'}[m];
-  const links = {
-    in:`<button type="button" class="link" data-auth="link">Email me a sign-in link instead</button><button type="button" class="link" data-auth="forgot">Forgot password?</button><button type="button" class="link" data-auth="resend">Resend confirmation email</button><span>New here? <button type="button" class="link" data-auth="up">Create an account</button></span>`,
-    resend:`<button type="button" class="link" data-auth="in">Back to sign in</button>`,
-    up:`<span>Already have an account? <button type="button" class="link" data-auth="in">Sign in</button></span>`,
-    link:`<button type="button" class="link" data-auth="in">Sign in with a password</button>`,
-    forgot:`<button type="button" class="link" data-auth="in">Back to sign in</button>`,
-    reset:'',
-  }[m];
+  // secondary option under the main button, small account-help links, then a footer that switches between sign in and sign up
+  const alt = {in:`<button type="button" class="auth-alt" data-auth="link">${ic('mail')} Email me a sign-in link instead</button>`,
+    link:`<button type="button" class="auth-alt" data-auth="in">${ic('key-round')} Sign in with a password instead</button>`}[m] || '';
+  const help = {in:`<button type="button" class="link" data-auth="forgot">Forgot password?</button><button type="button" class="link" data-auth="resend">Resend confirmation email</button>`,
+    up:`<span>Didn’t get the confirmation email?</span><button type="button" class="link" data-auth="resend">Resend it</button>`}[m] || '';
+  const foot = {in:`New here? <button type="button" class="link" data-auth="up">Create an account</button>`,
+    up:`Already have an account? <button type="button" class="link" data-auth="in">Sign in</button>`,
+    link:`New here? <button type="button" class="link" data-auth="up">Create an account</button>`,
+    forgot:`<button type="button" class="link" data-auth="in">${ic('arrow-left')} Back to sign in</button>`,
+    resend:`<button type="button" class="link" data-auth="in">${ic('arrow-left')} Back to sign in</button>`, reset:''}[m];
   return `<div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-t">
     <div class="auth-brand">${$('.brand .mark') ? $('.brand .mark').outerHTML : ''}<span>Thuverse</span></div>
     <h1 id="auth-t">${title}</h1><p class="muted">${sub}</p>
@@ -1559,18 +1823,20 @@ function authHTML(){
       ${AUTH.msg ? `<p class="auth-msg ${AUTH.err ? 'err' : 'ok'}" role="status">${esc(AUTH.msg)}</p>` : ''}
       <button class="btn primary block" ${AUTH.busy ? 'disabled' : ''}>${AUTH.busy === true ? ic('loader-circle', 'spin') : ''} ${btn}</button>
     </form>
-    <div class="auth-links">${links}</div>
+    ${alt}
+    ${help ? `<div class="auth-help">${help}</div>` : ''}
+    ${foot ? `<div class="auth-foot">${foot}</div>` : ''}
   </div>`;
 }
 function authShow(mode){
   if (mode) { AUTH.mode = mode; }
   let el = $('#auth');
-  if (!el) { el = document.createElement('div'); el.id = 'auth'; document.body.appendChild(el); }
-  el.innerHTML = authHTML(); drawIcons();
+  if (!el) { el = document.createElement('div'); el.id = 'auth'; el.innerHTML = '<canvas class="auth-sky" aria-hidden="true"></canvas><div class="auth-in" id="auth-in"></div>'; document.body.appendChild(el); authSky.start($('.auth-sky', el)); }
+  $('#auth-in').innerHTML = authHTML(); drawIcons();
   document.body.classList.add('auth-open');
   const first = el.querySelector('input'); if (first && !AUTH.busy) first.focus();
 }
-function authHide(){ const el = $('#auth'); if (el) el.remove(); document.body.classList.remove('auth-open'); AUTH.msg = ''; }
+function authHide(){ const el = $('#auth'); authSky.stop(); if (el) el.remove(); document.body.classList.remove('auth-open'); AUTH.msg = ''; }
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-auth]'); if (!b) return;
   const f = $('#auth-form'); if (f && f.elements.email) AUTH.email = f.elements.email.value;
@@ -1584,14 +1850,18 @@ document.addEventListener('click', async e => {
   if (Web.cfg && Web.cfg.providers && Web.cfg.providers.google === false) { AUTH.msg = 'Google sign-in isn’t switched on for Thuverse yet. Use your email and password for now.'; AUTH.err = true; authShow(); return; }
   AUTH.busy = 'google'; AUTH.msg = ''; authShow();
   try {
+    try { sessionStorage.setItem('thuverse.oauth', 'google:' + Date.now()); } catch {}
+    authDebug('google:start', {redirectTo:authBack()});
     const r = await Web.sb.auth.signInWithOAuth({provider:'google', options:{redirectTo:authBack(), queryParams:{prompt:'select_account'}}});
     if (r && r.error) throw r.error;
     // the browser now leaves for Google; if it hasn't after a while, let the person try again
     setTimeout(() => { if (AUTH.busy === 'google' && document.visibilityState === 'visible') { AUTH.busy = false; authShow(); } }, 15000);
   } catch (err) {
     AUTH.busy = false; AUTH.err = true;
+    try { sessionStorage.removeItem('thuverse.oauth'); } catch {}
     const m = String((err && err.message) || '');
-    AUTH.msg = /not enabled|unsupported provider/i.test(m) ? 'Google sign-in isn’t switched on for Thuverse yet. Use your email and password for now.' : 'Couldn’t reach Google. Check your connection and try again.';
+    authDebug('google:error', {message:m, status:err && err.status});
+    AUTH.msg = /not enabled|unsupported provider/i.test(m) ? 'Google sign-in isn’t switched on for Thuverse yet. Use your email and password for now.' : m && !/fetch|network/i.test(m) ? `Google sign-in couldn’t start: ${m}` : 'Couldn’t reach Google. Check your connection and try again.';
     authShow();
   }
 });
@@ -1637,19 +1907,39 @@ document.addEventListener('submit', async e => {
 /* =========================================================
    Store: per-person cloud database, with a browser cache
    ========================================================= */
+/* ---------- language workspaces
+   English keeps its original record ids; other workspaces store ids as '<ws>:<id>'.
+   'settings' (profile, avatar, global preferences) is shared by every workspace.
+   The database enforces the same rule (workspace column + RLS on the x-thuverse-workspace header). */
+const WS_LIST = {
+  en:{id:'en', name:'English', label:'English', flag:'🇬🇧', speech:'en', exam:'IELTS'},
+  ko:{id:'ko', name:'Korean', label:'Korean (TOPIK)', flag:'🇰🇷', speech:'ko-KR', exam:'TOPIK'},
+};
+const WS = {active: WS_LIST[lsGet('thuverse.ws')] ? lsGet('thuverse.ws') : 'en', checked:false};
+const isKo = () => WS.active === 'ko';
+const wsPhys = (id, ws = WS.active) => id === 'settings' || ws === 'en' ? id : ws + ':' + id;
+function wsLogical(pid, ws = WS.active){
+  if (pid === 'settings') return pid;
+  const m = /^([a-z]{2,8}):(.+)$/.exec(pid);
+  if (ws === 'en') return m ? null : pid;
+  return m && m[1] === ws ? m[2] : null;
+}
+const wsOfPhys = pid => pid === 'settings' ? '_shared' : (/^([a-z]{2,8}):/.exec(pid) || [, 'en'])[1];
 const LS_KEY = 'englishHub.v1';
+const lsKey = () => WS.active === 'en' ? LS_KEY : `thuverse.${WS.active}.v1`;
 const Store = {
   recs: new Map(), dirty: new Set(), pending: new Set(), col: null, owner: null, mode: 'starting', timers: new Map(), busy: new Set(), again: new Set(),
   loadLocal(){
     try {
-      const raw = JSON.parse(lsGet(LS_KEY) || 'null');
+      const raw = JSON.parse(lsGet(lsKey()) || 'null');
       if (raw && Array.isArray(raw.recs)) { raw.recs.forEach(r => this.recs.set(r.id, r)); (raw.dirty||[]).forEach(id => this.dirty.add(id)); this.owner = raw.owner || null; }
     } catch {}
     this.dirty.forEach(id => this.pending.add(id));
   },
   saveLocal(){
     clearTimeout(this._ls);
-    this._ls = setTimeout(() => lsSet(LS_KEY, JSON.stringify({recs:[...this.recs.values()], dirty:[...this.dirty], owner:this.owner || undefined})), 250);
+    const key = lsKey();
+    this._ls = setTimeout(() => lsSet(key, JSON.stringify({recs:[...this.recs.values()], dirty:[...this.dirty], owner:this.owner || undefined})), 250);
   },
   async connect(){
     const giveUp = setTimeout(() => { if (this.mode === 'starting') setMode('local'); }, 10000);
@@ -1664,6 +1954,7 @@ const Store = {
       let first = true;
       this.col.onSnapshot(snap => {
         clearTimeout(giveUp);
+        this.lastSnap = snap;
         this.apply(snap);
         if (!snap.metadata.fromCache) setMode('cloud');
         else if (first) setMode('syncing');
@@ -1677,9 +1968,11 @@ const Store = {
   },
   apply(snap){
     const m = new Map();
-    snap.docs.forEach(d => { if (d.exists) { const body = clone(d.data()); body.id = d.id; m.set(d.id, body); } });
+    snap.docs.forEach(d => { const id = d.exists && wsLogical(d.id); if (id) { const body = clone(d.data()); body.id = id; m.set(id, body); } });
     for (const id of this.pending) { const r = this.recs.get(id); if (r) m.set(id, r); else m.delete(id); }
     this.recs = m; this.saveLocal(); scheduleRender();
+    wsCheckSaved();
+    setTimeout(migrateContentTypes, 0);
   },
   get(id){ return this.recs.get(id); },
   put(rec){
@@ -1688,6 +1981,15 @@ const Store = {
     this.touch(rec.id);
   },
   del(id){ this.recs.delete(id); this.touch(id); },
+  // send every queued change now (used before switching workspace)
+  async flushAll(){
+    const ids = [...new Set([...this.timers.keys(), ...(this.col ? this.pending : [])])];
+    ids.forEach(id => clearTimeout(this.timers.get(id)));
+    if (this.col) await Promise.all(ids.map(id => this.flush(id)));
+    for (let i = 0; i < 40 && this.busy.size; i++) await new Promise(r => setTimeout(r, 50));
+    clearTimeout(this._ls);
+    lsSet(lsKey(), JSON.stringify({recs:[...this.recs.values()], dirty:[...this.dirty], owner:this.owner || undefined}));
+  },
   touch(id){
     this.pending.add(id);
     this.dirty.add(id);
@@ -1703,7 +2005,7 @@ const Store = {
     if (this.busy.has(id)) { this.again.add(id); return; }
     this.busy.add(id);
     try {
-      const r = this.recs.get(id), ref = this.col.doc(id);
+      const r = this.recs.get(id), ref = this.col.doc(wsPhys(id));
       if (r) { const body = clone(r); delete body.id; await ref.set(body); } else await ref.delete();
       if (!this.timers.has(id) && !this.again.has(id)) { this.pending.delete(id); this.dirty.delete(id); this.saveLocal(); }
     } catch (e) {
@@ -1735,6 +2037,327 @@ function setMode(m){
   const b = $('#me-btn'); if (b) b.classList.toggle('alert', c === 'err');
   if (ME.open) meRender();
 }
+/* ---------- content types (fixed, defined by the app) vs collections (made by the user)
+   Every entry has exactly one content type (item.type; item.col is kept as the matching section for older versions).
+   Collections are user records of kind 'ucol'; an entry lists the collections it belongs to in item.collectionIds,
+   so one entry can sit in several collections without being copied. Both are scoped to the active workspace. */
+const CONTENT_TYPES = {
+  word:{label:'Word', col:'vocabulary', icon:'type'},
+  collocation:{label:'Collocation', col:'collocations', icon:'link-2'},
+  phrasal:{label:'Phrasal verb', col:'collocations', icon:'corner-down-right'},
+  sentence:{label:'Sentence', col:'structures', icon:'text-quote'},
+  linking:{label:'Linking phrase', col:'linking', icon:'link'},
+  grammar:{label:'Grammar note', col:'grammar', icon:'languages'},
+  idiom:{label:'Idiom', col:'idioms', icon:'message-square-quote'},
+  mistake:{label:'Mistake', col:'mistakes', icon:'circle-alert'},
+};
+function typeOf(r){
+  if (r && CONTENT_TYPES[r.type] && CONTENT_TYPES[r.type].col === r.col) return r.type;
+  if (r && CONTENT_TYPES[r.vtype] && CONTENT_TYPES[r.vtype].col === r.col) return r.vtype;
+  const c = r && r.col;
+  if (c === 'collocations') return /phrasal verb/i.test(r.pos || '') ? 'phrasal' : 'collocation';
+  return {vocabulary:'word', linking:'linking', structures:'sentence', grammar:'grammar', idioms:'idiom', mistakes:'mistake'}[c] || 'word';
+}
+const ucols = () => all().filter(r => r.kind === 'ucol').sort((a, b) => a.name.localeCompare(b.name));
+const ucolById = id => { const r = id && Store.get(id); return r && r.kind === 'ucol' ? r : null; };
+const itemsIn = id => items().filter(r => (r.collectionIds || []).includes(id));
+const ucolFind = name => { const k = String(name || '').trim().toLowerCase(); return k ? ucols().find(c => c.name.toLowerCase() === k) || null : null; };
+// ids come from the name, so two devices creating "Environment" end up with the same collection
+const ucolIdFor = name => 'uc-' + (String(name).trim().toLowerCase().normalize('NFC').replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '').slice(0, 40) || newId());
+function ucolCreate(name){
+  name = String(name || '').replace(/\s+/g, ' ').trim().slice(0, 40); if (!name) return null;
+  const ex = ucolFind(name); if (ex) return ex;
+  let id = ucolIdFor(name); if (Store.get(id)) id = 'uc-' + newId();
+  const rec = {id, kind:'ucol', name, createdAt:Date.now()}; Store.put(rec); return rec;
+}
+/* One-time, per workspace: give every entry its content type, and turn existing topics into collections
+   (the topic text stays on each entry as a backup). Safe to run on two devices: ids are derived from names. */
+let ctMigrating = false;
+function migrateContentTypes(){
+  if (ctMigrating || Store.get('meta-ct1') || (Web.uid && !Web.lastPull) || (!Web.uid && !Store.col && !isClaude() && Store.mode === 'starting')) return;
+  ctMigrating = true;
+  try {
+    const its = items(); let typed = 0, linked = 0;
+    const byTopic = new Map();
+    its.forEach(r => { const t = String(r.category || '').trim(); if (t) { const k = t.toLowerCase(); if (!byTopic.has(k)) byTopic.set(k, t); } });
+    const made = new Map();
+    byTopic.forEach((name, k) => { const c = ucolCreate(name); if (c) made.set(k, c.id); });
+    its.forEach(r => {
+      const up = clone(r); let ch = false;
+      if (up.type !== typeOf(up)) { up.type = typeOf(up); ch = true; typed++; }
+      const k = String(r.category || '').trim().toLowerCase(), cid = made.get(k);
+      if (cid && !(up.collectionIds || []).includes(cid)) { up.collectionIds = [...(up.collectionIds || []), cid]; ch = true; linked++; }
+      if (ch) Store.put(up);
+    });
+    Store.put({id:'meta-ct1', kind:'meta', at:Date.now(), typed, linked, collections:made.size});
+  } finally { ctMigrating = false; }
+}
+function ucolNameForm(r){
+  openModal(`<form class="form" id="uc-form" style="max-width:420px">
+    <div class="form-head"><h3>${r ? 'Rename collection' : 'New collection'}</h3><button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>
+    <label class="fld"><span>Name</span><input name="name" value="${esc(r ? r.name : '')}" maxlength="40" required autofocus placeholder="e.g. Environment, IELTS Writing, Daily conversation" dir="auto"></label>
+    <p class="muted" style="margin:-4px 0 0;font-size:13.5px">A collection can hold any kind of entry: words, collocations, phrasal verbs, sentences and more.</p>
+    <div class="form-foot"><button type="button" class="btn ghost" data-act="close">Cancel</button><button class="btn primary">${r ? 'Save name' : 'Create collection'}</button></div>
+  </form>`, {onMount: el => { const f = $('#uc-form', el); f.addEventListener('submit', e => {
+    e.preventDefault(); const name = f.name.value.replace(/\s+/g, ' ').trim().slice(0, 40);
+    if (!name) { f.name.focus(); return; }
+    const other = ucolFind(name); if (other && (!r || other.id !== r.id)) { toast(`You already have a collection called “${other.name}”.`, true); return; }
+    if (r) { Store.put({...clone(r), name}); closeModal(); toast('Collection renamed'); }
+    else { const c = ucolCreate(name); closeModal(); toast(`Created “${c.name}”`); go('mycol-' + c.id); }
+  }); }});
+}
+function ucolGridHTML(){
+  const cs = ucols();
+  return `<section class="uc-sec"><div class="block-h"><h2 class="si">${ic('folders')} Your collections</h2><button class="btn" data-act="uc-new">${ic('folder-plus')} New collection</button></div>
+    ${cs.length ? `<div class="uc-grid">${cs.map(c => { const its = itemsIn(c.id), types = [...new Set(its.map(typeOf))];
+      return `<a class="uc-card" href="#mycol-${esc(c.id)}"><span class="uc-ic">${ic('folder')}</span><b dir="auto">${esc(c.name)}</b><small>${plural(its.length, 'entry', 'entries')}</small>
+        ${types.length ? `<span class="uc-types">${types.slice(0, 4).map(t => `<span class="ctype">${CONTENT_TYPES[t].label}</span>`).join('')}${types.length > 4 ? `<span class="ctype">+${types.length - 4}</span>` : ''}</span>` : ''}</a>`; }).join('')}</div>`
+    : `<p class="muted uc-empty">Group entries your own way, for example <i>Environment</i> or <i>IELTS Writing</i>. A collection can mix words, collocations, sentences and more.</p>`}
+  </section>
+  <h2 class="si uc-bytype">${ic('layers')} All entries by type</h2>`;
+}
+function vUcol(){
+  const c = ucolById(S.ucId);
+  if (!c) return `<div class="empty">${ic('folder-x')}<h3>This collection no longer exists</h3><p>It may have been deleted on another device.</p><a class="btn" href="#collections">Back to My Collections</a></div>`;
+  const its = itemsIn(c.id), types = [...new Set(its.map(typeOf))], tf = types.includes(S.ucType) ? S.ucType : '', q = (S.ucQ || '').trim().toLowerCase();
+  const list = its.filter(r => (!tf || typeOf(r) === tf) && (!q || [r.term, r.vi, r.def, r.examples, r.notes].join(' ').toLowerCase().includes(q))).sort((a, b) => b.createdAt - a.createdAt);
+  return `<nav class="crumb"><a href="#collections">My Collections</a> ${ic('chevron-right')} <span>Collection</span></nav>
+  <div class="uc-head"><h1 class="page" dir="auto">${esc(c.name)}</h1>
+    <div class="uc-acts"><button class="btn primary" data-act="new" data-type="item" data-ucol="${esc(c.id)}">${ic('plus')} Add entry</button><button class="btn ghost" data-act="uc-rename" data-id="${esc(c.id)}">${ic('pencil')} Rename</button><button class="btn ghost" data-act="uc-del" data-id="${esc(c.id)}">${ic('trash-2')} Delete</button></div></div>
+  <p class="lede">${plural(its.length, 'entry', 'entries')}${types.length ? ' · ' + types.map(t => CONTENT_TYPES[t].label.toLowerCase() + 's').join(', ') : ''}</p>
+  ${its.length ? `<div class="toolbar">
+    <label class="sbox">${ic('search')}<input class="fsearch" id="ucq" type="search" placeholder="Filter this collection" value="${esc(S.ucQ || '')}" data-input="ucQ" aria-label="Filter this collection"></label>
+    ${types.length > 1 ? `<div class="seg" role="group" aria-label="Content type"><button class="${!tf?'on':''}" data-act="uc-type" data-v="">All</button>${types.map(t => `<button class="${tf===t?'on':''}" data-act="uc-type" data-v="${t}">${ic(CONTENT_TYPES[t].icon)} ${CONTENT_TYPES[t].label}</button>`).join('')}</div>` : ''}
+  </div>
+  ${list.length ? `<div class="entries">${list.map(r => entryRow(r, true)).join('')}</div>` : `<div class="empty">${ic('search-x')}<h3>No entries match</h3><button class="btn" data-act="uc-clear">Clear filters</button></div>`}`
+  : `<div class="empty">${ic('folder-open')}<h3>This collection is empty</h3><p>Add entries here, or choose “Add to collection” when you save a word anywhere in Thuverse.</p><button class="btn primary" data-act="new" data-type="item" data-ucol="${esc(c.id)}">${ic('plus')} Add entry</button></div>`}`;
+}
+
+/* ---------- language workspace switching */
+const WS_COLS = {en:null, ko:['vocabulary','grammar','structures','mistakes']};
+const wsCols = () => WS_COLS[WS.active] || Object.keys(COLS);
+function wsAllowed(v, sub){
+  if (isKo()) { if (['library','collection','lesson','structure','ielts'].includes(v)) return false; if ((v === 'collections' || v === 'knowledge') && sub && !wsCols().includes(sub)) return false; }
+  else if (v === 'topik') return false;
+  return true;
+}
+function wsTargetHash(ws){
+  const h = (location.hash || '#dashboard').slice(1), k = h.indexOf('-'), v = k < 0 ? h : h.slice(0, k), sub = k < 0 ? '' : h.slice(k + 1);
+  if (v === 'ielts' && ws === 'ko') return 'topik';
+  if (v === 'topik' && ws === 'en') return 'ielts';
+  if (['article','study'].includes(v)) return v === 'article' ? 'reading' : 'review';
+  if (v === 'collections' || v === 'knowledge') return sub && !(WS_COLS[ws] || Object.keys(COLS)).includes(sub) ? 'collections' : h;
+  if (ws === 'ko' && ['library','collection','lesson','structure'].includes(v)) return 'dashboard';
+  return h || 'dashboard';
+}
+let wsBusy = false;
+async function wsSwitch(ws, {silent = false, save = true} = {}){
+  if (!WS_LIST[ws] || ws === WS.active || wsBusy) return;
+  wsBusy = true; wsMenu(false);
+  try {
+    const target = wsTargetHash(ws);
+    if (save) { const st = clone(settings()); st.workspace = ws; Store.put(st); }
+    await Store.flushAll();
+    const shared = Store.get('settings');
+    WS.active = ws; lsSet('thuverse.ws', ws);
+    Store.timers.forEach(t => clearTimeout(t)); Store.timers.clear();
+    Store.recs = new Map(); Store.dirty = new Set(); Store.pending = new Set(); Store.owner = null;
+    Store.loadLocal();
+    if (shared) Store.recs.set('settings', shared);
+    S.kCol = 'all'; S.kTag = ''; S.rSrc = ''; S.search = ''; SR.res = null;
+    if (Web.uid) {
+      Store.owner = Web.uid;
+      try { await webPull(); webEmit(); setMode('cloud'); }
+      catch (e) { setMode('error'); toast(`Couldn’t load your ${WS_LIST[ws].name} workspace. Check your connection.`, true); }
+    } else if (Store.col && Store.lastSnap) Store.apply(Store.lastSnap);
+    Store.pending.forEach(id => Store.queue(id));
+    document.documentElement.lang = ws;
+    if (location.hash.slice(1) === target) route(); else location.hash = target;
+    if (!silent) toast(`Switched to ${WS_LIST[ws].label}`);
+  } finally { wsBusy = false; }
+}
+// The saved choice in the shared profile wins once the account's data has arrived (new device or new sign-in).
+function wsCheckSaved(){
+  if (WS.checked || !(Web.uid ? Store.mode === 'cloud' || Web.lastPull : Store.col)) return;
+  WS.checked = true;
+  const want = settings().workspace || 'en';
+  if (WS_LIST[want] && want !== WS.active) setTimeout(() => wsSwitch(want, {silent:true, save:false}), 0);
+}
+function wsSlotHTML(){
+  const w = WS_LIST[WS.active];
+  return `<button type="button" class="ws-btn" id="ws-btn" aria-haspopup="menu" aria-expanded="${!$('#wspop').hidden}" aria-controls="wspop" data-tip="Workspace: ${esc(w.label)}" title="Learning ${esc(w.label)}">
+    <span class="ws-flag" aria-hidden="true">${w.flag}</span><span class="ws-txt"><small>Learning</small><b>${esc(w.label)}</b></span>${ic('chevrons-up-down', 'ws-chev')}</button>`;
+}
+function wsMenu(open){
+  const pop = $('#wspop'), btn = $('#ws-btn');
+  if (!open) { if (!pop.hidden) { pop.hidden = true; if (btn) btn.setAttribute('aria-expanded', 'false'); } return; }
+  pop.innerHTML = `<p class="mp-note" style="margin:6px 10px 4px">Language workspace</p>` + Object.values(WS_LIST).map(w =>
+    `<button type="button" class="mp-i ${w.id === WS.active ? 'on' : ''}" role="menuitemradio" aria-checked="${w.id === WS.active}" data-ws="${w.id}"><span class="ws-flag" aria-hidden="true">${w.flag}</span><span>${esc(w.label)}</span>${w.id === WS.active ? ic('check', 'mp-chk') : ''}</button>`).join('')
+    + `<p class="mp-note">Each language keeps its own words, reviews and progress. Your profile is shared.</p>`;
+  pop.hidden = false; drawIcons();
+  const r = btn.getBoundingClientRect(), vw = document.documentElement.clientWidth, w = pop.offsetWidth;
+  pop.style.left = Math.max(8, Math.min(r.left, vw - w - 8)) + 'px';
+  pop.style.top = Math.min(r.bottom + 6, innerHeight - pop.offsetHeight - 8) + 'px';
+  btn.setAttribute('aria-expanded', 'true');
+  ($('#wspop [aria-checked=true]') || pop).focus();
+}
+document.addEventListener('click', e => {
+  if (e.target.closest('#ws-btn')) { wsMenu($('#wspop').hidden); return; }
+  const o = e.target.closest('#wspop [data-ws]'); if (o) { wsSwitch(o.dataset.ws); return; }
+});
+document.addEventListener('pointerdown', e => { if (!$('#wspop').hidden && !e.target.closest('#wspop,#ws-btn')) wsMenu(false); }, true);
+addEventListener('keydown', e => {
+  const pop = $('#wspop'); if (pop.hidden) return;
+  if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); wsMenu(false); $('#ws-btn').focus(); return; }
+  if (e.key === 'Tab') { wsMenu(false); return; }
+  const list = [...pop.querySelectorAll('[data-ws]')], i = list.indexOf(document.activeElement);
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); const d = e.key === 'ArrowDown' ? 1 : -1; list[(i + d + list.length) % list.length].focus(); }
+}, true);
+addEventListener('resize', () => wsMenu(false));
+
+/* ---------- Korean helpers */
+const KO_TYPES = [['명사','noun'],['동사','verb'],['형용사','adjective'],['부사','adverb'],['대명사','pronoun'],['수사','numeral'],['관형사','determiner'],['조사','particle'],['감탄사','interjection'],['표현','expression']];
+const HANGUL_RX = /[ᄀ-ᇿ㄰-㆏가-힣]/;
+// Revised Romanization, syllable by syllable, with linking and the commonest sound changes (auto-filled; editable)
+function romanize(text){
+  const I = ['g','kk','n','d','tt','r','m','b','pp','s','ss','','j','jj','ch','k','t','p','h'];
+  const V = ['a','ae','ya','yae','eo','e','yeo','ye','o','wa','wae','oe','yo','u','wo','we','wi','yu','eu','ui','i'];
+  const F = ['','k','k','k','n','n','n','t','l','k','m','l','l','l','p','l','m','p','p','t','t','ng','t','t','k','t','p','t'];
+  const FL = ['','g','kk','ks','n','nj','nh','d','r','lg','lm','lb','ls','lt','lp','lh','m','b','bs','s','ss','ng','j','ch','k','t','p','h'];
+  const syl = [...String(text || '')].map(c => { const n = c.charCodeAt(0) - 0xAC00; return n >= 0 && n < 11172 ? {i:Math.floor(n / 588), v:Math.floor(n % 588 / 28), f:n % 28} : {raw:c}; });
+  let out = '';
+  syl.forEach((x, k) => {
+    if (x.raw !== undefined) { out += x.raw; return; }
+    const prev = syl[k - 1], next = syl[k + 1];
+    let ini = I[x.i];
+    if (x.i === 5 && (!prev || prev.raw !== undefined)) ini = 'r';
+    if (x.i === 5 && prev && (prev.f === 8 || prev.f === 4)) ini = 'l';            // ㄹㄹ and ㄴㄹ → ll
+    if (x.i === 11 && prev && prev.raw === undefined && prev.f && prev.f !== 21 && FL[prev.f].length === 1) ini = FL[prev.f] === 'r' ? 'r' : FL[prev.f];
+    let fin = F[x.f];
+    if (next && next.raw === undefined) {
+      if (next.i === 11 && x.f && x.f !== 21 && FL[x.f].length === 1) fin = '';
+      else if ([2, 6].includes(next.i) && ['k','t','p'].includes(fin)) fin = {k:'ng', t:'n', p:'m'}[fin];
+      else if (next.i === 5 && (x.f === 8 || x.f === 4)) fin = 'l';
+    }
+    out += ini + V[x.v] + fin;
+  });
+  return out;
+}
+const phonOf = r => r.ipa || r.roman || '';
+
+/* ---------- TOPIK workspace (Korean only) */
+const TOPIK_SECTIONS = [['listening','Listening','듣기','headphones'],['reading','Reading','읽기','book-open'],['writing','Writing','쓰기','pen-line']];
+// official pass marks: TOPIK I out of 200, TOPIK II out of 300
+const topikLevel = (test, total) => test === 'I' ? (total >= 140 ? 2 : total >= 80 ? 1 : 0) : (total >= 230 ? 6 : total >= 190 ? 5 : total >= 150 ? 4 : total >= 120 ? 3 : 0);
+const topikState = () => Store.get('topik') || {id:'topik', kind:'topik', test:'II', target:4, examDate:'', notes:{}};
+const topikScores = () => all().filter(r => r.kind === 'tscore').sort((a, b) => String(b.date).localeCompare(String(a.date)) || b.createdAt - a.createdAt);
+function vTopik(){
+  const st = topikState(), sc = topikScores(), last = sc[0], days = st.examDate ? Math.ceil((new Date(st.examDate) - sod()) / DAY) : null;
+  const secs = TOPIK_SECTIONS.filter(([k]) => st.test === 'II' || k !== 'writing');
+  return `<h1 class="page">TOPIK Workspace</h1>
+  <p class="lede">Track your TOPIK practice tests, see the level your scores reach, and keep notes for each section.</p>
+  <div class="tp-grid">
+    <section class="panel tp-goal"><h2 class="sec si">${ic('target')} Your goal</h2>
+      <form class="stack" id="topik-form">
+        <div class="grid2">
+          <label class="fld"><span>Test</span><select name="test"><option value="I" ${st.test==='I'?'selected':''}>TOPIK I (levels 1–2)</option><option value="II" ${st.test!=='I'?'selected':''}>TOPIK II (levels 3–6)</option></select></label>
+          <label class="fld"><span>Target level</span><select name="target">${(st.test === 'I' ? [1,2] : [3,4,5,6]).map(l => `<option ${Number(st.target)===l?'selected':''}>${l}</option>`).join('')}</select></label>
+        </div>
+        <label class="fld"><span>Exam date <em>optional</em></span><input type="date" name="examDate" value="${esc(st.examDate||'')}"></label>
+        <div><button class="btn primary">${ic('check')} Save goal</button></div>
+      </form>
+      ${days !== null && days >= 0 ? `<p class="muted" style="margin:12px 0 0">${ic('calendar-days')} ${days === 0 ? 'Your exam is today.' : plural(days, 'day') + ' until your exam.'}</p>` : ''}
+    </section>
+    <section class="panel"><h2 class="sec si">${ic('chart-no-axes-combined')} Latest practice test</h2>
+      ${last ? `<div class="tp-last"><div><span class="big">${last.total}</span><span class="muted"> / ${last.test === 'I' ? 200 : 300}</span></div>
+        <div class="tp-lv ${topikLevel(last.test, last.total) >= Number(st.target) ? 'ok' : ''}">${topikLevel(last.test, last.total) ? `Level ${topikLevel(last.test, last.total)}` : 'Below level ' + (last.test === 'I' ? 1 : 3)}<small>target level ${st.target}</small></div></div>
+        <ul class="tp-secs">${TOPIK_SECTIONS.filter(([k]) => last[k] !== undefined && last[k] !== null).map(([k, l, ko]) => `<li><span>${l} <span class="muted" lang="ko">${ko}</span></span><b>${last[k]}</b></li>`).join('')}</ul>`
+      : `<p class="muted">No practice tests yet. Log the scores from your first mock test to see your level.</p>`}
+      <button class="btn" data-act="tscore-new">${ic('plus')} Log a practice test</button>
+    </section>
+  </div>
+  ${sc.length ? `<section class="panel" style="margin-top:16px"><h2 class="sec si">${ic('list')} Practice tests</h2><table class="scores"><tbody>${sc.map(r => `<tr><td>${fmtD(r.date)}</td><td>TOPIK ${r.test}</td><td class="b">${r.total}</td><td>${topikLevel(r.test, r.total) ? 'Level ' + topikLevel(r.test, r.total) : '–'}</td><td class="muted">${esc(r.source||'')}</td><td><button class="icon-btn" data-act="tscore-del" data-id="${r.id}" aria-label="Delete this test">${ICON.del}</button></td></tr>`).join('')}</tbody></table></section>` : ''}
+  <h2 class="sec si" style="margin-top:22px">${ic('notebook-pen')} Section notes</h2>
+  <div class="tp-notes">${secs.map(([k, l, ko, i]) => `<section class="panel"><h3 class="si">${ic(i)} ${l} <span class="muted" lang="ko">${ko}</span></h3>
+    <textarea class="tp-note" data-sec="${k}" rows="6" placeholder="Strategies, question types that trip you up, useful patterns…" aria-label="${l} notes">${esc((st.notes || {})[k] || '')}</textarea></section>`).join('')}</div>`;
+}
+function tscoreForm(){
+  const st = topikState();
+  openModal(`<form class="form" id="ts-form">
+    <div class="form-head"><h3>Log a practice test</h3><button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>
+    <div class="grid2"><label class="fld"><span>Test</span><select name="test"><option value="I" ${st.test==='I'?'selected':''}>TOPIK I</option><option value="II" ${st.test!=='I'?'selected':''}>TOPIK II</option></select></label>
+      <label class="fld"><span>Date</span><input type="date" name="date" value="${ymd()}"></label></div>
+    <div class="grid2"><label class="fld"><span>Listening <em>0–100</em></span><input type="number" name="listening" min="0" max="100" inputmode="numeric" required></label>
+      <label class="fld"><span>Reading <em>0–100</em></span><input type="number" name="reading" min="0" max="100" inputmode="numeric" required></label></div>
+    <label class="fld" data-w><span>Writing <em>0–100, TOPIK II only</em></span><input type="number" name="writing" min="0" max="100" inputmode="numeric"></label>
+    <label class="fld"><span>Source <em>optional</em></span><input name="source" placeholder="e.g. 91st TOPIK past paper"></label>
+    <div class="form-foot"><button type="button" class="btn ghost" data-act="close">Cancel</button><button class="btn primary">Save test</button></div>
+  </form>`, {onMount: el => { const f = $('#ts-form', el);
+    const sync = () => { const two = f.test.value === 'II'; $('[data-w]', f).hidden = !two; f.writing.required = two; };
+    f.test.addEventListener('change', sync); sync();
+    f.addEventListener('submit', e => { e.preventDefault();
+      const n = k => Math.max(0, Math.min(100, Math.round(Number(f[k].value) || 0)));
+      if (!f.reportValidity()) return;
+      const test = f.test.value, rec = {id:newId(), kind:'tscore', test, date:f.date.value || ymd(), listening:n('listening'), reading:n('reading'), source:f.source.value.trim(), createdAt:Date.now()};
+      if (test === 'II') rec.writing = n('writing');
+      rec.total = rec.listening + rec.reading + (rec.writing || 0);
+      Store.put(rec); closeModal(); toast(`Saved: ${rec.total} points${topikLevel(test, rec.total) ? ', level ' + topikLevel(test, rec.total) : ''}`);
+    }); }});
+}
+document.addEventListener('submit', e => {
+  if (e.target.id !== 'topik-form') return;
+  e.preventDefault(); const f = e.target, st = clone(topikState());
+  st.test = f.test.value; st.target = Number(f.target.value); st.examDate = f.examDate.value;
+  if (st.test === 'I' && st.target > 2) st.target = 2; if (st.test === 'II' && st.target < 3) st.target = 3;
+  Store.put(st); toast('Goal saved');
+});
+document.addEventListener('change', e => { if (e.target.closest('#topik-form') && e.target.name === 'test') { const st = clone(topikState()); st.test = e.target.value; st.target = st.test === 'I' ? 2 : Math.max(3, Number(st.target) || 4); Store.put(st); } });
+document.addEventListener('focusout', e => {
+  const t = e.target; if (!t.classList || !t.classList.contains('tp-note')) return;
+  const st = clone(topikState()); st.notes = {...(st.notes || {}), [t.dataset.sec]:t.value.slice(0, 20000)};
+  if ((topikState().notes || {})[t.dataset.sec] !== st.notes[t.dataset.sec]) { Store.put(st); toast('Notes saved'); }
+});
+
+/* ---------- Korean dashboard: the same building blocks, without the English library and IELTS */
+function vDashboardKo(){
+  const st = settings(), h = new Date().getHours(), part = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+  const sk = streaks(dayCounts()), t = today(), its = items(), words = its.filter(r => r.col === 'vocabulary');
+  const arts = articles().filter(a => a.status !== 'done'), tp = topikState(), last = topikScores()[0];
+  const tomorrow = reviewables().filter(r => r.srs.due > Date.now() && r.srs.due < addDays(sod(), 2)).length;
+  const learned = vocabRecs().filter(r => firstStudied(r)).length, mastered = vocabStatus().mastered;
+  const task = (icon, title, sub, action, done) => `<li class="task ${done?'done':''}"><span class="tic">${ic(done ? 'circle-check' : icon)}</span><div><b>${title}</b><small>${sub}</small></div>${action}</li>`;
+  const dc = dayCounts(), wkStart = (() => { const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return d.getTime(); })();
+  const week = [...Array(7)].map((_, i) => { const x = addDays(wkStart, i); return {t:x, on:!!dc[ymd(x)], today:ymd(x) === ymd(), future:x > sod()}; });
+  return `<div class="d3"><div class="d3-main">
+  <section class="dhead"><h1>${part}${st.name?', '+esc(st.name):''}, ready for Korean?</h1><p>Build your Korean word bank and keep your reviews clear.</p></section>
+  <section class="block"><div class="block-h"><h2>Today’s study</h2>${t.due ? `<button class="btn primary lg" data-act="start-review" data-deck="due">${ic('play')} Review now</button>` : ''}</div>
+    <ul class="tasks">
+      ${task('book-a', words.length ? 'Add new Korean words' : 'Add your first Korean word', words.length ? `${plural(words.length, 'word')} in your Korean vocabulary` : 'Hangul, romanization, meaning and an example sentence', `<button class="btn sm" data-act="new" data-type="item" data-col="vocabulary">${ic('plus')} Add word</button>`)}
+      ${t.due ? task('repeat-2', `Review ${plural(t.due, 'word')}`, 'Due now', `<button class="btn sm" data-act="start-review" data-deck="due">${ic('play')} Review</button>`) : task('repeat-2', 'Reviews', `Nothing due right now${tomorrow ? ` · ${tomorrow} due by tomorrow` : ''}`, '', true)}
+      ${arts.length ? task('newspaper', `${plural(arts.length, 'article')} saved to read`, `Next: <a href="#article-${arts[0].id}">${esc(arts[0].title)}</a>`, `<a class="btn sm" href="#article-${arts[0].id}">${ic('book-open')} Read</a>`)
+        : task('newspaper', 'Reading', 'Save Korean articles and collect words while you read.', `<button class="btn sm" data-act="new" data-type="article">${ic('bookmark-plus')} Save article</button>`)}
+      ${task('graduation-cap', 'TOPIK practice', last ? `Latest: ${last.total} points (TOPIK ${last.test})` : 'Log a practice test to see your level', `<a class="btn sm" href="#topik">${ic('graduation-cap')} Open</a>`)}
+    </ul></section>
+  ${words.length ? vocabProgressBlock() : ''}
+  </div>
+  <aside class="d3-rail">
+    <section class="rcard streakcard"><div class="sc-top"><div><h3>${plural(sk.cur,'day')} streak</h3><p>Best: ${plural(sk.best,'day')}</p></div><span class="bolt">${ic('zap')}</span></div>
+      <div class="sc-days">${week.map(d => `<span class="sc-d ${d.on?'on':''} ${d.today?'today':''} ${d.future?'future':''}" title="${fmtD(d.t)}${d.on?' · studied':''}"><i>${d.on ? ic('check') : ''}</i><b>${new Date(d.t).toLocaleDateString('en', {weekday:'narrow'})}</b></span>`).join('')}</div></section>
+    <section class="rcard"><h3>My learning overview</h3>
+      <ul class="ovl">
+        <li><a href="#topik"><span class="oi">${ic('target')}</span><span>TOPIK goal<small>TOPIK ${tp.test}${tp.examDate ? ' · ' + fmtD(tp.examDate) : ''}</small></span><b>Lv ${tp.target}</b></a></li>
+        <li><a href="#review"><span class="oi">${ic('book-a')}</span><span>Words learned<small>${mastered} mastered</small></span><b>${learned}</b></a></li>
+        <li><a href="#review"><span class="oi">${ic('repeat-2')}</span><span>Due for review<small>${tomorrow} more by tomorrow</small></span><b>${t.due}</b></a></li>
+      </ul></section>
+    <section class="rcard"><h3>Quick access</h3><div class="quick2">
+      <button class="qbtn" data-act="new" data-type="item" data-col="vocabulary">${ic('plus')} Add Korean word</button>
+      <button class="qbtn" data-act="new" data-type="item" data-col="grammar">${ic('languages')} Add grammar note</button>
+      <button class="qbtn" data-act="new" data-type="article">${ic('bookmark-plus')} Save reading article</button>
+      <button class="qbtn" data-act="start-review" data-deck="due">${ic('repeat-2')} Review vocabulary</button>
+    </div></section>
+  </aside></div>`;
+}
+
 /* ---------- account menu (avatar popover) */
 let SYNC = ['wait', 'loader', 'Loading your library…'];
 const ME = {open:false, sub:false};
@@ -1894,6 +2517,7 @@ const S = {
 function route(){
   const h = (location.hash || '').slice(1), k = h.indexOf('-');
   const v = k < 0 ? h : h.slice(0, k), sub = k < 0 ? '' : h.slice(k + 1);
+  if (!wsAllowed(v, sub)) { location.replace('#' + (v === 'ielts' ? 'topik' : v === 'topik' ? 'ielts' : (v === 'collections' || v === 'knowledge') ? 'collections' : 'dashboard')); return; }
   if (v === 'knowledge' || v === 'collections') { S.view = 'knowledge'; const c = COLS[sub] ? sub : 'all'; if (c !== S.kCol) { S.kCol = c; S.kTag = ''; S.kLimit = 150; } }
   else if (v === 'ielts') { S.view = 'ielts'; if (SK[sub] && sub !== S.skill) { S.skill = sub; S.skillTab = null; S.topic = ''; } }
   else if (v === 'library' && sub === 'mine') { location.replace('#collections'); return; }
@@ -1902,7 +2526,8 @@ function route(){
   else if (v === 'lesson' && LESSONS[sub]) { S.view = 'lesson'; S.lessonId = sub; openLesson(sub); }
   else if (v === 'structure' && STRUCTS[sub]) { S.view = 'structure'; S.structId = sub; openStructure(sub); }
   else if (v === 'article') { S.view = 'article'; S.artId = sub; openArticle(sub); }
-  else if (['dashboard','review','journal','preferences','reading','sources','study'].includes(v)) S.view = v;
+  else if (v === 'mycol') { S.view = 'ucol'; if (S.ucId !== sub) { S.ucId = sub; S.ucType = ''; S.ucQ = ''; } }
+  else if (['dashboard','review','journal','preferences','reading','sources','study','topik'].includes(v)) S.view = v;
   else S.view = 'dashboard';
   if (S.view !== 'study') S.summary = null;
   if (S.search) { S.search = ''; $('#gsearch').value = ''; }
@@ -1922,7 +2547,7 @@ function render(){
   const a = document.activeElement, id = a && a.id && $('#view').contains(a) ? a.id : null;
   let ss = null, se = null; try { ss = a.selectionStart; se = a.selectionEnd; } catch {}
   renderNav();
-  const v = S.search ? vSearch() : ({dashboard:vDashboard, library:vLibrary, collection:vCollection, lesson:vLesson, structure:vStructure, reading:vReading, sources:vSources, article:vArticle, study:vStudy, knowledge:vKnowledge, ielts:vIelts, review:vReview, journal:vJournal, preferences:vPrefs}[S.view] || vDashboard)();
+  const v = S.search ? vSearch() : ({dashboard:vDashboard, library:vLibrary, collection:vCollection, lesson:vLesson, structure:vStructure, reading:vReading, sources:vSources, topik:vTopik, ucol:vUcol, article:vArticle, study:vStudy, knowledge:vKnowledge, ielts:vIelts, review:vReview, journal:vJournal, preferences:vPrefs}[S.view] || vDashboard)();
   $('#view').innerHTML = v;
   const nm = settings().name; $('#brand-sub').textContent = nm ? nm + '’s language universe' : 'Your language universe';
   if (id) { const n = document.getElementById(id); if (n) { n.focus(); try { if (ss !== null) n.setSelectionRange(ss, se); } catch {} } }
@@ -1936,9 +2561,13 @@ function render(){
 function renderNav(){
   const due = dueItems().length;
   const its = items();
-  const groups = [[null, [['dashboard','Dashboard','layout-dashboard']]], ['Learn', [['library','Library','library'],['review','Review','repeat-2']]],
-    ['My learning', [['collections','My Collections','bookmark'],['reading','Reading list','newspaper'],['ielts','IELTS Workspace','graduation-cap'],['journal','Learning Journal','notebook-pen']]]];
-  const active = {collection:'library', lesson:'library', structure:'library', article:'reading', sources:'reading', study:'review', knowledge:'collections'}[S.view] || S.view;
+  const groups = isKo()
+    ? [[null, [['dashboard','Dashboard','layout-dashboard']]], ['Learn', [['review','Review','repeat-2']]],
+      ['My learning', [['collections','My Collections','bookmark'],['reading','Reading list','newspaper'],['topik','TOPIK Workspace','graduation-cap'],['journal','Learning Journal','notebook-pen']]]]
+    : [[null, [['dashboard','Dashboard','layout-dashboard']]], ['Learn', [['library','Library','library'],['review','Review','repeat-2']]],
+      ['My learning', [['collections','My Collections','bookmark'],['reading','Reading list','newspaper'],['ielts','IELTS Workspace','graduation-cap'],['journal','Learning Journal','notebook-pen']]]];
+  const slot = $('#ws-slot'); if (slot && slot.dataset.ws !== WS.active) { slot.dataset.ws = WS.active; slot.innerHTML = wsSlotHTML(); }
+  const active = {collection:'library', lesson:'library', structure:'library', article:'reading', sources:'reading', study:'review', topik:'topik', knowledge:'collections', ucol:'collections'}[S.view] || S.view;
   let h = '';
   groups.forEach(([g, list]) => {
     if (g) h += `<div class="navgroup">${g}</div>`;
@@ -1946,7 +2575,7 @@ function renderNav(){
       const on = active === k && !S.search;
       h += `<a href="#${k}" class="nav-item ${on?'on':''}" data-tip="${l}${k==='review'&&due?` · ${due} due`:''}" ${on?'aria-current="page"':''}>${ic(icon)}<span>${l}</span>${k==='review'&&due?`<span class="badge" title="${due} due">${due}</span>`:''}</a>`;
       if (k === 'library' && on) h += '<div class="subnav">' + CATS.map(c => `<a href="#library-${c.id}" class="${S.view==='library'&&S.libCat===c.id || (S.view==='collection'&&COLL[S.colId]&&COLL[S.colId].cat===c.id) || (S.view==='lesson'&&c.id==='grammar')?'on':''}"><span>${ic(c.icon)} ${c.name}</span></a>`).join('') + '</div>';
-      if (k === 'collections' && on) h += '<div class="subnav">' + Object.entries(COLS).map(([c,o]) => `<a href="#collections-${c}" class="${S.kCol===c?'on':''}"><span>${ic(COLIC[c])} ${o.label}</span><small>${its.filter(r=>r.col===c).length}</small></a>`).join('') + '</div>';
+      if (k === 'collections' && on) h += '<div class="subnav">' + Object.entries(COLS).filter(([c]) => wsCols().includes(c)).map(([c,o]) => `<a href="#collections-${c}" class="${S.kCol===c?'on':''}"><span>${ic(COLIC[c])} ${o.label}</span><small>${its.filter(r=>r.col===c).length}</small></a>`).join('') + '</div>';
       if (k === 'reading' && on) h += '<div class="subnav">' + [['reading','My reading list','newspaper',articles().length],['sources','Sources','globe',allSources().length]].map(([v,l,i,n]) => `<a href="#${v}" class="${S.view===v || (v==='reading'&&S.view==='article')?'on':''}"><span>${ic(i)} ${l}</span><small>${n}</small></a>`).join('') + '</div>';
       if (k === 'ielts' && on) h += '<div class="subnav">' + Object.entries(SK).map(([s,o]) => `<a href="#ielts-${s}" class="${S.skill===s?'on':''}"><span>${ic(o.icon)} ${o.label}</span></a>`).join('') + '</div>';
     });
@@ -1967,7 +2596,7 @@ function entryRow(r, showCol){
   const mistake = r.col === 'mistakes';
   return `<div class="entry ${mistake?'mistake':''}" data-act="open-item" data-id="${r.id}" role="button" tabindex="0">
     <div style="min-width:0">
-      <div class="hw"><span>${esc(r.term)}</span>${r.ipa?`<span class="ipa">${esc(r.ipa)}</span>`:''}${showCol?`<span class="ctype">${c.short}</span>`:''}${r.func?`<span class="ctype">${esc(linkFuncLabel(r.func))}</span>`:''}</div>
+      <div class="hw"><span>${esc(r.term)}</span>${phonOf(r)?`<span class="ipa">${esc(phonOf(r))}</span>`:''}${showCol?`<span class="ctype">${CONTENT_TYPES[typeOf(r)].label}</span>`:''}${r.func?`<span class="ctype">${esc(linkFuncLabel(r.func))}</span>`:''}</div>
       <div class="gloss">${mistake ? (r.def?`<span class="fix">✓ ${esc(r.def)}</span>`:'') : `${r.vi?`<span class="vi">${esc(r.vi)}</span>`:''}${r.vi&&r.def?' — ':''}${esc(r.def||'')}`}</div>
       ${ex && !mistake ? `<div class="ex">${hl(ex, r.term)}</div>` : ''}
     </div>
@@ -2038,6 +2667,7 @@ function touch(id, make){
 }
 const touchCol = id => touch('cs-' + id, () => ({id:'cs-' + id, kind:'colstate', col:id, createdAt:Date.now()}));
 function nextNewCollection(){
+  if (isKo()) return null;                        // the shared library is English-only for now
   const opened = CONTENT.collections.filter(c => c.kind === 'words' && colRemaining(c) > 0 && colState(c.id))
     .sort((a,b) => (colState(b.id).lastLearned || colState(b.id).lastOpened || 0) - (colState(a.id).lastLearned || colState(a.id).lastOpened || 0));
   if (opened[0]) return opened[0];
@@ -2051,7 +2681,7 @@ function wv(r){
     return {term:w.term, ipa:w.ipa, pos:w.pos, vi:w.vi, def:w.def, ex:[w.ex].filter(Boolean), src:(COLL[w.cols[0]]||{}).name || 'Library', mistake:false, notes:'', cols:w.cols};
   }
   const c = COLS[r.col] || COLS.vocabulary;
-  return {term:r.term, ipa:r.ipa, pos:c.short, vi:r.vi, def:r.def, ex:lines(r.examples), src:'My Collections · ' + c.label, mistake:r.col === 'mistakes', notes:r.notes, cols:[]};
+  return {term:r.term, ipa:phonOf(r), pos:c.short, vi:r.vi, def:r.def, ex:lines(r.examples), src:'My Collections · ' + c.label, mistake:r.col === 'mistakes', notes:r.notes, cols:[]};
 }
 function today(){
   const k = ymd(), a = activity(), st = settings();
@@ -2256,6 +2886,7 @@ let _rz; window.addEventListener('resize', () => { clearTimeout(_rz); _rz = setT
 
 /* ---------- Dashboard */
 function vDashboard(){
+  if (isKo()) return vDashboardKo();
   const st = settings(), h = new Date().getHours();
   const part = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
   const sk = streaks(dayCounts()), t = today();
@@ -2904,17 +3535,19 @@ const BD_T = {
     syn:'Synonyms', ant:'Antonyms', colls:'Collocations', rel:'Related', ex:'Examples', vi:'Vietnamese', from:'From',
     saveBtn:'Save to My Collections', formBtn:'Open in Add form', already:(c) => `Already in your ${c}`, open:'Open it',
     noCols:w => `I didn’t find collocations for **${w}**, but here’s what it means.`, colsFor:w => `Collocations with **${w}**:`,
-    reviewSave:'Check the details, then save.', term:'Word or phrase', def:'Meaning', ipa:'IPA', pos:'Part of speech', exs:'Example', col:'Collection', topic:'Topic', topicPh:'e.g. Environment (optional)',
+    reviewSave:'Check the details, then save.', term:'Word or phrase', def:'Meaning', ipa:'IPA', pos:'Part of speech', exs:'Example', col:'Content type', topic:'Collection', topicPh:'e.g. Environment (optional)',
     save:'Save', cancel:'Cancel', edit:'Edit in Add form', cancelled:'Okay, nothing saved.',
-    saved:(t, c, tp) => `Saved **${t}** to ${c}${tp ? `, topic **${tp}**` : ''}.`, view:'View entry', openCol:'Open collection',
-    newTopic:t => `You don’t have a **${t}** topic yet. It’ll start with this word.`, pickTopic:(t) => `Which topic did you mean by “${t}”?`, noneOfThese:'None of these',
+    saved:(t, c, tp) => `Saved **${t}** (${c})${tp ? ` to your **${tp}** collection` : ''}.`, view:'View entry', openCol:'Open collection',
+    newTopic:t => `You don’t have a collection called **${t}** yet. It’ll be created when you save.`, pickTopic:(t) => `Which collection did you mean by “${t}”?`, noneOfThese:'None of these',
     dup:(t, c) => `**${t}** is already in your ${c}.`, needTerm:'Write the word or phrase first.',
     unknown:'I’m not sure how to help with that yet. I can look up words, save them to your collections, and explain how Thuverse works. Try one of these:',
     aiOff:'My free chat isn’t switched on yet, so I can only help with words and with using Thuverse for now.',
     aiErr:'I couldn’t get an answer just now. Try again in a moment.', aiBusy:'I’m getting a lot of questions right now. Give me a minute and ask again.',
     explore:'Here’s a quick tour. Pick where you’d like to go:', organize:'Here’s how your collections look:', noItems:'You haven’t saved any entries yet. Tell me a word and I’ll help you save it.',
-    noTopic:n => `${n} without a topic`, topicsTip:'Tip: give entries a topic (like Environment) when you add them, then filter by it in My Collections.',
-    here:'You’re on', pageHelp:'Here’s what you can do on this page:'},
+    noTopic:n => `${n} not in any collection`, topicsTip:'Tip: choose “Add to collection” when you save, or create collections like *Environment* in My Collections. One entry can be in several.',
+    here:'You’re on', pageHelp:'Here’s what you can do on this page:',
+    koLookup:'My dictionary lookups only cover English for now, so I can’t look up Korean words yet. You can add one yourself: the romanization fills in from the Hangul.',
+    koSave:t => `I’ve opened the Add form with **${t}**. Add its meaning, then save.`},
   vi:{name:'Lumi', role:'Bạn đồng hành học tập', hi:'Chào bạn! Mình là Lumi. Mình có thể tra từ, lưu từ vào bộ sưu tập của bạn và hướng dẫn bạn dùng Thuverse.',
     ph:'Hỏi mình bất cứ điều gì, hoặc gõ một từ…', send:'Gửi', min:'Thu nhỏ', close:'Đóng', clear:'Bắt đầu cuộc trò chuyện mới', typing:'Lumi đang nghĩ',
     starters:[['explore','Giới thiệu app cho mình'],['lookup','Tra một từ mới'],['col','Tìm collocation hay'],['organize','Giúp mình sắp xếp từ vựng']],
@@ -2924,26 +3557,28 @@ const BD_T = {
     syn:'Từ đồng nghĩa', ant:'Từ trái nghĩa', colls:'Collocation', rel:'Liên quan', ex:'Ví dụ', vi:'Tiếng Việt', from:'Nguồn',
     saveBtn:'Lưu vào My Collections', formBtn:'Mở trong form Add', already:(c) => `Đã có trong ${c}`, open:'Mở',
     noCols:w => `Mình chưa tìm thấy collocation cho **${w}**, nhưng đây là nghĩa của nó.`, colsFor:w => `Collocation với **${w}**:`,
-    reviewSave:'Kiểm tra lại rồi lưu nhé.', term:'Từ hoặc cụm từ', def:'Nghĩa', ipa:'IPA', pos:'Từ loại', exs:'Ví dụ', col:'Bộ sưu tập', topic:'Chủ đề', topicPh:'vd. Environment (không bắt buộc)',
+    reviewSave:'Kiểm tra lại rồi lưu nhé.', term:'Từ hoặc cụm từ', def:'Nghĩa', ipa:'IPA', pos:'Từ loại', exs:'Ví dụ', col:'Loại nội dung', topic:'Bộ sưu tập', topicPh:'vd. Environment (không bắt buộc)',
     save:'Lưu', cancel:'Huỷ', edit:'Sửa trong form Add', cancelled:'Được, mình chưa lưu gì cả.',
-    saved:(t, c, tp) => `Đã lưu **${t}** vào ${c}${tp ? `, chủ đề **${tp}**` : ''}.`, view:'Xem mục đã lưu', openCol:'Mở bộ sưu tập',
-    newTopic:t => `Bạn chưa có chủ đề **${t}**. Từ này sẽ là từ đầu tiên.`, pickTopic:(t) => `Bạn muốn nói chủ đề nào khi viết “${t}”?`, noneOfThese:'Không phải các chủ đề này',
+    saved:(t, c, tp) => `Đã lưu **${t}** (${c})${tp ? ` vào bộ sưu tập **${tp}**` : ''}.`, view:'Xem mục đã lưu', openCol:'Mở bộ sưu tập',
+    newTopic:t => `Bạn chưa có bộ sưu tập **${t}**. Nó sẽ được tạo khi bạn lưu.`, pickTopic:(t) => `Bạn muốn nói bộ sưu tập nào khi viết “${t}”?`, noneOfThese:'Không phải các bộ sưu tập này',
     dup:(t, c) => `**${t}** đã có trong ${c} của bạn.`, needTerm:'Bạn điền từ hoặc cụm từ trước nhé.',
     unknown:'Mình chưa chắc giúp được câu này. Mình có thể tra từ, lưu từ vào bộ sưu tập và giải thích cách dùng Thuverse. Thử một trong các gợi ý sau:',
     aiOff:'Tính năng trò chuyện tự do của mình chưa được bật, nên hiện mình chỉ giúp được về từ vựng và cách dùng Thuverse.',
     aiErr:'Mình chưa trả lời được lúc này. Bạn thử lại sau chút nhé.', aiBusy:'Đang có nhiều câu hỏi quá. Bạn đợi một phút rồi hỏi lại nhé.',
     explore:'Cùng dạo một vòng nhé. Chọn nơi bạn muốn đến:', organize:'Bộ sưu tập của bạn hiện như sau:', noItems:'Bạn chưa lưu mục nào. Nói cho mình một từ, mình giúp bạn lưu nhé.',
-    noTopic:n => `${n} chưa có chủ đề`, topicsTip:'Mẹo: đặt chủ đề (như Environment) khi thêm từ, rồi lọc theo chủ đề trong My Collections.',
-    here:'Bạn đang ở', pageHelp:'Đây là những gì bạn có thể làm ở trang này:'},
+    noTopic:n => `${n} chưa thuộc bộ sưu tập nào`, topicsTip:'Mẹo: chọn “Add to collection” khi lưu, hoặc tạo bộ sưu tập như *Environment* trong My Collections. Một mục có thể nằm trong nhiều bộ sưu tập.',
+    here:'Bạn đang ở', pageHelp:'Đây là những gì bạn có thể làm ở trang này:',
+    koLookup:'Hiện mình chỉ tra được từ tiếng Anh, chưa tra được từ tiếng Hàn. Bạn có thể tự thêm từ: phần phiên âm Latin sẽ tự điền từ chữ Hangul.',
+    koSave:t => `Mình đã mở form Add với **${t}**. Bạn thêm nghĩa rồi lưu nhé.`},
 };
 const bdT = (k, ...a) => { const v = (BD_T[BUDDY.lang] || BD_T.en)[k] ?? BD_T.en[k]; return typeof v === 'function' ? v(...a) : v; };
 const BD_VI_RX = /[ăâđêôơưàáạảãằắặẳẵầấậẩẫèéẹẻẽềếệểễìíịỉĩòóọỏõồốộổỗờớợởỡùúụủũừứựửữỳýỵỷỹ]/i;
 const bdLangOf = t => BD_VI_RX.test(t) || /\b(tra|nghia|them|vao|cach|giup|minh|toi)\b/i.test(t) ? 'vi' : /[a-z]{3,}\s+[a-z]{2,}/i.test(t) ? 'en' : BUDDY.lang;
 
 /* ---------- what Lumi knows about the app (only real features) */
-const BD_PAGES = {dashboard:['Dashboard','layout-dashboard'], library:['Library','library'], review:['Review','repeat-2'], collections:['My Collections','bookmark'], reading:['Reading list','newspaper'],
+const BD_PAGES = {topik:['TOPIK Workspace','graduation-cap'], dashboard:['Dashboard','layout-dashboard'], library:['Library','library'], review:['Review','repeat-2'], collections:['My Collections','bookmark'], reading:['Reading list','newspaper'],
   sources:['Sources','globe'], ielts:['IELTS Workspace','graduation-cap'], journal:['Learning Journal','notebook-pen'], preferences:['Preferences','settings']};
-const bdPageOk = h => { const [v, sub] = String(h || '').split(/-(.*)/s); if (!BD_PAGES[v]) return false; if (!sub) return true;
+const bdPageOk = h => { const [v, sub] = String(h || '').split(/-(.*)/s); if (!BD_PAGES[v] || !wsAllowed(v, sub)) return false; if (!sub) return true;
   return (v === 'library' && CATS.some(c => c.id === sub)) || (v === 'collections' && !!COLS[sub]) || (v === 'ielts' && !!SK[sub]); };
 const bdPageLabel = h => { const [v, sub] = String(h).split(/-(.*)/s); if (v === 'library' && sub) return 'Library · ' + CATS.find(c => c.id === sub).name; if (v === 'collections' && sub) return 'My Collections · ' + COLS[sub].label; if (v === 'ielts' && sub) return SK[sub].label; return BD_PAGES[v][0]; };
 const BD_HELP = [
@@ -2956,8 +3591,8 @@ const BD_HELP = [
     vi:['Mở **Library** ở thanh bên và chọn **Grammar**.','Các bài học đi từ cơ bản đến nâng cao, có giải thích tiếng Việt, lỗi thường gặp và bài luyện tập.','Ghi chú ngữ pháp của riêng bạn nằm ở **My Collections → Grammar Notes**.'],
     go:['library-grammar','collections-grammar']},
   {id:'collection', k:['create a collection','new collection','make a collection','collection','organise','organize','topic','tag','bộ sưu tập','sắp xếp','chủ đề','phân loại'], v:['collections'],
-    en:['**My Collections** has fixed sections: ' + Object.values(COLS).map(c => c.label).join(', ') + '. You can’t add new sections.','To group entries your own way, give them a **topic** (for example *Environment*) or tags when you add or edit them. A new topic starts as soon as one entry uses it.','In My Collections, tap a topic to see only those entries.'],
-    vi:['**My Collections** có các mục cố định: ' + Object.values(COLS).map(c => c.label).join(', ') + '. Bạn không tạo thêm mục mới được.','Để nhóm theo cách của bạn, hãy đặt **chủ đề** (ví dụ *Environment*) hoặc thẻ khi thêm hay sửa một mục. Chủ đề mới xuất hiện ngay khi có một mục dùng nó.','Trong My Collections, chạm vào một chủ đề để chỉ xem các mục đó.'],
+    en:['Open **My Collections** and press **New collection**. Name it, for example *Environment* or *IELTS Writing*.','A collection can hold any kind of entry: words, collocations, phrasal verbs, sentences, linking phrases. One entry can be in several collections.','When you add an entry, pick it under **Add to collection** at the bottom of the form. You can also save without a collection.','Entries are also listed by content type (Vocabulary, Collocations & Phrasal Verbs…), which the app sets from what you add.'],
+    vi:['Mở **My Collections** và nhấn **New collection**. Đặt tên, ví dụ *Environment* hoặc *IELTS Writing*.','Một bộ sưu tập chứa được mọi loại mục: từ, collocation, phrasal verb, câu, linking phrase. Một mục có thể nằm trong nhiều bộ sưu tập.','Khi thêm một mục, chọn ở **Add to collection** cuối form. Bạn cũng có thể lưu mà không chọn bộ sưu tập.','Các mục cũng được liệt kê theo loại nội dung (Vocabulary, Collocations & Phrasal Verbs…), do app tự xác định.'],
     go:['collections']},
   {id:'review', k:['flashcard','review','revise','spaced','practice words','ôn tập','ôn từ','thẻ'], v:['review','study'],
     en:['Open **Review**, or press **R** anywhere.','Choose a set and start. Press **Space** to flip a card.','Rate each card **1–4**: forgot, hard, remembered, easy. Words you miss come back the same day; words you know wait weeks.','Change the style (Mixed, Flashcards, Type the answer) in **Preferences → Review style**.'],
@@ -2983,6 +3618,10 @@ const BD_HELP = [
     en:['**IELTS Workspace** has a section for each skill: Listening, Reading, Writing Task 1 and 2, Speaking Parts 1–3.','Each one keeps your strategies, practice results, ideas and useful language in one place.','Set your target bands on the **Dashboard**.'],
     vi:['**IELTS Workspace** có một mục cho từng kỹ năng: Listening, Reading, Writing Task 1 và 2, Speaking Part 1–3.','Mỗi mục lưu chiến lược, kết quả luyện tập, ý tưởng và cách diễn đạt hay ở cùng một chỗ.','Đặt band mục tiêu trên **Dashboard**.'],
     go:['ielts','dashboard']},
+  {id:'topik', k:['topik','korean exam','thi tiếng hàn','level 3','level 4','level 5','level 6'], v:['topik'], ko:true,
+    en:['**TOPIK Workspace** keeps your goal (TOPIK I or II and the level you want), your exam date and your practice tests.','Log the Listening, Reading and Writing scores from each mock test to see the level they reach, using the official pass marks.','Keep notes and strategies for each section at the bottom of the page.'],
+    vi:['**TOPIK Workspace** lưu mục tiêu của bạn (TOPIK I hoặc II và cấp độ mong muốn), ngày thi và các bài thi thử.','Ghi điểm Nghe, Đọc và Viết của mỗi bài thi thử để xem bạn đạt cấp nào, theo điểm chuẩn chính thức.','Ghi chú và chiến lược cho từng phần ở cuối trang.'],
+    go:['topik']},
   {id:'journal', k:['journal','nhật ký','diary'], v:['journal'],
     en:['The **Learning Journal** is for a few lines each day: what you studied, what was hard, what to try next.'],
     vi:['**Learning Journal** để bạn ghi vài dòng mỗi ngày: đã học gì, phần nào khó, lần tới thử gì.'], go:['journal']},
@@ -3000,11 +3639,12 @@ const BD_HELP = [
 ];
 const BD_HELP_TITLE = {add:['Adding a new word','Thêm từ mới'], grammar:['Grammar Library','Thư viện ngữ pháp'], collection:['Organising your collections','Sắp xếp bộ sưu tập'], review:['How flashcards work','Cách dùng flashcard'],
   progress:['Tracking your progress','Theo dõi tiến độ'], colpv:['Collocations vs phrasal verbs','Collocation và phrasal verb'], library:['The Library','Library'], reading:['Reading list and Sources','Reading list và Sources'],
-  ielts:['IELTS Workspace','IELTS Workspace'], journal:['Learning Journal','Learning Journal'], search:['Searching','Tìm kiếm'], settings:['Profile and appearance','Hồ sơ và giao diện'], linking:['Linking phrases','Linking phrases']};
+  ielts:['IELTS Workspace','IELTS Workspace'], topik:['TOPIK Workspace','TOPIK Workspace'], journal:['Learning Journal','Learning Journal'], search:['Searching','Tìm kiếm'], settings:['Profile and appearance','Hồ sơ và giao diện'], linking:['Linking phrases','Linking phrases']};
 function bdHelpMatch(text){
   const t = ' ' + text.toLowerCase().replace(/[?!.,]/g, ' ').replace(/\s+/g, ' ') + ' ';
   let best = null, bs = 0;
-  for (const h of BD_HELP) { let s = 0; for (const k of h.k) if (t.includes(k)) s += k.length; if (s > bs) { bs = s; best = h; } }
+  const skip = isKo() ? ['ielts','library','colpv','linking','grammar'] : ['topik'];
+  for (const h of BD_HELP) { if (skip.includes(h.id)) continue; let s = 0; for (const k of h.k) if (t.includes(k)) s += k.length; if (s > bs) { bs = s; best = h; } }
   return bs >= 4 ? best : null;
 }
 
@@ -3032,7 +3672,7 @@ function bdIntent(raw){
 }
 
 /* ---------- user data Lumi may use (the signed-in user's own records, already scoped by Store) */
-const bdTopics = () => { const c = {}; items().forEach(r => [r.category, ...(r.tags || [])].filter(Boolean).forEach(t => { const k = t.trim(); c[k] = (c[k] || 0) + 1; })); return Object.entries(c).sort((a, b) => b[1] - a[1]).map(([t]) => t); };
+const bdTopics = () => ucols().map(c => c.name);       // the user's collections (names)
 const BD_SAVE_COLS = ['vocabulary','collocations','idioms','linking'];
 const BD_COLWORDS = {vocabulary:['vocabulary','vocab','words','word list','từ vựng'], collocations:['collocations','collocation','phrasal verbs','phrasal verb','phrasal','collocations & phrasal verbs','cụm từ'], idioms:['idioms','idiom','expressions','idioms & expressions','thành ngữ'], linking:['linking phrases','linking','từ nối']};
 const bdGuessCol = term => { const w = term.trim().toLowerCase().split(/\s+/); if (w.length === 1) return 'vocabulary'; return 'collocations'; };
@@ -3080,7 +3720,8 @@ function bdLookupHTML(m){
 }
 function bdSaveHTML(m){
   const f = m.f, tps = bdTopics();
-  if (m.done === 'saved') return `<p>${bdFmt(bdT('saved', f.term, COLS[f.col].label, f.topic))}</p><div class="bd-act"><button type="button" class="bd-chip" data-bd="item" data-v="${m.savedId}">${ic('eye')} ${bdT('view')}</button>${bdBtnGo('collections-' + f.col)}</div>`;
+  if (m.done === 'saved') { const r = Store.get(m.savedId), uc = r && ucolById((r.collectionIds || [])[0]);
+    return `<p>${bdFmt(bdT('saved', f.term, CONTENT_TYPES[(r && r.type) || 'word'].label.toLowerCase(), uc ? uc.name : ''))}</p><div class="bd-act"><button type="button" class="bd-chip" data-bd="item" data-v="${m.savedId}">${ic('eye')} ${bdT('view')}</button>${uc ? `<button type="button" class="bd-chip" data-bd="mycol" data-v="${esc(uc.id)}">${ic('folder')} ${esc(uc.name)}</button>` : bdBtnGo('collections-' + f.col)}</div>`; }
   if (m.done === 'cancel') return `<p>${bdFmt(bdT('cancelled'))}</p>`;
   return `${m.note ? `<p>${bdFmt(m.note)}</p>` : ''}<p class="bd-sub">${bdT('reviewSave')}</p>
   <form class="bd-card bd-form" data-m="${m.id}">
@@ -3191,7 +3832,9 @@ function bdCreate(f){
   const vtype = f.col === 'vocabulary' ? 'word' : f.col === 'collocations' ? (bdIsPhrasal(f.term) ? 'phrasal' : 'collocation') : f.col === 'linking' ? 'linking' : '';
   const rec = {id:newId(), kind:'item', createdAt:now, srs:{ease:2.5, interval:0, reps:0, lapses:0, due:now}, reviews:0,
     col:f.col, term:f.term, ipa:f.ipa, ipaUS:f.ipaUS || '', pos:f.pos, vi:f.vi, def:f.def, examples:f.examples, synonyms:list(f.synonyms), antonyms:list(f.antonyms), collocations:list(f.collocations), related:list(f.related),
-    context:'', category:f.topic, tags:[], ielts:[], notes:'', status:'new'};
+    context:'', category:'', tags:[], ielts:[], notes:'', status:'new'};
+  rec.type = typeOf({col:f.col, pos:vtype === 'phrasal' ? 'phrasal verb' : f.pos, type:vtype});
+  const uc = f.topic ? ucolCreate(f.topic) : null; rec.collectionIds = uc ? [uc.id] : [];
   if (vtype) rec.vtype = vtype;
   if (vtype && vtype !== 'word') { rec.ipa = ''; rec.ipaUS = ''; }
   if (vtype === 'phrasal') rec.pos = 'phrasal verb';
@@ -3203,15 +3846,15 @@ function bdCreate(f){
   return rec;
 }
 function bdExplore(){
-  bdSay(bdT('explore'), {go:['dashboard','library','collections','review','reading','ielts','journal']});
+  bdSay(bdT('explore'), {go:isKo() ? ['dashboard','collections','review','reading','topik','journal'] : ['dashboard','library','collections','review','reading','ielts','journal']});
 }
 function bdOrganize(){
   const its = items();
   if (!its.length) return bdSay(bdT('noItems'), {go:['add']});
   const per = Object.keys(COLS).map(c => [c, its.filter(r => r.col === c).length]).filter(([, n]) => n);
-  const tps = bdTopics().slice(0, 8), none = its.filter(r => !r.category && !(r.tags || []).length).length;
+  const tps = ucols().slice(0, 8).map(c => `${c.name} (${itemsIn(c.id).length})`), none = its.filter(r => !(r.collectionIds || []).length).length;
   const html = `<ul class="bd-stats">${per.map(([c, n]) => `<li><span>${esc(COLS[c].label)}</span><b>${n}</b></li>`).join('')}</ul>
-    ${tps.length ? `<p class="bd-sub">${BUDDY.lang === 'vi' ? 'Chủ đề' : 'Topics'}: ${tps.map(esc).join(', ')}</p>` : ''}${none ? `<p class="bd-sub">${esc(bdT('noTopic', plural(none, 'entry', 'entries')))}</p>` : ''}<p class="bd-sub">${bdFmt(bdT('topicsTip'))}</p>`;
+    ${tps.length ? `<p class="bd-sub">${BUDDY.lang === 'vi' ? 'Bộ sưu tập' : 'Collections'}: ${tps.map(esc).join(', ')}</p>` : ''}${none ? `<p class="bd-sub">${esc(bdT('noTopic', plural(none, 'entry', 'entries')))}</p>` : ''}<p class="bd-sub">${bdFmt(bdT('topicsTip'))}</p>`;
   bdSay(bdT('organize'), {html, go:['collections']});
 }
 function bdHelp(h){ const vi = BUDDY.lang === 'vi'; bdSay(`**${BD_HELP_TITLE[h.id][vi ? 1 : 0]}**`, {steps:h[vi ? 'vi' : 'en'], go:h.go}); }
@@ -3252,8 +3895,11 @@ async function bdHandle(text){
   BUDDY.lang = bdLangOf(text); bdLabels();
   bdPush({role:'user', text});
   const wait = BUDDY.wait; BUDDY.wait = null;
+  if (wait && isKo()) return bdSay(bdT('koLookup'), {go:['add']});
   if (wait && bdTermOk(bdClean(text)) && !bdHelpMatch(text)) return wait === 'col' ? bdLookup(bdClean(text), 'col') : bdLookup(bdClean(text));
   const it = bdIntent(text);
+  if (isKo() && it && (it.t === 'lookup' || it.t === 'col')) return bdSay(bdT('koLookup'), {go:['add']});
+  if (isKo() && it && it.t === 'save') { itemForm(null, {col:'vocabulary', term:it.term}); return bdSay(bdT('koSave', it.term)); }
   if (it && it.t === 'lookup') return bdLookup(it.term);
   if (it && it.t === 'col') return bdLookup(it.term, 'col');
   if (it && it.t === 'save') return bdSaveFlow(it.term, it.target);
@@ -3271,6 +3917,7 @@ document.addEventListener('click', async e => {
   if (k === 'restore') { if (BUDDY.min) bdShow(true); return; }
   if (k === 'clear') { BUDDY.msgs = []; BUDDY.wait = null; bdRenderMsgs(); $('#bd-text').focus(); return; }
   if (k === 'go') { go(v); if (innerWidth < 900) bdShow(true, true); return; }
+  if (k === 'mycol') { go('mycol-' + v); return; }
   if (k === 'add') { itemForm(null, {}); return; }
   if (k === 'item') { if (Store.get(v)) itemDetail(v); return; }
   if (k === 'lookup') { bdPush({role:'user', text:v}); return bdLookup(v); }
@@ -3566,25 +4213,26 @@ function vKnowledge(){
   });
   const sorters = {new:(a,b)=>b.createdAt-a.createdAt, old:(a,b)=>a.createdAt-b.createdAt, az:(a,b)=>termKey(a.term).localeCompare(termKey(b.term)), due:(a,b)=>((a.srs||{}).due||0)-((b.srs||{}).due||0)};
   list.sort(sorters[S.kSort] || sorters.new);
-  const tagCount = {}; its.forEach(r => [...(r.tags||[]), ...(r.category?[r.category]:[])].forEach(t => tagCount[t] = (tagCount[t]||0)+1));
+  const tagCount = {}; its.forEach(r => (r.tags||[]).forEach(t => tagCount[t] = (tagCount[t]||0)+1));   // topics became collections
   const tags = Object.entries(tagCount).sort((a,b)=>b[1]-a[1]).slice(0,16);
   const title = col === 'all' ? 'My Collections' : COLS[col].label;
-  const lede = col === 'all' ? 'Everything you’ve saved or written yourself: words, phrases, sentences, notes and corrections. Only you can see it.' :
+  const lede = col === 'all' ? 'Your own collections, and everything you’ve saved by type: words, phrases, sentences, notes and corrections. Only you can see it.' :
     ({vocabulary:'Words you want to own: meaning, pronunciation, and how they are really used.', structures:'Sentence patterns you can reuse in writing and speaking.', grammar:'Rules worth remembering, with examples that make them stick.', idioms:'Idioms and natural expressions, and when they sound right.', collocations:'Words that go together, and phrasal verbs.', mistakes:'What you got wrong, and the correct version. Reviewing these is one of the fastest ways to improve.'})[col];
   const shown = list.slice(0, S.kLimit);
   return `
   <h1 class="page">${title}</h1><p class="lede">${lede}</p>
+  ${col === 'all' ? ucolGridHTML() : ''}
   <div class="tabs" role="tablist">
     <a class="tab ${col==='all'?'on':''}" href="#collections">${ic('layers')} All<small>${items().length}</small></a>
-    ${Object.entries(COLS).map(([c,o]) => `<a class="tab ${col===c?'on':''}" href="#collections-${c}">${ic(COLIC[c])} ${o.label}<small>${items(c).length}</small></a>`).join('')}
+    ${Object.entries(COLS).filter(([c]) => wsCols().includes(c)).map(([c,o]) => `<a class="tab ${col===c?'on':''}" href="#collections-${c}">${ic(COLIC[c])} ${o.label}<small>${items(c).length}</small></a>`).join('')}
   </div>
   <div class="toolbar">
     <label class="sbox">${ic('search')}<input class="fsearch" id="kq" type="search" placeholder="Filter by word, meaning, example, tag…" value="${esc(S.kQ)}" data-input="kQ" aria-label="Filter entries"></label>
     <div class="seg" role="group" aria-label="Status">${['all',...STATUSES].map(s => `<button class="${S.kStatus===s?'on':''}" data-act="k-status" data-v="${s}">${ic(s==='all'?'list':PILLIC[s])} ${cap(s)}</button>`).join('')}</div>
-    <span class="sel">${ic('list-filter')}<select data-change="kLink" aria-label="IELTS link">
+    ${isKo() ? '' : `<span class="sel">${ic('list-filter')}<select data-change="kLink" aria-label="IELTS link">
       <option value="any">Any source</option><option value="linked" ${S.kLink==='linked'?'selected':''}>Linked to IELTS</option><option value="difficult" ${S.kLink==='difficult'?'selected':''}>Marked difficult</option>
       ${Object.entries(SK).map(([k,o]) => `<option value="${k}" ${S.kLink===k?'selected':''}>${o.label}</option>`).join('')}
-    </select></span>
+    </select></span>`}
     <span class="sel">${ic('arrow-up-down')}<select data-change="kSort" aria-label="Sort">
       ${[['new','Newest first'],['old','Oldest first'],['az','A–Z'],['due','Review soonest']].map(([v,l]) => `<option value="${v}" ${S.kSort===v?'selected':''}>${l}</option>`).join('')}
     </select></span>
@@ -3798,7 +4446,7 @@ function startReviewDeck(deck){
 function startToday(){
   const t = today(), next = nextNewCollection(), left = Math.max(0, t.newGoal - t.newDone);
   const steps = [...dueItems().slice(0, 60).map(r => ({t:'rev', key:r.id})), ...(next && left ? learnSteps(next.id, left) : [])];
-  if (!steps.length) { toast('You’re done for today. Pick a collection in the Library to learn more.'); return; }
+  if (!steps.length) { toast(isKo() ? 'You’re done for today. Add more Korean words to keep going.' : 'You’re done for today. Pick a collection in the Library to learn more.'); return; }
   if (next && left) { const s = clone(colState(next.id) || {id:'cs-' + next.id, kind:'colstate', col:next.id, createdAt:Date.now()}); s.lastLearned = Date.now(); Store.put(s); }
   startSession('Today’s study', steps);
 }
@@ -4010,18 +4658,19 @@ function vPrefs(){
       <form class="stack" id="pref-form">
         <label class="fld"><span>Display name</span><input name="name" value="${esc(st.name||'')}" placeholder="How should Thuverse greet you?" maxlength="40" autocomplete="nickname"></label>
         <div class="fld"><span>Avatar</span>${avatarPickerHTML(st.avatar || '', st.name || '')}</div>
-        <div class="grid2">
+        ${isKo() ? `<input type="hidden" name="target" value="${esc(st.target||7)}"><input type="hidden" name="examDate" value="${esc(st.examDate||'')}">` : `<div class="grid2">
           <label class="fld"><span>IELTS target band</span><select name="target">${[5,5.5,6,6.5,7,7.5,8,8.5,9].map(b => `<option ${Number(st.target)===b?'selected':''}>${b}</option>`).join('')}</select></label>
           <label class="fld"><span>IELTS exam date <em>optional</em></span><input type="date" name="examDate" value="${esc(st.examDate||'')}"></label>
-        </div>
+        </div>`}
         <div class="grid2">
           <label class="fld"><span>New words per day</span><select name="dailyNew">${[5,10,15,20,30].map(n => `<option ${Number(st.dailyNew||10)===n?'selected':''}>${n}</option>`).join('')}</select></label>
           <label class="fld"><span>Review style</span><select name="reviewStyle">${[['mix','Mixed (recommended)'],['flip','Flashcards'],['type','Type the answer']].map(([v,l]) => `<option value="${v}" ${(st.reviewStyle||'mix')===v?'selected':''}>${l}</option>`).join('')}</select></label>
         </div>
-        <label class="fld"><span>English pronunciation for the listen button</span><select name="accent"><option value="en-GB" ${st.accent!=='en-US'?'selected':''}>British English</option><option value="en-US" ${st.accent==='en-US'?'selected':''}>American English</option></select></label>
+        ${isKo() ? `<input type="hidden" name="accent" value="${esc(st.accent||'en-GB')}">` : `<label class="fld"><span>English pronunciation for the listen button</span><select name="accent"><option value="en-GB" ${st.accent!=='en-US'?'selected':''}>British English</option><option value="en-US" ${st.accent==='en-US'?'selected':''}>American English</option></select></label>`}
         <div><button class="btn primary">${ic('check')} Save preferences</button></div>
       </form>
     </section>
+    ${loginMethodsHTML()}
     <section class="panel"><h2 class="sec si">${ic('sun-moon')} Appearance</h2>
       <div class="seg theme-seg" role="radiogroup" aria-label="Appearance">${['light','dark','system'].map(v => `<button role="radio" aria-checked="${themeMode()===v}" class="${themeMode()===v?'on':''}" data-act="set-theme" data-v="${v}">${ic({light:'sun', dark:'moon', system:'monitor'}[v])} ${THEME_LBL[v]}</button>`).join('')}</div>
       <p class="muted" style="margin:10px 0 0;font-size:13.5px">${themeMode() === 'system' ? `Follows your device, currently ${document.documentElement.dataset.theme}. ` : ''}${Web.uid || (isClaude() && Store.mode === 'cloud') ? 'Saved to your account, so it follows you to every device.' : 'Saved in this browser.'}</p>
@@ -4072,7 +4721,7 @@ ${Web.cfg ? `<p style="margin:0;color:var(--text-2)">When you add vocabulary, Th
 const SR = {q:'', key:'', timer:0, res:null, active:-1, open:false};
 const SR_GROUPS = [['vocab','Vocabulary','book-a'],['colloc','Collocations','link-2'],['phrasal','Phrasal verbs','corner-down-right'],['linking','Linking phrases','link'],['idioms','Idioms & expressions','message-square-quote'],['grammar','Grammar','languages'],['structures','Sentence structures','quote'],['mistakes','Common mistakes','triangle-alert'],['reading','Reading list','newspaper'],['ielts','IELTS Workspace','graduation-cap'],['journal','Learning Journal','notebook-pen']];
 /* accent-insensitive folding that keeps string length, so highlights line up (giảm ↔ giam) */
-const srFold = t => { let o = ''; const x = String(t || ''); for (let i = 0; i < x.length; i++) { const c = x[i], f = c.normalize('NFD').replace(/[̀-ͯ]/g, ''); o += (f[0] || c) === 'đ' || c === 'đ' || c === 'Đ' ? 'd' : (f[0] || c).toLowerCase(); } return o; };
+const srFold = t => { let o = ''; const x = String(t || ''); for (let i = 0; i < x.length; i++) { const c = x[i]; if (HANGUL_RX.test(c)) { o += c; continue; } const f = c.normalize('NFD').replace(/[̀-ͯ]/g, ''); o += (f[0] || c) === 'đ' || c === 'đ' || c === 'Đ' ? 'd' : (f[0] || c).toLowerCase(); } return o; };
 const srToks = q => srFold(q).split(/\s+/).filter(Boolean);
 function srHL(text, toks, max){
   let t = String(text || '').replace(/\s+/g, ' ').trim();
@@ -4089,6 +4738,7 @@ function srHL(text, toks, max){
 }
 let SR_STATIC = null;                                  // the built-in library never changes, so index it once
 function srStatic(){
+  if (isKo()) return [];                           // the shared library is English-only
   if (SR_STATIC) return SR_STATIC;
   const docs = [];
   Object.values(WORDS).forEach(w => {
@@ -4602,7 +5252,8 @@ async function lkRun(el, raw){
 }
 function lkAction(el, b){
   const f = $('#item-form', el), o = LK.last, a = b.dataset.lk;
-  if (a === 'sense' && o && LK.paint) { lkApplySense(o.m, Number(b.dataset.i)); LK.pickDef = (o.m.senses[o.m.choice] || {}).def || null; LK.paint(o); return; }
+  if (a === 'sense' && o && LK.paint) { lkApplySense(o.m, Number(b.dataset.i)); LK.pickDef = (o.m.senses[o.m.choice] || {}).def || null; AV.ddWant = false; LK.paint(o); avDD(el, false); const q = $('#lk-q', el); if (q) { AV.noReopen = true; q.focus(); AV.noReopen = false; } return; }
+  if (a === 'retry') { AV.cur = ''; AV.ddWant = true; avQueue(el, true); return; }
   if (a === 'more' && o && LK.paint) { AV.showAll = true; LK.paint(o); return; }
   if (a === 'kbd') { const k = $('.ipakeys', el); k.hidden = !k.hidden; b.setAttribute('aria-expanded', String(!k.hidden)); return; }
   if (a === 'sense' && o) { lkApplySense(o.m, Number(b.dataset.i)); ['pos','def','examples'].forEach(n => { if (f.elements[n].dataset.auto === '1') f.elements[n].value = ''; }); lkFill(f, o.m, false); $('#lk-res', el).innerHTML = lkDupHTML(o.word) + lkResultsHTML(o) + lkVerifyHTML(o.word); drawIcons(); }
@@ -4656,13 +5307,19 @@ function avMarks(f, o){
 function avOrgSummary(el){
   const f = $('#item-form', el); if (!f) return;
   const tags = splitTags(f.elements.tags.value), ie = new FormData(f).getAll('ielts');
-  const bits = [f.elements.category.value.trim() || 'No topic', tags.length ? plural(tags.length, 'tag') : 'no tags', cap(f.querySelector('[name=status]:checked').value)];
+  const bits = [tags.length ? plural(tags.length, 'tag') : 'no tags', cap(f.querySelector('[name=status]:checked').value)];
   if (ie.length) bits.push('IELTS ' + ie.map(k => SK[k].label).join(', '));
   if (f.elements.context.value.trim()) bits.push(f.elements.context.value.trim());
   $('#av-org-sum', el).textContent = bits.join(' · ');
 }
+function avDD(el, open){
+  const dd = $('#av-dd', el); if (!dd) return;
+  if (open && !dd.children[0].innerHTML.trim() && !$('#lk-res', el).innerHTML.trim() && !$('#lk-dup', el).innerHTML.trim()) open = false;
+  dd.hidden = !open; const q = $('#lk-q', el); if (q) q.setAttribute('aria-expanded', String(open));
+}
 function avStatus(el, state, word, x){
   const st = $('#lk-status', el), box = $('.av-term', el); if (!st) return;
+  const hint = $('#av-hint', el);
   box.classList.toggle('busy', state === 'loading' || state === 'partial');
   const answered = x && x.src ? Object.values(x.src).filter(okS).length : 0;
   const pending = x && x.src ? Object.values(x.src).filter(s => s.status === 'pending').length : 0;
@@ -4670,15 +5327,23 @@ function avStatus(el, state, word, x){
   st.className = 'av-status ' + state;
   st.innerHTML = {
     idle: `${ic('sparkle')} <span>Type a word or phrase. English entries are looked up automatically as you type; for other languages, fill the fields in yourself.</span>`,
-    loading: `${ic('loader-circle')} <span>Looking up “${esc(word)}”…</span>`,
-    partial: `${ic('loader-circle')} <span>${answered ? `${plural(answered, 'source')} answered, checking ${pending} more…` : `Looking up “${esc(word)}”…`}</span>`,
+    loading: `${ic('loader-circle')} <span>Searching…</span>`,
+    partial: `${ic('loader-circle')} <span>Searching…${answered ? ` <small>${answered} of ${answered + pending} sources so far</small>` : ''}</span>`,
     done: `${ic('circle-check')} <span>${answered} of ${asked} sources answered. Shaded fields came from the dictionaries, so check and edit them before saving.</span>`,
-    none: `${ic('search-x')} <span><b>No dictionary entry for “${esc(word)}”.</b> Check the spelling or try the base form. Automatic lookup covers English for now, so for other languages fill the fields in yourself.</span>`,
+    none: `${ic('search-x')} <span><b>No results found</b> for “${esc(word)}”. Check the spelling or try the base form, or fill the fields in yourself.</span>`,
     unavailable: `${ic('plug')} <span>Automatic lookup isn’t available here. Fill the fields in yourself.</span>`,
     sentence: `${ic('text-quote')} <span>Sentences aren’t looked up in the dictionary. Add a translation or note on when to use it.</span>`,
     error: `${ic('triangle-alert')} <span></span>`,
   }[state] || '';
-  if (state === 'error') st.innerHTML = lkErrorHTML(x);
+  if (state === 'error') st.innerHTML = lkErrorHTML(x) + `<button type="button" class="btn sm" data-lk="retry">${ic('rotate-ccw')} Try again</button>`;
+  if (hint) {
+    const short = {idle:'Type a word or phrase. English entries are looked up automatically as you type.', loading:'Searching the dictionaries…', partial:'Searching the dictionaries…',
+      done:`Filled from ${answered} of ${asked} sources. Shaded fields came from the dictionaries, so check them before saving.`, none:'No dictionary entry found. Fill the fields in yourself.',
+      unavailable:'Automatic lookup isn’t available here. Fill the fields in yourself.', sentence:'Sentences aren’t looked up. Add a translation or a note on when to use it.', error:'The lookup didn’t work. Open the results to try again.'}[state] || '';
+    hint.textContent = short; hint.className = 'av-hint ' + state;
+  }
+  if (['idle', 'sentence', 'unavailable'].includes(state)) avDD(el, false);
+  else if (['loading', 'partial', 'none', 'error'].includes(state) && AV.ddWant) avDD(el, true);
   drawIcons();
 }
 function avSensesHTML(o){
@@ -4706,13 +5371,14 @@ function avPaint(el, o){
   const f = $('#item-form', el), m = o.m;
   if (LK.pickDef) { const i = m.senses.findIndex(s => s.def === LK.pickDef); if (i >= 0 && i !== m.choice) lkApplySense(m, i); }
   lkFill(f, m, false);
-  $('#lk-res', el).innerHTML = avSensesHTML(o);
+  $('#lk-res', el).innerHTML = avSensesHTML(o) || (o.done ? `<p class="av-none">${ic('search-x')} <span><b>No results found</b> for “${esc(o.word)}”.${Object.values(o.src).some(okS) ? ' Anything the dictionaries did have is filled in below.' : ' Check the spelling, or fill the fields in yourself.'}</span></p>` : '');
   $('#lk-dup', el).innerHTML = lkDupHTML(o.word);
   $('#lk-vi', el).innerHTML = m.vi ? uniq(m.vi.all.flatMap(g => g.words), 8).map(w => `<button type="button" data-lk="vi" data-v="${esc(w)}">${esc(w)}</button>`).join('') : '';
   $('#av-srcs', el).innerHTML = avSourcesHTML(o);
   avMarks(f, o);
   const answered = Object.values(o.src).filter(okS).length;
   avStatus(el, !o.done ? 'partial' : (!m.senses.length && !answered ? 'none' : 'done'), o.word, o);
+  if (AV.ddWant) avDD(el, true);
   drawIcons();
 }
 function avReset(el){
@@ -4751,9 +5417,10 @@ function avQueue(el, now){
   const f = $('#item-form', el);
   const word = f.elements.term.value.trim().replace(/\s+/g, ' ');
   $('#lk-dup', el).innerHTML = word.length >= 2 ? lkDupHTML(word) : ''; drawIcons();
-  if (word.length < 2) { ++AV.token; if (LK.ctrl) LK.ctrl.abort(); if (AV.cur || LK.last) avReset(el); return; }
+  if (word.length < 2) { ++AV.token; if (LK.ctrl) LK.ctrl.abort(); AV.ddWant = false; avDD(el, false); if (AV.cur || LK.last) avReset(el); return; }
   if (f.dataset.vt === 'sentence') return;       // sentences aren't dictionary entries
   if (termKey(word) === AV.cur) return;          // already showing or fetching this word
+  if (!now && !AV.cache.has(termKey(word))) avStatus(el, 'loading', word);
   AV.timer = setTimeout(() => avLookup(el, word), now ? 0 : 500);
 }
 const AV_TYPES = [['word','Word','type'],['collocation','Collocation','link-2'],['phrasal','Phrasal verb','corner-down-right'],['sentence','Sentence','text-quote'],['linking','Linking phrase','link']];
@@ -4765,7 +5432,7 @@ function avSetType(el, vt){
   f.dataset.vt = vt; f.elements.vtype.value = vt;
   el.querySelectorAll('button[data-vt]').forEach(b => { const on = b.dataset.vt === vt; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); });
   if (!AV.colTouched) {
-    const sel = el.querySelector('select[name=col]'), want = AV_COL[vt] || 'vocabulary';
+    const sel = el.querySelector('[name=col]'), want = AV_COL[vt] || 'vocabulary';
     if (sel && sel.value !== want) { sel.value = want; AV.autoCol = true; sel.dispatchEvent(new Event('change', {bubbles:true})); AV.autoCol = false; }
   }
   f.elements.term.placeholder = AV_PH[vt];
@@ -4783,13 +5450,18 @@ function avHTML(d, preset){
   <form class="av-body" id="item-form" data-vt="${vt}" novalidate autocomplete="off">
     <input type="hidden" name="vtype" value="${vt}">
     <div class="av-q">
-      <label class="av-term"><span class="vh" data-l="term">Word or phrase</span>${ic('search', 'av-i')}${ic('loader-circle', 'av-spin')}
-        <input name="term" id="lk-q" value="${esc(d.term || '')}" placeholder="Type a word or phrase, e.g. mitigate" autofocus autocomplete="off" spellcheck="false" aria-describedby="lk-status" autocapitalize="none" autocorrect="off"></label>
-      <div class="av-status idle" id="lk-status" aria-live="polite"></div>
+      <div class="av-qwrap">
+        <label class="av-term"><span class="vh" data-l="term">Word or phrase</span>${ic('search', 'av-i')}${ic('loader-circle', 'av-spin')}
+          <input name="term" id="lk-q" value="${esc(d.term || '')}" placeholder="Type a word or phrase, e.g. mitigate" autofocus autocomplete="off" spellcheck="false" aria-describedby="av-hint" aria-controls="av-dd" aria-expanded="false" autocapitalize="none" autocorrect="off"></label>
+        <div class="av-dd" id="av-dd" hidden>
+          <div class="av-status idle" id="lk-status" aria-live="polite"></div>
+          <div id="lk-dup" class="av-dup"></div>
+          <section id="lk-res" class="av-res"></section>
+        </div>
+      </div>
+      <div class="av-hint" id="av-hint"></div>
       <div class="warn" id="dup" hidden></div>
-      <div id="lk-dup" class="av-dup"></div>
     </div>
-    <section id="lk-res" class="av-res" aria-live="polite"></section>
     <div class="av-core">
       <div class="grid2 vt-hide-collocation vt-hide-phrasal vt-hide-sentence vt-hide-linking">
         <label class="fld"><span>IPA · British <small class="av-src" data-for="ipa"></small></span><input name="ipa" class="ipa-in" value="${esc(d.ipa || '')}" placeholder="/ˈmɪtɪɡeɪt/" autocomplete="off" autocapitalize="none" autocorrect="off"></label>
@@ -4816,7 +5488,7 @@ function avHTML(d, preset){
     <details class="av-sec" id="av-org" ${d.context || d.category || (d.ielts || []).length ? 'open' : ''}><summary>${ic('folder')}<b>Organise</b><span id="av-org-sum"></span>${ic('chevron-down', 'av-chev')}</summary>
       <div class="av-in">
         <div class="grid2">
-          <label class="fld"><span>Category or topic</span><input name="category" value="${esc(d.category || '')}" placeholder="e.g. Environment" list="dl-cat"></label>
+          <input type="hidden" name="category" value="${esc(d.category || '')}">
           <label class="fld"><span>Tags <em>commas</em></span><input name="tags" value="${esc((d.tags || []).join(', '))}" placeholder="academic, verb" list="dl-tag" autocapitalize="none" autocorrect="off"></label>
         </div>
         <div class="fld"><span>IELTS skills</span><div class="pick">${Object.entries(SK).map(([k, o]) => `<label><input type="checkbox" name="ielts" value="${k}" ${(d.ielts || []).includes(k) ? 'checked' : ''}><span>${ic(o.icon)} ${o.label}</span></label>`).join('')}</div></div>
@@ -4829,10 +5501,11 @@ function avHTML(d, preset){
     <details class="av-sec" id="av-src"><summary>${ic('database')}<b>Sources</b><span>where each field came from, and where to check it</span>${ic('chevron-down', 'av-chev')}</summary>
       <div class="av-in" id="av-srcs"></div></details>
     <input type="hidden" name="lkSources" value="">
-    ${datalist('dl-cat', items().map(x => x.category))}${datalist('dl-ctx', items().map(x => x.context))}${datalist('dl-tag', items().flatMap(x => x.tags || []))}${datalist('dl-pos', ['noun','verb','adjective','adverb','phrase','phrasal verb','idiom','preposition','conjunction'])}${datalist('dl-pat', ['verb + noun','adjective + noun','adverb + adjective','adverb + verb','noun + noun','verb + preposition','noun + of + noun','verb + adverb'])}
+    ${datalist('dl-cat', items().map(x => x.category))}${datalist('dl-ctx', items().map(x => x.context))}${datalist('dl-tag', items().flatMap(x => x.tags || []))}${datalist('dl-pos', isKo() ? KO_TYPES.map(([k, e]) => `${k} (${e})`) : ['noun','verb','adjective','adverb','phrase','phrasal verb','idiom','preposition','conjunction'])}${datalist('dl-pat', ['verb + noun','adjective + noun','adverb + adjective','adverb + verb','noun + noun','verb + preposition','noun + of + noun','verb + adverb'])}
   </form>
   <div class="av-foot">
-    <label class="av-col"><span>Save to</span><select name="col" form="item-form" aria-label="Collection">${Object.entries(COLS).map(([k, o]) => `<option value="${k}" ${d.col === k ? 'selected' : ''}>${esc(o.label)}</option>`).join('')}</select></label>
+    <input type="hidden" name="col" form="item-form" value="${esc(d.col)}">
+    <label class="av-col"><span>Add to collection</span><select name="ucol" form="item-form" aria-label="Add to collection"><option value="">No collection</option>${ucols().map(c => `<option value="${esc(c.id)}" ${preset.ucol === c.id ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}<option value="__new">+ New collection…</option></select><input name="ucolNew" form="item-form" class="uc-newin" placeholder="New collection name" maxlength="40" hidden></label>
     <label class="chk"><input type="checkbox" name="another" form="item-form" ${preset.another ? 'checked' : ''}> Add another</label>
     <span class="av-sp"></span>
     <button type="button" class="btn ghost" data-act="close">Cancel</button>
@@ -4845,18 +5518,22 @@ function itemForm(r, preset={}){
   const isNew = !r;
   const d = r || {col: preset.col || 'vocabulary', status:'new', ielts: preset.ielts ? [preset.ielts] : [], tags:[], term: preset.term || '', examples: preset.examples || '', context: preset.context || '', category: preset.category || ''};
   const c = COLS[d.col] || COLS.vocabulary;
-  const withLookup = isNew && !preset.noLookup && VOCAB_COLS.includes(d.col);
+  const withLookup = isNew && !preset.noLookup && VOCAB_COLS.includes(d.col) && !isKo();   // dictionaries are English-only
   const lst = a => esc((a || []).join(', '));
   const hasMore = (d.synonyms||[]).length || (d.antonyms||[]).length || (d.collocations||[]).length || (d.related||[]).length;
   const form = `<form class="form" id="item-form" novalidate>
     ${withLookup ? '' : `<div class="form-head"><h3>${isNew ? 'Add to My Collections' : 'Edit entry'}</h3><button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>`}
-    <div class="seg" role="radiogroup" aria-label="Collection">${Object.entries(COLS).map(([k,o]) => `<label><input type="radio" name="col" value="${k}" ${d.col===k?'checked':''}><span>${ic(COLIC[k])} ${o.label}</span></label>`).join('')}</div>
+    <div class="seg" role="radiogroup" aria-label="Content type">${Object.entries(COLS).filter(([k]) => wsCols().includes(k) || k === d.col).map(([k,o]) => `<label><input type="radio" name="col" value="${k}" ${d.col===k?'checked':''}><span>${ic(COLIC[k])} ${o.label}</span></label>`).join('')}</div>
     <label class="fld big"><span data-l="term">${c.term}</span><input name="term" value="${esc(d.term||'')}" placeholder="${esc(c.ph)}" required ${withLookup?'':'autofocus'} autocomplete="off" autocapitalize="none" autocorrect="off"><div class="warn" id="dup" hidden></div></label>
-    <div class="grid2">
+    ${isKo() ? `<div class="grid2">
+      <label class="fld"><span>Romanization <em>filled in from the Hangul, check it</em></span><input name="roman" value="${esc(d.roman||'')}" data-ro="${d.roman ? 'manual' : 'auto'}" placeholder="e.g. hangugeo" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"></label>
+      <label class="fld"><span>Pronunciation <em>optional</em></span><input name="pron" value="${esc(d.pron||'')}" placeholder="e.g. [한구거]" lang="ko" autocomplete="off"></label>
+    </div>` : ''}
+    <div class="grid2" ${isKo() ? 'hidden' : ''}>
       <label class="fld"><span>IPA · British</span><input name="ipa" class="ipa-in" value="${esc(d.ipa||'')}" placeholder="/ˈmɪtɪɡeɪt/" autocomplete="off" autocapitalize="none" autocorrect="off"></label>
       <label class="fld"><span>IPA · American</span><input name="ipaUS" class="ipa-in" value="${esc(d.ipaUS||'')}" placeholder="/ˈmɪt̬əɡeɪt/" autocomplete="off" autocapitalize="none" autocorrect="off"></label>
     </div>
-    <div class="ipakeys" aria-label="IPA symbols">${IPA_KEYS.map(k => `<button type="button" data-ipa="${k}" tabindex="-1">${k}</button>`).join('')}</div>
+    <div class="ipakeys" aria-label="IPA symbols" ${isKo() ? 'hidden' : ''}>${IPA_KEYS.map(k => `<button type="button" data-ipa="${k}" tabindex="-1">${k}</button>`).join('')}</div>
     <div class="grid2">
       <label class="fld"><span>Part of speech</span><input name="pos" value="${esc(d.pos||'')}" placeholder="noun, verb…" list="dl-pos" autocapitalize="none" autocorrect="off"></label>
       <label class="fld"><span>Vietnamese meaning</span><input name="vi" value="${esc(d.vi||'')}" placeholder="nghĩa tiếng Việt"></label>
@@ -4874,14 +5551,15 @@ function itemForm(r, preset={}){
     </details>
     <div class="grid2">
       <label class="fld"><span>Where I learned it</span><input name="context" value="${esc(d.context||'')}" placeholder="e.g. Cambridge 18, Reading Test 2" list="dl-ctx"></label>
-      <label class="fld"><span>Category or topic</span><input name="category" value="${esc(d.category||'')}" placeholder="e.g. Environment" list="dl-cat"></label>
+      <input type="hidden" name="category" value="${esc(d.category||'')}">
     </div>
+    <div class="fld"><span>Collections <em>optional, any number</em></span><input type="hidden" name="ucolsOn" value="1"><div class="pick uc-pick">${ucols().map(c => `<label><input type="checkbox" name="ucols" value="${esc(c.id)}" ${((d.collectionIds || []).includes(c.id) || preset.ucol === c.id) ? 'checked' : ''}><span>${ic('folder')} ${esc(c.name)}</span></label>`).join('')}<input class="uc-newin plain" name="ucolNew" placeholder="+ New collection" maxlength="40" aria-label="New collection name"></div></div>
     <label class="fld"><span>Tags <em>separate with commas</em></span><input name="tags" value="${esc((d.tags||[]).join(', '))}" placeholder="academic, verb" list="dl-tag" autocapitalize="none" autocorrect="off"></label>
-    <div class="fld"><span>Also file under IELTS</span><div class="pick">${Object.entries(SK).map(([k,o]) => `<label><input type="checkbox" name="ielts" value="${k}" ${(d.ielts||[]).includes(k)?'checked':''}><span>${ic(o.icon)} ${o.label}</span></label>`).join('')}</div></div>
+    <div class="fld" ${isKo() ? 'hidden' : ''}><span>Also file under IELTS</span><div class="pick">${Object.entries(SK).map(([k,o]) => `<label><input type="checkbox" name="ielts" value="${k}" ${(d.ielts||[]).includes(k)?'checked':''}><span>${ic(o.icon)} ${o.label}</span></label>`).join('')}</div></div>
     <label class="fld"><span>Personal notes</span><textarea name="notes" rows="2" placeholder="Memory tricks, register, common errors…">${esc(d.notes||'')}</textarea></label>
     <div class="fld"><span>Learning status</span><div class="seg" role="radiogroup" style="align-self:flex-start">${STATUSES.map(s => `<label><input type="radio" name="status" value="${s}" ${(d.status||'new')===s?'checked':''}><span>${ic(PILLIC[s])} ${cap(s)}</span></label>`).join('')}</div></div>
     <input type="hidden" name="lkSources" value="">
-    ${datalist('dl-cat', items().map(x => x.category))}${datalist('dl-ctx', items().map(x => x.context))}${datalist('dl-tag', items().flatMap(x => x.tags||[]))}${datalist('dl-pos', ['noun','verb','adjective','adverb','phrase','phrasal verb','idiom','preposition','conjunction'])}
+    ${datalist('dl-cat', items().map(x => x.category))}${datalist('dl-ctx', items().map(x => x.context))}${datalist('dl-tag', items().flatMap(x => x.tags||[]))}${datalist('dl-pos', isKo() ? KO_TYPES.map(([k, e]) => `${k} (${e})`) : ['noun','verb','adjective','adverb','phrase','phrasal verb','idiom','preposition','conjunction'])}
     ${withLookup ? `<p class="auto-note">${ic('sparkle')} Fields shaded in indigo were filled from the dictionaries. Edit anything before saving.</p>` : ''}
     <div class="form-foot">${isNew ? `<label class="chk"><input type="checkbox" name="another" ${preset.another?'checked':''}> Add another after saving</label>` : ''}<button type="button" class="btn ghost" data-act="close">Cancel</button><button class="btn primary" type="submit" id="item-save">${ic('check')} ${isNew?'Save entry':'Save changes'}</button></div>
   </form>`;
@@ -4905,20 +5583,40 @@ function itemForm(r, preset={}){
     el.addEventListener('change', e => { if (e.target.name === 'col') relabel(); if (withLookup) avOrgSummary(el); });
     f.addEventListener('input', e => { if (e.isTrusted && e.target.dataset) { e.target.dataset.auto = ''; e.target.classList.remove('auto'); if (e.target.name === 'term') e.target.dataset.touched = '1'; } });
     f.elements.term.addEventListener('input', checkDup); checkDup();
+    if (isKo() && f.elements.roman) {
+      f.elements.term.setAttribute('lang', 'ko');
+      const ro = f.elements.roman, fill = () => { if (ro.dataset.ro === 'auto') ro.value = HANGUL_RX.test(f.elements.term.value) ? romanize(f.elements.term.value.trim()) : ''; };
+      f.elements.term.addEventListener('input', fill);
+      ro.addEventListener('input', e => { if (e.isTrusted) ro.dataset.ro = ro.value ? 'manual' : 'auto'; });
+      fill();
+    }
     $('.ipakeys', el).addEventListener('click', e => { const b = e.target.closest('[data-ipa]'); if (!b) return; const t = ipaTarget, s0 = t.selectionStart ?? t.value.length, en = t.selectionEnd ?? s0; t.value = t.value.slice(0,s0) + b.dataset.ipa + t.value.slice(en); t.focus(); t.setSelectionRange(s0 + b.dataset.ipa.length, s0 + b.dataset.ipa.length); });
     if (withLookup) {
       LK.paint = o => avPaint(el, o);
-      AV.cur = ''; ++AV.token; AV.colTouched = false;
-      el.addEventListener('click', e => { const b = e.target.closest('button[data-vt]'); if (b) { avSetType(el, b.dataset.vt); f.elements.term.focus(); } });
+      AV.cur = ''; ++AV.token; AV.colTouched = !Object.values(AV_COL).includes(d.col);   // e.g. adding from Idioms keeps that type until a tab is chosen
+      el.addEventListener('click', e => { const b = e.target.closest('button[data-vt]'); if (b) { AV.colTouched = false; avSetType(el, b.dataset.vt); f.elements.term.focus(); } });
+      const ucs = $('select[name=ucol]', el), ucn = $('.uc-newin', el);
+      ucs.addEventListener('change', () => { const nw = ucs.value === '__new'; ucn.hidden = !nw; ucs.hidden = nw; if (nw) ucn.focus(); });
+      ucn.addEventListener('keydown', e => { if (e.key === 'Escape' && !ucn.value) { e.stopPropagation(); ucn.hidden = true; ucs.hidden = false; ucs.value = ''; ucs.focus(); } });
       el.addEventListener('change', e => { if (e.target.name === 'col' && !AV.autoCol) AV.colTouched = true; });
       el.addEventListener('click', e => { const b = e.target.closest('[data-lk]'); if (b) lkAction(el, b); });
       const term = f.elements.term;
-      term.addEventListener('input', () => avQueue(el, false));
+      term.addEventListener('input', () => { AV.ddWant = term.value.trim().length >= 2; avQueue(el, false); });
+      const qq = $('#lk-q', el), dd = $('#av-dd', el);
+      qq.addEventListener('focus', () => { if (!AV.noReopen && LK.last && termKey(LK.last.word) === termKey(qq.value) && $('#lk-res', el).innerHTML.trim()) { AV.ddWant = true; avDD(el, true); } });
+      el.addEventListener('pointerdown', e => { if (!dd.hidden && !e.target.closest('.av-qwrap')) { AV.ddWant = false; avDD(el, false); } });
+      el.addEventListener('keydown', e => {
+        if (dd.hidden) return;
+        const opts = [...dd.querySelectorAll('button')], i = opts.indexOf(document.activeElement);
+        if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); AV.ddWant = false; avDD(el, false); qq.focus(); }
+        else if (e.key === 'ArrowDown' && opts.length && (e.target === qq || i >= 0)) { e.preventDefault(); opts[Math.min(i + 1, opts.length - 1)].focus(); }
+        else if (e.key === 'ArrowUp' && i >= 0) { e.preventDefault(); if (i === 0) qq.focus(); else opts[i - 1].focus(); }
+      }, true);
       term.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); AV.cur = AV.cur === termKey(term.value) && !LK.last ? '' : AV.cur; avQueue(el, true); } });
       el.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); f.requestSubmit(); } });
       f.addEventListener('input', e => { if (e.target.name !== 'term') { avMarks(f, LK.last); avOrgSummary(el); } });
       avReset(el); avOrgSummary(el); avSetType(el, f.dataset.vt);
-      if (d.term) avQueue(el, true);
+      if (d.term) { AV.ddWant = true; avQueue(el, true); }
     }
     if (false) {
       const q = $('#lk-q', el);
@@ -4937,6 +5635,15 @@ function itemForm(r, preset={}){
       const list = x => String(x || '').split(',').map(t => t.trim()).filter(Boolean);
       Object.assign(rec, {col:v.col, term:v.term.trim(), ipa:v.ipa.trim(), ipaUS:v.ipaUS.trim(), pos:v.pos.trim(), vi:v.vi.trim(), def:v.def.trim(), examples:v.examples.trim(), synonyms:list(v.synonyms), antonyms:list(v.antonyms), collocations:list(v.collocations), related:list(v.related), context:v.context.trim(), category:v.category.trim(), tags:splitTags(v.tags), ielts:new FormData(f).getAll('ielts'), notes:v.notes.trim()});
       if (v.col === 'linking') rec.func = LINK_FUNCS.some(([k]) => k === v.func) ? v.func : (rec.func || '');
+      if ('roman' in v) { rec.roman = String(v.roman || '').trim().slice(0, 120); rec.pron = String(v.pron || '').trim().slice(0, 120); }
+      {   // content type (system) — derived from the chosen tab/section; collections (user) — independent of it
+        const fd = new FormData(f), want = v.vtype && CONTENT_TYPES[v.vtype] && CONTENT_TYPES[v.vtype].col === rec.col ? v.vtype : (r && r.col === rec.col ? r.type : '');
+        rec.type = typeOf({col:rec.col, pos:rec.pos, type:want});
+        let ids = v.ucolsOn ? fd.getAll('ucols') : [...(rec.collectionIds || [])];
+        if (v.ucol && v.ucol !== '__new') ids.push(v.ucol);
+        const nn = String(v.ucolNew || '').trim(); if (nn) { const c = ucolCreate(nn); if (c) ids.push(c.id); }
+        rec.collectionIds = [...new Set(ids)].filter(id => ucolById(id));
+      }
       if (v.vtype) {
         rec.vtype = v.vtype;
         if (v.vtype !== 'word') { rec.ipa = ''; rec.ipaUS = ''; }
@@ -4953,8 +5660,9 @@ function itemForm(r, preset={}){
       if (!r && preset.articleId) rec.articleId = preset.articleId;
       if (!r) { rec.addedAt = rec.createdAt; logEvent('added', rec.id); }
       Store.put(rec);
-      toast(r ? 'Changes saved' : `Saved to ${COLS[rec.col].label}`);
-      if (!r && v.another) itemForm(null, {col:rec.col, ielts:rec.ielts[0], another:true});
+      const firstC = ucolById((rec.collectionIds || [])[0]);
+      toast(r ? 'Changes saved' : `Saved ${CONTENT_TYPES[rec.type].label.toLowerCase()}${firstC ? ` to ${firstC.name}` : ''}`);
+      if (!r && v.another) itemForm(null, {col:rec.col, ielts:rec.ielts[0], another:true, ucol:v.ucol && v.ucol !== '__new' ? v.ucol : (firstC ? firstC.id : '')});
       else closeModal();
     });
   }});
@@ -4972,7 +5680,7 @@ function itemDetail(id){
   openModal(`<div class="detail">
     <div class="dh"><span class="muted" style="font:italic 15px var(--f-serif)">${c.label}${r.category?' · '+esc(r.category):''}</span><button class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>
     <div class="hw" ${mistake?'style="text-decoration:line-through;text-decoration-color:var(--pen)"':''}>${esc(r.term)}</div>
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">${r.pos?`<span class="chip">${esc(r.pos)}</span>`:''}${r.func?`<span class="chip">${ic('link')} ${esc(linkFuncLabel(r.func))}</span>`:''}${r.ipa?`<span class="ipa" style="font-size:18px">${r.ipaUS?'<small class="acc">UK</small>':''}${esc(r.ipa)}</span>`:''}${r.ipaUS?`<span class="ipa" style="font-size:18px"><small class="acc">US</small>${esc(r.ipaUS)}</span>`:''}<button class="btn sm" data-act="speak" data-t="${esc(mistake ? (r.def||r.term) : r.term)}">${ICON.speak} Listen</button>${statusPill(r)}${r.difficult?'<span class="chip" style="color:var(--pen)">difficult</span>':''}</div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">${r.pos?`<span class="chip">${esc(r.pos)}</span>`:''}${r.func?`<span class="chip">${ic('link')} ${esc(linkFuncLabel(r.func))}</span>`:''}${r.ipa?`<span class="ipa" style="font-size:18px">${r.ipaUS?'<small class="acc">UK</small>':''}${esc(r.ipa)}</span>`:''}${r.roman?`<span class="ipa" style="font-size:18px">${esc(r.roman)}</span>`:''}${r.pron?`<span class="ipa" style="font-size:18px" lang="ko">[${esc(r.pron.replace(/^\[|\]$/g, ''))}]</span>`:''}${r.ipaUS?`<span class="ipa" style="font-size:18px"><small class="acc">US</small>${esc(r.ipaUS)}</span>`:''}<button class="btn sm" data-act="speak" data-t="${esc(mistake ? (r.def||r.term) : r.term)}">${ICON.speak} Listen</button>${statusPill(r)}${r.difficult?'<span class="chip" style="color:var(--pen)">difficult</span>':''}</div>
     ${mistake ? (r.def?`<div class="vi" style="color:var(--leaf)">✓ ${esc(r.def)}</div>`:'') : `${r.vi?`<div class="vi">${esc(r.vi)}</div>`:''}${r.def?`<div class="def">${esc(r.def)}</div>`:''}`}
     ${exs.length ? `<h5>Examples</h5><ol>${exs.map(e => `<li>${hl(e, r.term)}</li>`).join('')}</ol>` : ''}
     ${[['synonyms','Synonyms'],['antonyms','Antonyms'],['collocations','Collocations'],['related','Related words']].filter(([k]) => (r[k]||[]).length).map(([k,l]) => `<h5>${l}</h5><div class="lk-chips">${r[k].map(x => `<span>${esc(x)}</span>`).join('')}</div>`).join('')}
@@ -5115,7 +5823,7 @@ function journalToVocab(id){
 function speak(t){
   try {
     if (!('speechSynthesis' in window)) throw 0;
-    const lang = settings().accent || 'en-GB';
+    const lang = isKo() ? 'ko-KR' : settings().accent || 'en-GB';
     const u = new SpeechSynthesisUtterance(String(t).replace(/…/g,', '));
     u.lang = lang; u.rate = .9;
     const v = speechSynthesis.getVoices().find(v => v.lang && v.lang.replace('_','-').toLowerCase() === lang.toLowerCase());
@@ -5182,7 +5890,7 @@ const ACT = {
   'set-theme': el => { setTheme(el.dataset.v); toast(`Appearance: ${THEME_LBL[el.dataset.v]}`); },
   new: el => {
     const t = el.dataset.type;
-    if (t === 'item') itemForm(null, {col:el.dataset.col, ielts:el.dataset.ielts, term:el.dataset.term});
+    if (t === 'item') itemForm(null, {col:el.dataset.col, ielts:el.dataset.ielts, term:el.dataset.term, ucol:el.dataset.ucol});
     else if (t === 'note') noteForm(null, {skill:el.dataset.skill || (S.view==='ielts'?S.skill:'writing2'), section:el.dataset.section || (S.view==='ielts' && SEC[S.skillTab] && SK[S.skill].sections.includes(S.skillTab) ? S.skillTab : undefined)});
     else if (t === 'score') scoreForm(el.dataset.main || 'listening');
     else if (t === 'article') articleForm(null, {sourceId: el.dataset.source});
@@ -5215,6 +5923,28 @@ const ACT = {
   'lq-reset': () => { S.lq = {lid:S.lessonId, answers:{}}; render(); },
   'lesson-done': el => { const s0 = Store.get('lp-' + el.dataset.id) || {id:'lp-' + el.dataset.id, kind:'lesson', lid:el.dataset.id, createdAt:Date.now()}; const s1 = clone(s0); s1.status = 'done'; s1.completedAt = Date.now(); Store.put(s1); toast('Lesson complete'); },
   'r-filter': el => { S.rFilter = el.dataset.v; render(); },
+  'tscore-new': () => tscoreForm(),
+  'uc-new': () => ucolNameForm(null),
+  'uc-rename': el => { const c = ucolById(el.dataset.id); if (c) ucolNameForm(c); },
+  'uc-del': async el => {
+    const c = ucolById(el.dataset.id); if (!c) return;
+    const n = itemsIn(c.id).length;
+    if (!await confirmBox(`Delete “${c.name}”?`, n ? `The collection is removed. Its ${plural(n, 'entry', 'entries')} stay in My Collections, under their content type.` : 'This collection is empty.', 'Delete collection')) return;
+    itemsIn(c.id).forEach(r => Store.put({...clone(r), collectionIds:(r.collectionIds || []).filter(x => x !== c.id)}));
+    Store.del(c.id); toast('Collection deleted'); go('collections');
+  },
+  'uc-type': el => { S.ucType = el.dataset.v; render(); },
+  'uc-clear': () => { S.ucType = ''; S.ucQ = ''; render(); },
+  'lm-link': () => loginLink(),
+  'lm-unlink': async el => {
+    const ids = LOGIN.ids || [], g = ids.find(i => (i.identity_id || i.id) === el.dataset.id);
+    if (!g || ids.length < 2) { toast('Google is your only login method, so it can’t be disconnected.', true); return; }
+    if (!await confirmBox('Disconnect Google?', 'You’ll sign in with your email and password instead. Your profile and learning data stay as they are.', 'Disconnect')) return;
+    const {error} = await Web.sb.auth.unlinkIdentity(g);
+    LOGIN.err = !!error; LOGIN.msg = error ? `Couldn’t disconnect Google: ${error.message}` : 'Google was disconnected. Sign in with your email and password.';
+    LOGIN.ids = null; loginLoad(true);
+  },
+  'tscore-del': async el => { if (await confirmBox('Delete this practice test?', 'Its scores will be removed from your TOPIK history.', 'Delete')) { Store.del(el.dataset.id); toast('Practice test deleted'); } },
   'r-src-clear': () => { S.rSrc = ''; render(); },
   'src-cat': el => { S.srcCat = el.dataset.v; render(); },
   'src-clear': () => { S.srcQ = ''; S.srcCat = ''; S.srcLang = ''; render(); },
