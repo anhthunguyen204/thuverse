@@ -879,7 +879,21 @@ body.auth-open .app{visibility:hidden}
 .av-head h3{font:750 21px var(--f-ui);letter-spacing:-.02em;margin:0}
 .av-body{flex:1;min-height:0;overflow-y:auto;padding:14px 22px 18px;display:flex;flex-direction:column;gap:14px;overscroll-behavior:contain}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.av-q{display:flex;flex-direction:column;gap:8px}
+.av-q{display:flex;flex-direction:column;gap:6px}
+.av-qwrap{position:relative}
+.av-dd{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;max-height:min(360px,46vh);max-height:min(360px,46dvh);overflow-y:auto;overscroll-behavior:contain;
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-pop);padding:10px}
+.av-dd[hidden]{display:none}
+.av-dd .av-status{padding:4px 4px 6px}
+.av-dd .av-status.done{display:none}
+.av-dd .av-status:empty{display:none}
+.av-dd .av-status .btn{margin-left:auto;flex:none}
+.av-dd .av-status.error{flex-wrap:wrap}
+.av-dd .av-res{margin:0}
+.av-dd .av-dup .lk-dup{margin:0 0 8px}
+.av-none{display:flex;gap:8px;align-items:flex-start;margin:0;padding:4px;font-size:13.5px;color:var(--text-2)}.av-none .ic{width:16px;height:16px;flex:none;margin-top:2px;color:var(--amber)}
+.av-hint{font-size:13px;color:var(--muted);height:18px;line-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.av-hint.none,.av-hint.error{color:var(--amber)}
 .av-term{position:relative;display:flex;align-items:center;gap:10px;height:54px;padding:0 16px;background:var(--surface-2);border:1.5px solid transparent;border-radius:14px}
 .av-term:focus-within{border-color:var(--primary);background:var(--surface);box-shadow:0 0 0 3px var(--primary-soft)}
 .av-term .ic{width:19px;height:19px;color:var(--muted);flex:none}
@@ -5121,7 +5135,8 @@ async function lkRun(el, raw){
 }
 function lkAction(el, b){
   const f = $('#item-form', el), o = LK.last, a = b.dataset.lk;
-  if (a === 'sense' && o && LK.paint) { lkApplySense(o.m, Number(b.dataset.i)); LK.pickDef = (o.m.senses[o.m.choice] || {}).def || null; LK.paint(o); return; }
+  if (a === 'sense' && o && LK.paint) { lkApplySense(o.m, Number(b.dataset.i)); LK.pickDef = (o.m.senses[o.m.choice] || {}).def || null; AV.ddWant = false; LK.paint(o); avDD(el, false); const q = $('#lk-q', el); if (q) { AV.noReopen = true; q.focus(); AV.noReopen = false; } return; }
+  if (a === 'retry') { AV.cur = ''; AV.ddWant = true; avQueue(el, true); return; }
   if (a === 'more' && o && LK.paint) { AV.showAll = true; LK.paint(o); return; }
   if (a === 'kbd') { const k = $('.ipakeys', el); k.hidden = !k.hidden; b.setAttribute('aria-expanded', String(!k.hidden)); return; }
   if (a === 'sense' && o) { lkApplySense(o.m, Number(b.dataset.i)); ['pos','def','examples'].forEach(n => { if (f.elements[n].dataset.auto === '1') f.elements[n].value = ''; }); lkFill(f, o.m, false); $('#lk-res', el).innerHTML = lkDupHTML(o.word) + lkResultsHTML(o) + lkVerifyHTML(o.word); drawIcons(); }
@@ -5175,13 +5190,19 @@ function avMarks(f, o){
 function avOrgSummary(el){
   const f = $('#item-form', el); if (!f) return;
   const tags = splitTags(f.elements.tags.value), ie = new FormData(f).getAll('ielts');
-  const bits = [f.elements.category.value.trim() || 'No topic', tags.length ? plural(tags.length, 'tag') : 'no tags', cap(f.querySelector('[name=status]:checked').value)];
+  const bits = [tags.length ? plural(tags.length, 'tag') : 'no tags', cap(f.querySelector('[name=status]:checked').value)];
   if (ie.length) bits.push('IELTS ' + ie.map(k => SK[k].label).join(', '));
   if (f.elements.context.value.trim()) bits.push(f.elements.context.value.trim());
   $('#av-org-sum', el).textContent = bits.join(' · ');
 }
+function avDD(el, open){
+  const dd = $('#av-dd', el); if (!dd) return;
+  if (open && !dd.children[0].innerHTML.trim() && !$('#lk-res', el).innerHTML.trim() && !$('#lk-dup', el).innerHTML.trim()) open = false;
+  dd.hidden = !open; const q = $('#lk-q', el); if (q) q.setAttribute('aria-expanded', String(open));
+}
 function avStatus(el, state, word, x){
   const st = $('#lk-status', el), box = $('.av-term', el); if (!st) return;
+  const hint = $('#av-hint', el);
   box.classList.toggle('busy', state === 'loading' || state === 'partial');
   const answered = x && x.src ? Object.values(x.src).filter(okS).length : 0;
   const pending = x && x.src ? Object.values(x.src).filter(s => s.status === 'pending').length : 0;
@@ -5189,15 +5210,23 @@ function avStatus(el, state, word, x){
   st.className = 'av-status ' + state;
   st.innerHTML = {
     idle: `${ic('sparkle')} <span>Type a word or phrase. English entries are looked up automatically as you type; for other languages, fill the fields in yourself.</span>`,
-    loading: `${ic('loader-circle')} <span>Looking up “${esc(word)}”…</span>`,
-    partial: `${ic('loader-circle')} <span>${answered ? `${plural(answered, 'source')} answered, checking ${pending} more…` : `Looking up “${esc(word)}”…`}</span>`,
+    loading: `${ic('loader-circle')} <span>Searching…</span>`,
+    partial: `${ic('loader-circle')} <span>Searching…${answered ? ` <small>${answered} of ${answered + pending} sources so far</small>` : ''}</span>`,
     done: `${ic('circle-check')} <span>${answered} of ${asked} sources answered. Shaded fields came from the dictionaries, so check and edit them before saving.</span>`,
-    none: `${ic('search-x')} <span><b>No dictionary entry for “${esc(word)}”.</b> Check the spelling or try the base form. Automatic lookup covers English for now, so for other languages fill the fields in yourself.</span>`,
+    none: `${ic('search-x')} <span><b>No results found</b> for “${esc(word)}”. Check the spelling or try the base form, or fill the fields in yourself.</span>`,
     unavailable: `${ic('plug')} <span>Automatic lookup isn’t available here. Fill the fields in yourself.</span>`,
     sentence: `${ic('text-quote')} <span>Sentences aren’t looked up in the dictionary. Add a translation or note on when to use it.</span>`,
     error: `${ic('triangle-alert')} <span></span>`,
   }[state] || '';
-  if (state === 'error') st.innerHTML = lkErrorHTML(x);
+  if (state === 'error') st.innerHTML = lkErrorHTML(x) + `<button type="button" class="btn sm" data-lk="retry">${ic('rotate-ccw')} Try again</button>`;
+  if (hint) {
+    const short = {idle:'Type a word or phrase. English entries are looked up automatically as you type.', loading:'Searching the dictionaries…', partial:'Searching the dictionaries…',
+      done:`Filled from ${answered} of ${asked} sources. Shaded fields came from the dictionaries, so check them before saving.`, none:'No dictionary entry found. Fill the fields in yourself.',
+      unavailable:'Automatic lookup isn’t available here. Fill the fields in yourself.', sentence:'Sentences aren’t looked up. Add a translation or a note on when to use it.', error:'The lookup didn’t work. Open the results to try again.'}[state] || '';
+    hint.textContent = short; hint.className = 'av-hint ' + state;
+  }
+  if (['idle', 'sentence', 'unavailable'].includes(state)) avDD(el, false);
+  else if (['loading', 'partial', 'none', 'error'].includes(state) && AV.ddWant) avDD(el, true);
   drawIcons();
 }
 function avSensesHTML(o){
@@ -5225,13 +5254,14 @@ function avPaint(el, o){
   const f = $('#item-form', el), m = o.m;
   if (LK.pickDef) { const i = m.senses.findIndex(s => s.def === LK.pickDef); if (i >= 0 && i !== m.choice) lkApplySense(m, i); }
   lkFill(f, m, false);
-  $('#lk-res', el).innerHTML = avSensesHTML(o);
+  $('#lk-res', el).innerHTML = avSensesHTML(o) || (o.done ? `<p class="av-none">${ic('search-x')} <span><b>No results found</b> for “${esc(o.word)}”.${Object.values(o.src).some(okS) ? ' Anything the dictionaries did have is filled in below.' : ' Check the spelling, or fill the fields in yourself.'}</span></p>` : '');
   $('#lk-dup', el).innerHTML = lkDupHTML(o.word);
   $('#lk-vi', el).innerHTML = m.vi ? uniq(m.vi.all.flatMap(g => g.words), 8).map(w => `<button type="button" data-lk="vi" data-v="${esc(w)}">${esc(w)}</button>`).join('') : '';
   $('#av-srcs', el).innerHTML = avSourcesHTML(o);
   avMarks(f, o);
   const answered = Object.values(o.src).filter(okS).length;
   avStatus(el, !o.done ? 'partial' : (!m.senses.length && !answered ? 'none' : 'done'), o.word, o);
+  if (AV.ddWant) avDD(el, true);
   drawIcons();
 }
 function avReset(el){
@@ -5270,9 +5300,10 @@ function avQueue(el, now){
   const f = $('#item-form', el);
   const word = f.elements.term.value.trim().replace(/\s+/g, ' ');
   $('#lk-dup', el).innerHTML = word.length >= 2 ? lkDupHTML(word) : ''; drawIcons();
-  if (word.length < 2) { ++AV.token; if (LK.ctrl) LK.ctrl.abort(); if (AV.cur || LK.last) avReset(el); return; }
+  if (word.length < 2) { ++AV.token; if (LK.ctrl) LK.ctrl.abort(); AV.ddWant = false; avDD(el, false); if (AV.cur || LK.last) avReset(el); return; }
   if (f.dataset.vt === 'sentence') return;       // sentences aren't dictionary entries
   if (termKey(word) === AV.cur) return;          // already showing or fetching this word
+  if (!now && !AV.cache.has(termKey(word))) avStatus(el, 'loading', word);
   AV.timer = setTimeout(() => avLookup(el, word), now ? 0 : 500);
 }
 const AV_TYPES = [['word','Word','type'],['collocation','Collocation','link-2'],['phrasal','Phrasal verb','corner-down-right'],['sentence','Sentence','text-quote'],['linking','Linking phrase','link']];
@@ -5302,13 +5333,18 @@ function avHTML(d, preset){
   <form class="av-body" id="item-form" data-vt="${vt}" novalidate autocomplete="off">
     <input type="hidden" name="vtype" value="${vt}">
     <div class="av-q">
-      <label class="av-term"><span class="vh" data-l="term">Word or phrase</span>${ic('search', 'av-i')}${ic('loader-circle', 'av-spin')}
-        <input name="term" id="lk-q" value="${esc(d.term || '')}" placeholder="Type a word or phrase, e.g. mitigate" autofocus autocomplete="off" spellcheck="false" aria-describedby="lk-status" autocapitalize="none" autocorrect="off"></label>
-      <div class="av-status idle" id="lk-status" aria-live="polite"></div>
+      <div class="av-qwrap">
+        <label class="av-term"><span class="vh" data-l="term">Word or phrase</span>${ic('search', 'av-i')}${ic('loader-circle', 'av-spin')}
+          <input name="term" id="lk-q" value="${esc(d.term || '')}" placeholder="Type a word or phrase, e.g. mitigate" autofocus autocomplete="off" spellcheck="false" aria-describedby="av-hint" aria-controls="av-dd" aria-expanded="false" autocapitalize="none" autocorrect="off"></label>
+        <div class="av-dd" id="av-dd" hidden>
+          <div class="av-status idle" id="lk-status" aria-live="polite"></div>
+          <div id="lk-dup" class="av-dup"></div>
+          <section id="lk-res" class="av-res"></section>
+        </div>
+      </div>
+      <div class="av-hint" id="av-hint"></div>
       <div class="warn" id="dup" hidden></div>
-      <div id="lk-dup" class="av-dup"></div>
     </div>
-    <section id="lk-res" class="av-res" aria-live="polite"></section>
     <div class="av-core">
       <div class="grid2 vt-hide-collocation vt-hide-phrasal vt-hide-sentence vt-hide-linking">
         <label class="fld"><span>IPA · British <small class="av-src" data-for="ipa"></small></span><input name="ipa" class="ipa-in" value="${esc(d.ipa || '')}" placeholder="/ˈmɪtɪɡeɪt/" autocomplete="off" autocapitalize="none" autocorrect="off"></label>
@@ -5448,12 +5484,22 @@ function itemForm(r, preset={}){
       el.addEventListener('change', e => { if (e.target.name === 'col' && !AV.autoCol) AV.colTouched = true; });
       el.addEventListener('click', e => { const b = e.target.closest('[data-lk]'); if (b) lkAction(el, b); });
       const term = f.elements.term;
-      term.addEventListener('input', () => avQueue(el, false));
+      term.addEventListener('input', () => { AV.ddWant = term.value.trim().length >= 2; avQueue(el, false); });
+      const qq = $('#lk-q', el), dd = $('#av-dd', el);
+      qq.addEventListener('focus', () => { if (!AV.noReopen && LK.last && termKey(LK.last.word) === termKey(qq.value) && $('#lk-res', el).innerHTML.trim()) { AV.ddWant = true; avDD(el, true); } });
+      el.addEventListener('pointerdown', e => { if (!dd.hidden && !e.target.closest('.av-qwrap')) { AV.ddWant = false; avDD(el, false); } });
+      el.addEventListener('keydown', e => {
+        if (dd.hidden) return;
+        const opts = [...dd.querySelectorAll('button')], i = opts.indexOf(document.activeElement);
+        if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); AV.ddWant = false; avDD(el, false); qq.focus(); }
+        else if (e.key === 'ArrowDown' && opts.length && (e.target === qq || i >= 0)) { e.preventDefault(); opts[Math.min(i + 1, opts.length - 1)].focus(); }
+        else if (e.key === 'ArrowUp' && i >= 0) { e.preventDefault(); if (i === 0) qq.focus(); else opts[i - 1].focus(); }
+      }, true);
       term.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); AV.cur = AV.cur === termKey(term.value) && !LK.last ? '' : AV.cur; avQueue(el, true); } });
       el.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); f.requestSubmit(); } });
       f.addEventListener('input', e => { if (e.target.name !== 'term') { avMarks(f, LK.last); avOrgSummary(el); } });
       avReset(el); avOrgSummary(el); avSetType(el, f.dataset.vt);
-      if (d.term) avQueue(el, true);
+      if (d.term) { AV.ddWant = true; avQueue(el, true); }
     }
     if (false) {
       const q = $('#lk-q', el);
