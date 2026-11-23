@@ -1263,6 +1263,22 @@ body.auth-open .app{visibility:hidden}
 .lm-msg{display:flex;gap:8px;align-items:flex-start;padding:10px 12px;border-radius:10px;font-size:14px;margin:0 0 12px}
 .lm-msg.ok{background:var(--green-soft);color:var(--green)}.lm-msg.err{background:var(--red-soft);color:var(--red)}
 .lm-msg .ic{width:16px;height:16px;flex:none;margin-top:2px}
+.uc-sec{margin:4px 0 26px}
+.uc-sec .block-h{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.uc-sec h2,.uc-bytype{font:700 18px var(--f-ui);margin:0}
+.uc-bytype{margin:0 0 12px;color:var(--text-2);font-size:15px}
+.uc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.uc-card{display:flex;flex-direction:column;gap:4px;padding:14px;border:1px solid var(--border);border-radius:14px;background:var(--surface);color:inherit;text-decoration:none;min-width:0}
+.uc-card:hover{border-color:var(--border-strong)}
+.uc-card b{font-size:15.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.uc-card small{color:var(--muted);font-size:13px}
+.uc-ic{width:32px;height:32px;border-radius:9px;background:var(--primary-soft);color:var(--primary);display:grid;place-items:center;margin-bottom:4px}.uc-ic .ic{width:17px;height:17px}
+.uc-types{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.uc-empty{margin:0;padding:14px;border:1px dashed var(--border);border-radius:14px;font-size:14px}
+.uc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.uc-head h1{margin-bottom:0}
+.uc-acts{display:flex;gap:6px;flex-wrap:wrap}
+.uc-pick{align-items:center}
+.uc-newin{border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:7px 10px;font:500 13.5px var(--f-ui);color:var(--text);min-width:0;width:190px}
+.uc-newin.plain{border-style:dashed;background:transparent;width:170px}
 </style>
 </head>
 <body>
@@ -1805,6 +1821,7 @@ const Store = {
     for (const id of this.pending) { const r = this.recs.get(id); if (r) m.set(id, r); else m.delete(id); }
     this.recs = m; this.saveLocal(); scheduleRender();
     wsCheckSaved();
+    setTimeout(migrateContentTypes, 0);
   },
   get(id){ return this.recs.get(id); },
   put(rec){
@@ -1869,6 +1886,102 @@ function setMode(m){
   const b = $('#me-btn'); if (b) b.classList.toggle('alert', c === 'err');
   if (ME.open) meRender();
 }
+/* ---------- content types (fixed, defined by the app) vs collections (made by the user)
+   Every entry has exactly one content type (item.type; item.col is kept as the matching section for older versions).
+   Collections are user records of kind 'ucol'; an entry lists the collections it belongs to in item.collectionIds,
+   so one entry can sit in several collections without being copied. Both are scoped to the active workspace. */
+const CONTENT_TYPES = {
+  word:{label:'Word', col:'vocabulary', icon:'type'},
+  collocation:{label:'Collocation', col:'collocations', icon:'link-2'},
+  phrasal:{label:'Phrasal verb', col:'collocations', icon:'corner-down-right'},
+  sentence:{label:'Sentence', col:'structures', icon:'text-quote'},
+  linking:{label:'Linking phrase', col:'linking', icon:'link'},
+  grammar:{label:'Grammar note', col:'grammar', icon:'languages'},
+  idiom:{label:'Idiom', col:'idioms', icon:'message-square-quote'},
+  mistake:{label:'Mistake', col:'mistakes', icon:'circle-alert'},
+};
+function typeOf(r){
+  if (r && CONTENT_TYPES[r.type] && CONTENT_TYPES[r.type].col === r.col) return r.type;
+  if (r && CONTENT_TYPES[r.vtype] && CONTENT_TYPES[r.vtype].col === r.col) return r.vtype;
+  const c = r && r.col;
+  if (c === 'collocations') return /phrasal verb/i.test(r.pos || '') ? 'phrasal' : 'collocation';
+  return {vocabulary:'word', linking:'linking', structures:'sentence', grammar:'grammar', idioms:'idiom', mistakes:'mistake'}[c] || 'word';
+}
+const ucols = () => all().filter(r => r.kind === 'ucol').sort((a, b) => a.name.localeCompare(b.name));
+const ucolById = id => { const r = id && Store.get(id); return r && r.kind === 'ucol' ? r : null; };
+const itemsIn = id => items().filter(r => (r.collectionIds || []).includes(id));
+const ucolFind = name => { const k = String(name || '').trim().toLowerCase(); return k ? ucols().find(c => c.name.toLowerCase() === k) || null : null; };
+// ids come from the name, so two devices creating "Environment" end up with the same collection
+const ucolIdFor = name => 'uc-' + (String(name).trim().toLowerCase().normalize('NFC').replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '').slice(0, 40) || newId());
+function ucolCreate(name){
+  name = String(name || '').replace(/\s+/g, ' ').trim().slice(0, 40); if (!name) return null;
+  const ex = ucolFind(name); if (ex) return ex;
+  let id = ucolIdFor(name); if (Store.get(id)) id = 'uc-' + newId();
+  const rec = {id, kind:'ucol', name, createdAt:Date.now()}; Store.put(rec); return rec;
+}
+/* One-time, per workspace: give every entry its content type, and turn existing topics into collections
+   (the topic text stays on each entry as a backup). Safe to run on two devices: ids are derived from names. */
+let ctMigrating = false;
+function migrateContentTypes(){
+  if (ctMigrating || Store.get('meta-ct1') || (Web.uid && !Web.lastPull) || (!Web.uid && !Store.col && !isClaude() && Store.mode === 'starting')) return;
+  ctMigrating = true;
+  try {
+    const its = items(); let typed = 0, linked = 0;
+    const byTopic = new Map();
+    its.forEach(r => { const t = String(r.category || '').trim(); if (t) { const k = t.toLowerCase(); if (!byTopic.has(k)) byTopic.set(k, t); } });
+    const made = new Map();
+    byTopic.forEach((name, k) => { const c = ucolCreate(name); if (c) made.set(k, c.id); });
+    its.forEach(r => {
+      const up = clone(r); let ch = false;
+      if (up.type !== typeOf(up)) { up.type = typeOf(up); ch = true; typed++; }
+      const k = String(r.category || '').trim().toLowerCase(), cid = made.get(k);
+      if (cid && !(up.collectionIds || []).includes(cid)) { up.collectionIds = [...(up.collectionIds || []), cid]; ch = true; linked++; }
+      if (ch) Store.put(up);
+    });
+    Store.put({id:'meta-ct1', kind:'meta', at:Date.now(), typed, linked, collections:made.size});
+  } finally { ctMigrating = false; }
+}
+function ucolNameForm(r){
+  openModal(`<form class="form" id="uc-form" style="max-width:420px">
+    <div class="form-head"><h3>${r ? 'Rename collection' : 'New collection'}</h3><button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>
+    <label class="fld"><span>Name</span><input name="name" value="${esc(r ? r.name : '')}" maxlength="40" required autofocus placeholder="e.g. Environment, IELTS Writing, Daily conversation" dir="auto"></label>
+    <p class="muted" style="margin:-4px 0 0;font-size:13.5px">A collection can hold any kind of entry: words, collocations, phrasal verbs, sentences and more.</p>
+    <div class="form-foot"><button type="button" class="btn ghost" data-act="close">Cancel</button><button class="btn primary">${r ? 'Save name' : 'Create collection'}</button></div>
+  </form>`, {onMount: el => { const f = $('#uc-form', el); f.addEventListener('submit', e => {
+    e.preventDefault(); const name = f.name.value.replace(/\s+/g, ' ').trim().slice(0, 40);
+    if (!name) { f.name.focus(); return; }
+    const other = ucolFind(name); if (other && (!r || other.id !== r.id)) { toast(`You already have a collection called “${other.name}”.`, true); return; }
+    if (r) { Store.put({...clone(r), name}); closeModal(); toast('Collection renamed'); }
+    else { const c = ucolCreate(name); closeModal(); toast(`Created “${c.name}”`); go('mycol-' + c.id); }
+  }); }});
+}
+function ucolGridHTML(){
+  const cs = ucols();
+  return `<section class="uc-sec"><div class="block-h"><h2 class="si">${ic('folders')} Your collections</h2><button class="btn" data-act="uc-new">${ic('folder-plus')} New collection</button></div>
+    ${cs.length ? `<div class="uc-grid">${cs.map(c => { const its = itemsIn(c.id), types = [...new Set(its.map(typeOf))];
+      return `<a class="uc-card" href="#mycol-${esc(c.id)}"><span class="uc-ic">${ic('folder')}</span><b dir="auto">${esc(c.name)}</b><small>${plural(its.length, 'entry', 'entries')}</small>
+        ${types.length ? `<span class="uc-types">${types.slice(0, 4).map(t => `<span class="ctype">${CONTENT_TYPES[t].label}</span>`).join('')}${types.length > 4 ? `<span class="ctype">+${types.length - 4}</span>` : ''}</span>` : ''}</a>`; }).join('')}</div>`
+    : `<p class="muted uc-empty">Group entries your own way, for example <i>Environment</i> or <i>IELTS Writing</i>. A collection can mix words, collocations, sentences and more.</p>`}
+  </section>
+  <h2 class="si uc-bytype">${ic('layers')} All entries by type</h2>`;
+}
+function vUcol(){
+  const c = ucolById(S.ucId);
+  if (!c) return `<div class="empty">${ic('folder-x')}<h3>This collection no longer exists</h3><p>It may have been deleted on another device.</p><a class="btn" href="#collections">Back to My Collections</a></div>`;
+  const its = itemsIn(c.id), types = [...new Set(its.map(typeOf))], tf = types.includes(S.ucType) ? S.ucType : '', q = (S.ucQ || '').trim().toLowerCase();
+  const list = its.filter(r => (!tf || typeOf(r) === tf) && (!q || [r.term, r.vi, r.def, r.examples, r.notes].join(' ').toLowerCase().includes(q))).sort((a, b) => b.createdAt - a.createdAt);
+  return `<nav class="crumb"><a href="#collections">My Collections</a> ${ic('chevron-right')} <span>Collection</span></nav>
+  <div class="uc-head"><h1 class="page" dir="auto">${esc(c.name)}</h1>
+    <div class="uc-acts"><button class="btn primary" data-act="new" data-type="item" data-ucol="${esc(c.id)}">${ic('plus')} Add entry</button><button class="btn ghost" data-act="uc-rename" data-id="${esc(c.id)}">${ic('pencil')} Rename</button><button class="btn ghost" data-act="uc-del" data-id="${esc(c.id)}">${ic('trash-2')} Delete</button></div></div>
+  <p class="lede">${plural(its.length, 'entry', 'entries')}${types.length ? ' · ' + types.map(t => CONTENT_TYPES[t].label.toLowerCase() + 's').join(', ') : ''}</p>
+  ${its.length ? `<div class="toolbar">
+    <label class="sbox">${ic('search')}<input class="fsearch" id="ucq" type="search" placeholder="Filter this collection" value="${esc(S.ucQ || '')}" data-input="ucQ" aria-label="Filter this collection"></label>
+    ${types.length > 1 ? `<div class="seg" role="group" aria-label="Content type"><button class="${!tf?'on':''}" data-act="uc-type" data-v="">All</button>${types.map(t => `<button class="${tf===t?'on':''}" data-act="uc-type" data-v="${t}">${ic(CONTENT_TYPES[t].icon)} ${CONTENT_TYPES[t].label}</button>`).join('')}</div>` : ''}
+  </div>
+  ${list.length ? `<div class="entries">${list.map(r => entryRow(r, true)).join('')}</div>` : `<div class="empty">${ic('search-x')}<h3>No entries match</h3><button class="btn" data-act="uc-clear">Clear filters</button></div>`}`
+  : `<div class="empty">${ic('folder-open')}<h3>This collection is empty</h3><p>Add entries here, or choose “Add to collection” when you save a word anywhere in Thuverse.</p><button class="btn primary" data-act="new" data-type="item" data-ucol="${esc(c.id)}">${ic('plus')} Add entry</button></div>`}`;
+}
+
 /* ---------- language workspace switching */
 const WS_COLS = {en:null, ko:['vocabulary','grammar','structures','mistakes']};
 const wsCols = () => WS_COLS[WS.active] || Object.keys(COLS);
@@ -2262,6 +2375,7 @@ function route(){
   else if (v === 'lesson' && LESSONS[sub]) { S.view = 'lesson'; S.lessonId = sub; openLesson(sub); }
   else if (v === 'structure' && STRUCTS[sub]) { S.view = 'structure'; S.structId = sub; openStructure(sub); }
   else if (v === 'article') { S.view = 'article'; S.artId = sub; openArticle(sub); }
+  else if (v === 'mycol') { S.view = 'ucol'; if (S.ucId !== sub) { S.ucId = sub; S.ucType = ''; S.ucQ = ''; } }
   else if (['dashboard','review','journal','preferences','reading','sources','study','topik'].includes(v)) S.view = v;
   else S.view = 'dashboard';
   if (S.view !== 'study') S.summary = null;
@@ -2282,7 +2396,7 @@ function render(){
   const a = document.activeElement, id = a && a.id && $('#view').contains(a) ? a.id : null;
   let ss = null, se = null; try { ss = a.selectionStart; se = a.selectionEnd; } catch {}
   renderNav();
-  const v = S.search ? vSearch() : ({dashboard:vDashboard, library:vLibrary, collection:vCollection, lesson:vLesson, structure:vStructure, reading:vReading, sources:vSources, topik:vTopik, article:vArticle, study:vStudy, knowledge:vKnowledge, ielts:vIelts, review:vReview, journal:vJournal, preferences:vPrefs}[S.view] || vDashboard)();
+  const v = S.search ? vSearch() : ({dashboard:vDashboard, library:vLibrary, collection:vCollection, lesson:vLesson, structure:vStructure, reading:vReading, sources:vSources, topik:vTopik, ucol:vUcol, article:vArticle, study:vStudy, knowledge:vKnowledge, ielts:vIelts, review:vReview, journal:vJournal, preferences:vPrefs}[S.view] || vDashboard)();
   $('#view').innerHTML = v;
   const nm = settings().name; $('#brand-sub').textContent = nm ? nm + '’s language universe' : 'Your language universe';
   if (id) { const n = document.getElementById(id); if (n) { n.focus(); try { if (ss !== null) n.setSelectionRange(ss, se); } catch {} } }
@@ -2302,7 +2416,7 @@ function renderNav(){
     : [[null, [['dashboard','Dashboard','layout-dashboard']]], ['Learn', [['library','Library','library'],['review','Review','repeat-2']]],
       ['My learning', [['collections','My Collections','bookmark'],['reading','Reading list','newspaper'],['ielts','IELTS Workspace','graduation-cap'],['journal','Learning Journal','notebook-pen']]]];
   const slot = $('#ws-slot'); if (slot && slot.dataset.ws !== WS.active) { slot.dataset.ws = WS.active; slot.innerHTML = wsSlotHTML(); }
-  const active = {collection:'library', lesson:'library', structure:'library', article:'reading', sources:'reading', study:'review', topik:'topik', knowledge:'collections'}[S.view] || S.view;
+  const active = {collection:'library', lesson:'library', structure:'library', article:'reading', sources:'reading', study:'review', topik:'topik', knowledge:'collections', ucol:'collections'}[S.view] || S.view;
   let h = '';
   groups.forEach(([g, list]) => {
     if (g) h += `<div class="navgroup">${g}</div>`;
@@ -2331,7 +2445,7 @@ function entryRow(r, showCol){
   const mistake = r.col === 'mistakes';
   return `<div class="entry ${mistake?'mistake':''}" data-act="open-item" data-id="${r.id}" role="button" tabindex="0">
     <div style="min-width:0">
-      <div class="hw"><span>${esc(r.term)}</span>${phonOf(r)?`<span class="ipa">${esc(phonOf(r))}</span>`:''}${showCol?`<span class="ctype">${c.short}</span>`:''}${r.func?`<span class="ctype">${esc(linkFuncLabel(r.func))}</span>`:''}</div>
+      <div class="hw"><span>${esc(r.term)}</span>${phonOf(r)?`<span class="ipa">${esc(phonOf(r))}</span>`:''}${showCol?`<span class="ctype">${CONTENT_TYPES[typeOf(r)].label}</span>`:''}${r.func?`<span class="ctype">${esc(linkFuncLabel(r.func))}</span>`:''}</div>
       <div class="gloss">${mistake ? (r.def?`<span class="fix">✓ ${esc(r.def)}</span>`:'') : `${r.vi?`<span class="vi">${esc(r.vi)}</span>`:''}${r.vi&&r.def?' — ':''}${esc(r.def||'')}`}</div>
       ${ex && !mistake ? `<div class="ex">${hl(ex, r.term)}</div>` : ''}
     </div>
@@ -3270,16 +3384,16 @@ const BD_T = {
     syn:'Synonyms', ant:'Antonyms', colls:'Collocations', rel:'Related', ex:'Examples', vi:'Vietnamese', from:'From',
     saveBtn:'Save to My Collections', formBtn:'Open in Add form', already:(c) => `Already in your ${c}`, open:'Open it',
     noCols:w => `I didn’t find collocations for **${w}**, but here’s what it means.`, colsFor:w => `Collocations with **${w}**:`,
-    reviewSave:'Check the details, then save.', term:'Word or phrase', def:'Meaning', ipa:'IPA', pos:'Part of speech', exs:'Example', col:'Collection', topic:'Topic', topicPh:'e.g. Environment (optional)',
+    reviewSave:'Check the details, then save.', term:'Word or phrase', def:'Meaning', ipa:'IPA', pos:'Part of speech', exs:'Example', col:'Content type', topic:'Collection', topicPh:'e.g. Environment (optional)',
     save:'Save', cancel:'Cancel', edit:'Edit in Add form', cancelled:'Okay, nothing saved.',
-    saved:(t, c, tp) => `Saved **${t}** to ${c}${tp ? `, topic **${tp}**` : ''}.`, view:'View entry', openCol:'Open collection',
-    newTopic:t => `You don’t have a **${t}** topic yet. It’ll start with this word.`, pickTopic:(t) => `Which topic did you mean by “${t}”?`, noneOfThese:'None of these',
+    saved:(t, c, tp) => `Saved **${t}** (${c})${tp ? ` to your **${tp}** collection` : ''}.`, view:'View entry', openCol:'Open collection',
+    newTopic:t => `You don’t have a collection called **${t}** yet. It’ll be created when you save.`, pickTopic:(t) => `Which collection did you mean by “${t}”?`, noneOfThese:'None of these',
     dup:(t, c) => `**${t}** is already in your ${c}.`, needTerm:'Write the word or phrase first.',
     unknown:'I’m not sure how to help with that yet. I can look up words, save them to your collections, and explain how Thuverse works. Try one of these:',
     aiOff:'My free chat isn’t switched on yet, so I can only help with words and with using Thuverse for now.',
     aiErr:'I couldn’t get an answer just now. Try again in a moment.', aiBusy:'I’m getting a lot of questions right now. Give me a minute and ask again.',
     explore:'Here’s a quick tour. Pick where you’d like to go:', organize:'Here’s how your collections look:', noItems:'You haven’t saved any entries yet. Tell me a word and I’ll help you save it.',
-    noTopic:n => `${n} without a topic`, topicsTip:'Tip: give entries a topic (like Environment) when you add them, then filter by it in My Collections.',
+    noTopic:n => `${n} not in any collection`, topicsTip:'Tip: choose “Add to collection” when you save, or create collections like *Environment* in My Collections. One entry can be in several.',
     here:'You’re on', pageHelp:'Here’s what you can do on this page:',
     koLookup:'My dictionary lookups only cover English for now, so I can’t look up Korean words yet. You can add one yourself: the romanization fills in from the Hangul.',
     koSave:t => `I’ve opened the Add form with **${t}**. Add its meaning, then save.`},
@@ -3292,16 +3406,16 @@ const BD_T = {
     syn:'Từ đồng nghĩa', ant:'Từ trái nghĩa', colls:'Collocation', rel:'Liên quan', ex:'Ví dụ', vi:'Tiếng Việt', from:'Nguồn',
     saveBtn:'Lưu vào My Collections', formBtn:'Mở trong form Add', already:(c) => `Đã có trong ${c}`, open:'Mở',
     noCols:w => `Mình chưa tìm thấy collocation cho **${w}**, nhưng đây là nghĩa của nó.`, colsFor:w => `Collocation với **${w}**:`,
-    reviewSave:'Kiểm tra lại rồi lưu nhé.', term:'Từ hoặc cụm từ', def:'Nghĩa', ipa:'IPA', pos:'Từ loại', exs:'Ví dụ', col:'Bộ sưu tập', topic:'Chủ đề', topicPh:'vd. Environment (không bắt buộc)',
+    reviewSave:'Kiểm tra lại rồi lưu nhé.', term:'Từ hoặc cụm từ', def:'Nghĩa', ipa:'IPA', pos:'Từ loại', exs:'Ví dụ', col:'Loại nội dung', topic:'Bộ sưu tập', topicPh:'vd. Environment (không bắt buộc)',
     save:'Lưu', cancel:'Huỷ', edit:'Sửa trong form Add', cancelled:'Được, mình chưa lưu gì cả.',
-    saved:(t, c, tp) => `Đã lưu **${t}** vào ${c}${tp ? `, chủ đề **${tp}**` : ''}.`, view:'Xem mục đã lưu', openCol:'Mở bộ sưu tập',
-    newTopic:t => `Bạn chưa có chủ đề **${t}**. Từ này sẽ là từ đầu tiên.`, pickTopic:(t) => `Bạn muốn nói chủ đề nào khi viết “${t}”?`, noneOfThese:'Không phải các chủ đề này',
+    saved:(t, c, tp) => `Đã lưu **${t}** (${c})${tp ? ` vào bộ sưu tập **${tp}**` : ''}.`, view:'Xem mục đã lưu', openCol:'Mở bộ sưu tập',
+    newTopic:t => `Bạn chưa có bộ sưu tập **${t}**. Nó sẽ được tạo khi bạn lưu.`, pickTopic:(t) => `Bạn muốn nói bộ sưu tập nào khi viết “${t}”?`, noneOfThese:'Không phải các bộ sưu tập này',
     dup:(t, c) => `**${t}** đã có trong ${c} của bạn.`, needTerm:'Bạn điền từ hoặc cụm từ trước nhé.',
     unknown:'Mình chưa chắc giúp được câu này. Mình có thể tra từ, lưu từ vào bộ sưu tập và giải thích cách dùng Thuverse. Thử một trong các gợi ý sau:',
     aiOff:'Tính năng trò chuyện tự do của mình chưa được bật, nên hiện mình chỉ giúp được về từ vựng và cách dùng Thuverse.',
     aiErr:'Mình chưa trả lời được lúc này. Bạn thử lại sau chút nhé.', aiBusy:'Đang có nhiều câu hỏi quá. Bạn đợi một phút rồi hỏi lại nhé.',
     explore:'Cùng dạo một vòng nhé. Chọn nơi bạn muốn đến:', organize:'Bộ sưu tập của bạn hiện như sau:', noItems:'Bạn chưa lưu mục nào. Nói cho mình một từ, mình giúp bạn lưu nhé.',
-    noTopic:n => `${n} chưa có chủ đề`, topicsTip:'Mẹo: đặt chủ đề (như Environment) khi thêm từ, rồi lọc theo chủ đề trong My Collections.',
+    noTopic:n => `${n} chưa thuộc bộ sưu tập nào`, topicsTip:'Mẹo: chọn “Add to collection” khi lưu, hoặc tạo bộ sưu tập như *Environment* trong My Collections. Một mục có thể nằm trong nhiều bộ sưu tập.',
     here:'Bạn đang ở', pageHelp:'Đây là những gì bạn có thể làm ở trang này:',
     koLookup:'Hiện mình chỉ tra được từ tiếng Anh, chưa tra được từ tiếng Hàn. Bạn có thể tự thêm từ: phần phiên âm Latin sẽ tự điền từ chữ Hangul.',
     koSave:t => `Mình đã mở form Add với **${t}**. Bạn thêm nghĩa rồi lưu nhé.`},
@@ -3326,8 +3440,8 @@ const BD_HELP = [
     vi:['Mở **Library** ở thanh bên và chọn **Grammar**.','Các bài học đi từ cơ bản đến nâng cao, có giải thích tiếng Việt, lỗi thường gặp và bài luyện tập.','Ghi chú ngữ pháp của riêng bạn nằm ở **My Collections → Grammar Notes**.'],
     go:['library-grammar','collections-grammar']},
   {id:'collection', k:['create a collection','new collection','make a collection','collection','organise','organize','topic','tag','bộ sưu tập','sắp xếp','chủ đề','phân loại'], v:['collections'],
-    en:['**My Collections** has fixed sections: ' + Object.values(COLS).map(c => c.label).join(', ') + '. You can’t add new sections.','To group entries your own way, give them a **topic** (for example *Environment*) or tags when you add or edit them. A new topic starts as soon as one entry uses it.','In My Collections, tap a topic to see only those entries.'],
-    vi:['**My Collections** có các mục cố định: ' + Object.values(COLS).map(c => c.label).join(', ') + '. Bạn không tạo thêm mục mới được.','Để nhóm theo cách của bạn, hãy đặt **chủ đề** (ví dụ *Environment*) hoặc thẻ khi thêm hay sửa một mục. Chủ đề mới xuất hiện ngay khi có một mục dùng nó.','Trong My Collections, chạm vào một chủ đề để chỉ xem các mục đó.'],
+    en:['Open **My Collections** and press **New collection**. Name it, for example *Environment* or *IELTS Writing*.','A collection can hold any kind of entry: words, collocations, phrasal verbs, sentences, linking phrases. One entry can be in several collections.','When you add an entry, pick it under **Add to collection** at the bottom of the form. You can also save without a collection.','Entries are also listed by content type (Vocabulary, Collocations & Phrasal Verbs…), which the app sets from what you add.'],
+    vi:['Mở **My Collections** và nhấn **New collection**. Đặt tên, ví dụ *Environment* hoặc *IELTS Writing*.','Một bộ sưu tập chứa được mọi loại mục: từ, collocation, phrasal verb, câu, linking phrase. Một mục có thể nằm trong nhiều bộ sưu tập.','Khi thêm một mục, chọn ở **Add to collection** cuối form. Bạn cũng có thể lưu mà không chọn bộ sưu tập.','Các mục cũng được liệt kê theo loại nội dung (Vocabulary, Collocations & Phrasal Verbs…), do app tự xác định.'],
     go:['collections']},
   {id:'review', k:['flashcard','review','revise','spaced','practice words','ôn tập','ôn từ','thẻ'], v:['review','study'],
     en:['Open **Review**, or press **R** anywhere.','Choose a set and start. Press **Space** to flip a card.','Rate each card **1–4**: forgot, hard, remembered, easy. Words you miss come back the same day; words you know wait weeks.','Change the style (Mixed, Flashcards, Type the answer) in **Preferences → Review style**.'],
@@ -3407,7 +3521,7 @@ function bdIntent(raw){
 }
 
 /* ---------- user data Lumi may use (the signed-in user's own records, already scoped by Store) */
-const bdTopics = () => { const c = {}; items().forEach(r => [r.category, ...(r.tags || [])].filter(Boolean).forEach(t => { const k = t.trim(); c[k] = (c[k] || 0) + 1; })); return Object.entries(c).sort((a, b) => b[1] - a[1]).map(([t]) => t); };
+const bdTopics = () => ucols().map(c => c.name);       // the user's collections (names)
 const BD_SAVE_COLS = ['vocabulary','collocations','idioms','linking'];
 const BD_COLWORDS = {vocabulary:['vocabulary','vocab','words','word list','từ vựng'], collocations:['collocations','collocation','phrasal verbs','phrasal verb','phrasal','collocations & phrasal verbs','cụm từ'], idioms:['idioms','idiom','expressions','idioms & expressions','thành ngữ'], linking:['linking phrases','linking','từ nối']};
 const bdGuessCol = term => { const w = term.trim().toLowerCase().split(/\s+/); if (w.length === 1) return 'vocabulary'; return 'collocations'; };
@@ -3455,7 +3569,8 @@ function bdLookupHTML(m){
 }
 function bdSaveHTML(m){
   const f = m.f, tps = bdTopics();
-  if (m.done === 'saved') return `<p>${bdFmt(bdT('saved', f.term, COLS[f.col].label, f.topic))}</p><div class="bd-act"><button type="button" class="bd-chip" data-bd="item" data-v="${m.savedId}">${ic('eye')} ${bdT('view')}</button>${bdBtnGo('collections-' + f.col)}</div>`;
+  if (m.done === 'saved') { const r = Store.get(m.savedId), uc = r && ucolById((r.collectionIds || [])[0]);
+    return `<p>${bdFmt(bdT('saved', f.term, CONTENT_TYPES[(r && r.type) || 'word'].label.toLowerCase(), uc ? uc.name : ''))}</p><div class="bd-act"><button type="button" class="bd-chip" data-bd="item" data-v="${m.savedId}">${ic('eye')} ${bdT('view')}</button>${uc ? `<button type="button" class="bd-chip" data-bd="mycol" data-v="${esc(uc.id)}">${ic('folder')} ${esc(uc.name)}</button>` : bdBtnGo('collections-' + f.col)}</div>`; }
   if (m.done === 'cancel') return `<p>${bdFmt(bdT('cancelled'))}</p>`;
   return `${m.note ? `<p>${bdFmt(m.note)}</p>` : ''}<p class="bd-sub">${bdT('reviewSave')}</p>
   <form class="bd-card bd-form" data-m="${m.id}">
@@ -3566,7 +3681,9 @@ function bdCreate(f){
   const vtype = f.col === 'vocabulary' ? 'word' : f.col === 'collocations' ? (bdIsPhrasal(f.term) ? 'phrasal' : 'collocation') : f.col === 'linking' ? 'linking' : '';
   const rec = {id:newId(), kind:'item', createdAt:now, srs:{ease:2.5, interval:0, reps:0, lapses:0, due:now}, reviews:0,
     col:f.col, term:f.term, ipa:f.ipa, ipaUS:f.ipaUS || '', pos:f.pos, vi:f.vi, def:f.def, examples:f.examples, synonyms:list(f.synonyms), antonyms:list(f.antonyms), collocations:list(f.collocations), related:list(f.related),
-    context:'', category:f.topic, tags:[], ielts:[], notes:'', status:'new'};
+    context:'', category:'', tags:[], ielts:[], notes:'', status:'new'};
+  rec.type = typeOf({col:f.col, pos:vtype === 'phrasal' ? 'phrasal verb' : f.pos, type:vtype});
+  const uc = f.topic ? ucolCreate(f.topic) : null; rec.collectionIds = uc ? [uc.id] : [];
   if (vtype) rec.vtype = vtype;
   if (vtype && vtype !== 'word') { rec.ipa = ''; rec.ipaUS = ''; }
   if (vtype === 'phrasal') rec.pos = 'phrasal verb';
@@ -3584,9 +3701,9 @@ function bdOrganize(){
   const its = items();
   if (!its.length) return bdSay(bdT('noItems'), {go:['add']});
   const per = Object.keys(COLS).map(c => [c, its.filter(r => r.col === c).length]).filter(([, n]) => n);
-  const tps = bdTopics().slice(0, 8), none = its.filter(r => !r.category && !(r.tags || []).length).length;
+  const tps = ucols().slice(0, 8).map(c => `${c.name} (${itemsIn(c.id).length})`), none = its.filter(r => !(r.collectionIds || []).length).length;
   const html = `<ul class="bd-stats">${per.map(([c, n]) => `<li><span>${esc(COLS[c].label)}</span><b>${n}</b></li>`).join('')}</ul>
-    ${tps.length ? `<p class="bd-sub">${BUDDY.lang === 'vi' ? 'Chủ đề' : 'Topics'}: ${tps.map(esc).join(', ')}</p>` : ''}${none ? `<p class="bd-sub">${esc(bdT('noTopic', plural(none, 'entry', 'entries')))}</p>` : ''}<p class="bd-sub">${bdFmt(bdT('topicsTip'))}</p>`;
+    ${tps.length ? `<p class="bd-sub">${BUDDY.lang === 'vi' ? 'Bộ sưu tập' : 'Collections'}: ${tps.map(esc).join(', ')}</p>` : ''}${none ? `<p class="bd-sub">${esc(bdT('noTopic', plural(none, 'entry', 'entries')))}</p>` : ''}<p class="bd-sub">${bdFmt(bdT('topicsTip'))}</p>`;
   bdSay(bdT('organize'), {html, go:['collections']});
 }
 function bdHelp(h){ const vi = BUDDY.lang === 'vi'; bdSay(`**${BD_HELP_TITLE[h.id][vi ? 1 : 0]}**`, {steps:h[vi ? 'vi' : 'en'], go:h.go}); }
@@ -3649,6 +3766,7 @@ document.addEventListener('click', async e => {
   if (k === 'restore') { if (BUDDY.min) bdShow(true); return; }
   if (k === 'clear') { BUDDY.msgs = []; BUDDY.wait = null; bdRenderMsgs(); $('#bd-text').focus(); return; }
   if (k === 'go') { go(v); if (innerWidth < 900) bdShow(true, true); return; }
+  if (k === 'mycol') { go('mycol-' + v); return; }
   if (k === 'add') { itemForm(null, {}); return; }
   if (k === 'item') { if (Store.get(v)) itemDetail(v); return; }
   if (k === 'lookup') { bdPush({role:'user', text:v}); return bdLookup(v); }
@@ -3944,14 +4062,15 @@ function vKnowledge(){
   });
   const sorters = {new:(a,b)=>b.createdAt-a.createdAt, old:(a,b)=>a.createdAt-b.createdAt, az:(a,b)=>termKey(a.term).localeCompare(termKey(b.term)), due:(a,b)=>((a.srs||{}).due||0)-((b.srs||{}).due||0)};
   list.sort(sorters[S.kSort] || sorters.new);
-  const tagCount = {}; its.forEach(r => [...(r.tags||[]), ...(r.category?[r.category]:[])].forEach(t => tagCount[t] = (tagCount[t]||0)+1));
+  const tagCount = {}; its.forEach(r => (r.tags||[]).forEach(t => tagCount[t] = (tagCount[t]||0)+1));   // topics became collections
   const tags = Object.entries(tagCount).sort((a,b)=>b[1]-a[1]).slice(0,16);
   const title = col === 'all' ? 'My Collections' : COLS[col].label;
-  const lede = col === 'all' ? 'Everything you’ve saved or written yourself: words, phrases, sentences, notes and corrections. Only you can see it.' :
+  const lede = col === 'all' ? 'Your own collections, and everything you’ve saved by type: words, phrases, sentences, notes and corrections. Only you can see it.' :
     ({vocabulary:'Words you want to own: meaning, pronunciation, and how they are really used.', structures:'Sentence patterns you can reuse in writing and speaking.', grammar:'Rules worth remembering, with examples that make them stick.', idioms:'Idioms and natural expressions, and when they sound right.', collocations:'Words that go together, and phrasal verbs.', mistakes:'What you got wrong, and the correct version. Reviewing these is one of the fastest ways to improve.'})[col];
   const shown = list.slice(0, S.kLimit);
   return `
   <h1 class="page">${title}</h1><p class="lede">${lede}</p>
+  ${col === 'all' ? ucolGridHTML() : ''}
   <div class="tabs" role="tablist">
     <a class="tab ${col==='all'?'on':''}" href="#collections">${ic('layers')} All<small>${items().length}</small></a>
     ${Object.entries(COLS).filter(([c]) => wsCols().includes(c)).map(([c,o]) => `<a class="tab ${col===c?'on':''}" href="#collections-${c}">${ic(COLIC[c])} ${o.label}<small>${items(c).length}</small></a>`).join('')}
@@ -5145,7 +5264,7 @@ function avSetType(el, vt){
   f.dataset.vt = vt; f.elements.vtype.value = vt;
   el.querySelectorAll('button[data-vt]').forEach(b => { const on = b.dataset.vt === vt; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); });
   if (!AV.colTouched) {
-    const sel = el.querySelector('select[name=col]'), want = AV_COL[vt] || 'vocabulary';
+    const sel = el.querySelector('[name=col]'), want = AV_COL[vt] || 'vocabulary';
     if (sel && sel.value !== want) { sel.value = want; AV.autoCol = true; sel.dispatchEvent(new Event('change', {bubbles:true})); AV.autoCol = false; }
   }
   f.elements.term.placeholder = AV_PH[vt];
@@ -5196,7 +5315,7 @@ function avHTML(d, preset){
     <details class="av-sec" id="av-org" ${d.context || d.category || (d.ielts || []).length ? 'open' : ''}><summary>${ic('folder')}<b>Organise</b><span id="av-org-sum"></span>${ic('chevron-down', 'av-chev')}</summary>
       <div class="av-in">
         <div class="grid2">
-          <label class="fld"><span>Category or topic</span><input name="category" value="${esc(d.category || '')}" placeholder="e.g. Environment" list="dl-cat"></label>
+          <input type="hidden" name="category" value="${esc(d.category || '')}">
           <label class="fld"><span>Tags <em>commas</em></span><input name="tags" value="${esc((d.tags || []).join(', '))}" placeholder="academic, verb" list="dl-tag" autocapitalize="none" autocorrect="off"></label>
         </div>
         <div class="fld"><span>IELTS skills</span><div class="pick">${Object.entries(SK).map(([k, o]) => `<label><input type="checkbox" name="ielts" value="${k}" ${(d.ielts || []).includes(k) ? 'checked' : ''}><span>${ic(o.icon)} ${o.label}</span></label>`).join('')}</div></div>
@@ -5212,7 +5331,8 @@ function avHTML(d, preset){
     ${datalist('dl-cat', items().map(x => x.category))}${datalist('dl-ctx', items().map(x => x.context))}${datalist('dl-tag', items().flatMap(x => x.tags || []))}${datalist('dl-pos', isKo() ? KO_TYPES.map(([k, e]) => `${k} (${e})`) : ['noun','verb','adjective','adverb','phrase','phrasal verb','idiom','preposition','conjunction'])}${datalist('dl-pat', ['verb + noun','adjective + noun','adverb + adjective','adverb + verb','noun + noun','verb + preposition','noun + of + noun','verb + adverb'])}
   </form>
   <div class="av-foot">
-    <label class="av-col"><span>Save to</span><select name="col" form="item-form" aria-label="Collection">${Object.entries(COLS).map(([k, o]) => `<option value="${k}" ${d.col === k ? 'selected' : ''}>${esc(o.label)}</option>`).join('')}</select></label>
+    <input type="hidden" name="col" form="item-form" value="${esc(d.col)}">
+    <label class="av-col"><span>Add to collection</span><select name="ucol" form="item-form" aria-label="Add to collection"><option value="">No collection</option>${ucols().map(c => `<option value="${esc(c.id)}" ${preset.ucol === c.id ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}<option value="__new">+ New collection…</option></select><input name="ucolNew" form="item-form" class="uc-newin" placeholder="New collection name" maxlength="40" hidden></label>
     <label class="chk"><input type="checkbox" name="another" form="item-form" ${preset.another ? 'checked' : ''}> Add another</label>
     <span class="av-sp"></span>
     <button type="button" class="btn ghost" data-act="close">Cancel</button>
@@ -5230,7 +5350,7 @@ function itemForm(r, preset={}){
   const hasMore = (d.synonyms||[]).length || (d.antonyms||[]).length || (d.collocations||[]).length || (d.related||[]).length;
   const form = `<form class="form" id="item-form" novalidate>
     ${withLookup ? '' : `<div class="form-head"><h3>${isNew ? 'Add to My Collections' : 'Edit entry'}</h3><button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>`}
-    <div class="seg" role="radiogroup" aria-label="Collection">${Object.entries(COLS).filter(([k]) => wsCols().includes(k) || k === d.col).map(([k,o]) => `<label><input type="radio" name="col" value="${k}" ${d.col===k?'checked':''}><span>${ic(COLIC[k])} ${o.label}</span></label>`).join('')}</div>
+    <div class="seg" role="radiogroup" aria-label="Content type">${Object.entries(COLS).filter(([k]) => wsCols().includes(k) || k === d.col).map(([k,o]) => `<label><input type="radio" name="col" value="${k}" ${d.col===k?'checked':''}><span>${ic(COLIC[k])} ${o.label}</span></label>`).join('')}</div>
     <label class="fld big"><span data-l="term">${c.term}</span><input name="term" value="${esc(d.term||'')}" placeholder="${esc(c.ph)}" required ${withLookup?'':'autofocus'} autocomplete="off" autocapitalize="none" autocorrect="off"><div class="warn" id="dup" hidden></div></label>
     ${isKo() ? `<div class="grid2">
       <label class="fld"><span>Romanization <em>filled in from the Hangul, check it</em></span><input name="roman" value="${esc(d.roman||'')}" data-ro="${d.roman ? 'manual' : 'auto'}" placeholder="e.g. hangugeo" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"></label>
@@ -5258,8 +5378,9 @@ function itemForm(r, preset={}){
     </details>
     <div class="grid2">
       <label class="fld"><span>Where I learned it</span><input name="context" value="${esc(d.context||'')}" placeholder="e.g. Cambridge 18, Reading Test 2" list="dl-ctx"></label>
-      <label class="fld"><span>Category or topic</span><input name="category" value="${esc(d.category||'')}" placeholder="e.g. Environment" list="dl-cat"></label>
+      <input type="hidden" name="category" value="${esc(d.category||'')}">
     </div>
+    <div class="fld"><span>Collections <em>optional, any number</em></span><input type="hidden" name="ucolsOn" value="1"><div class="pick uc-pick">${ucols().map(c => `<label><input type="checkbox" name="ucols" value="${esc(c.id)}" ${((d.collectionIds || []).includes(c.id) || preset.ucol === c.id) ? 'checked' : ''}><span>${ic('folder')} ${esc(c.name)}</span></label>`).join('')}<input class="uc-newin plain" name="ucolNew" placeholder="+ New collection" maxlength="40" aria-label="New collection name"></div></div>
     <label class="fld"><span>Tags <em>separate with commas</em></span><input name="tags" value="${esc((d.tags||[]).join(', '))}" placeholder="academic, verb" list="dl-tag" autocapitalize="none" autocorrect="off"></label>
     <div class="fld" ${isKo() ? 'hidden' : ''}><span>Also file under IELTS</span><div class="pick">${Object.entries(SK).map(([k,o]) => `<label><input type="checkbox" name="ielts" value="${k}" ${(d.ielts||[]).includes(k)?'checked':''}><span>${ic(o.icon)} ${o.label}</span></label>`).join('')}</div></div>
     <label class="fld"><span>Personal notes</span><textarea name="notes" rows="2" placeholder="Memory tricks, register, common errors…">${esc(d.notes||'')}</textarea></label>
@@ -5299,8 +5420,11 @@ function itemForm(r, preset={}){
     $('.ipakeys', el).addEventListener('click', e => { const b = e.target.closest('[data-ipa]'); if (!b) return; const t = ipaTarget, s0 = t.selectionStart ?? t.value.length, en = t.selectionEnd ?? s0; t.value = t.value.slice(0,s0) + b.dataset.ipa + t.value.slice(en); t.focus(); t.setSelectionRange(s0 + b.dataset.ipa.length, s0 + b.dataset.ipa.length); });
     if (withLookup) {
       LK.paint = o => avPaint(el, o);
-      AV.cur = ''; ++AV.token; AV.colTouched = false;
-      el.addEventListener('click', e => { const b = e.target.closest('button[data-vt]'); if (b) { avSetType(el, b.dataset.vt); f.elements.term.focus(); } });
+      AV.cur = ''; ++AV.token; AV.colTouched = !Object.values(AV_COL).includes(d.col);   // e.g. adding from Idioms keeps that type until a tab is chosen
+      el.addEventListener('click', e => { const b = e.target.closest('button[data-vt]'); if (b) { AV.colTouched = false; avSetType(el, b.dataset.vt); f.elements.term.focus(); } });
+      const ucs = $('select[name=ucol]', el), ucn = $('.uc-newin', el);
+      ucs.addEventListener('change', () => { const nw = ucs.value === '__new'; ucn.hidden = !nw; ucs.hidden = nw; if (nw) ucn.focus(); });
+      ucn.addEventListener('keydown', e => { if (e.key === 'Escape' && !ucn.value) { e.stopPropagation(); ucn.hidden = true; ucs.hidden = false; ucs.value = ''; ucs.focus(); } });
       el.addEventListener('change', e => { if (e.target.name === 'col' && !AV.autoCol) AV.colTouched = true; });
       el.addEventListener('click', e => { const b = e.target.closest('[data-lk]'); if (b) lkAction(el, b); });
       const term = f.elements.term;
@@ -5329,6 +5453,14 @@ function itemForm(r, preset={}){
       Object.assign(rec, {col:v.col, term:v.term.trim(), ipa:v.ipa.trim(), ipaUS:v.ipaUS.trim(), pos:v.pos.trim(), vi:v.vi.trim(), def:v.def.trim(), examples:v.examples.trim(), synonyms:list(v.synonyms), antonyms:list(v.antonyms), collocations:list(v.collocations), related:list(v.related), context:v.context.trim(), category:v.category.trim(), tags:splitTags(v.tags), ielts:new FormData(f).getAll('ielts'), notes:v.notes.trim()});
       if (v.col === 'linking') rec.func = LINK_FUNCS.some(([k]) => k === v.func) ? v.func : (rec.func || '');
       if ('roman' in v) { rec.roman = String(v.roman || '').trim().slice(0, 120); rec.pron = String(v.pron || '').trim().slice(0, 120); }
+      {   // content type (system) — derived from the chosen tab/section; collections (user) — independent of it
+        const fd = new FormData(f), want = v.vtype && CONTENT_TYPES[v.vtype] && CONTENT_TYPES[v.vtype].col === rec.col ? v.vtype : (r && r.col === rec.col ? r.type : '');
+        rec.type = typeOf({col:rec.col, pos:rec.pos, type:want});
+        let ids = v.ucolsOn ? fd.getAll('ucols') : [...(rec.collectionIds || [])];
+        if (v.ucol && v.ucol !== '__new') ids.push(v.ucol);
+        const nn = String(v.ucolNew || '').trim(); if (nn) { const c = ucolCreate(nn); if (c) ids.push(c.id); }
+        rec.collectionIds = [...new Set(ids)].filter(id => ucolById(id));
+      }
       if (v.vtype) {
         rec.vtype = v.vtype;
         if (v.vtype !== 'word') { rec.ipa = ''; rec.ipaUS = ''; }
@@ -5345,8 +5477,9 @@ function itemForm(r, preset={}){
       if (!r && preset.articleId) rec.articleId = preset.articleId;
       if (!r) { rec.addedAt = rec.createdAt; logEvent('added', rec.id); }
       Store.put(rec);
-      toast(r ? 'Changes saved' : `Saved to ${COLS[rec.col].label}`);
-      if (!r && v.another) itemForm(null, {col:rec.col, ielts:rec.ielts[0], another:true});
+      const firstC = ucolById((rec.collectionIds || [])[0]);
+      toast(r ? 'Changes saved' : `Saved ${CONTENT_TYPES[rec.type].label.toLowerCase()}${firstC ? ` to ${firstC.name}` : ''}`);
+      if (!r && v.another) itemForm(null, {col:rec.col, ielts:rec.ielts[0], another:true, ucol:v.ucol && v.ucol !== '__new' ? v.ucol : (firstC ? firstC.id : '')});
       else closeModal();
     });
   }});
@@ -5574,7 +5707,7 @@ const ACT = {
   'set-theme': el => { setTheme(el.dataset.v); toast(`Appearance: ${THEME_LBL[el.dataset.v]}`); },
   new: el => {
     const t = el.dataset.type;
-    if (t === 'item') itemForm(null, {col:el.dataset.col, ielts:el.dataset.ielts, term:el.dataset.term});
+    if (t === 'item') itemForm(null, {col:el.dataset.col, ielts:el.dataset.ielts, term:el.dataset.term, ucol:el.dataset.ucol});
     else if (t === 'note') noteForm(null, {skill:el.dataset.skill || (S.view==='ielts'?S.skill:'writing2'), section:el.dataset.section || (S.view==='ielts' && SEC[S.skillTab] && SK[S.skill].sections.includes(S.skillTab) ? S.skillTab : undefined)});
     else if (t === 'score') scoreForm(el.dataset.main || 'listening');
     else if (t === 'article') articleForm(null, {sourceId: el.dataset.source});
@@ -5608,6 +5741,17 @@ const ACT = {
   'lesson-done': el => { const s0 = Store.get('lp-' + el.dataset.id) || {id:'lp-' + el.dataset.id, kind:'lesson', lid:el.dataset.id, createdAt:Date.now()}; const s1 = clone(s0); s1.status = 'done'; s1.completedAt = Date.now(); Store.put(s1); toast('Lesson complete'); },
   'r-filter': el => { S.rFilter = el.dataset.v; render(); },
   'tscore-new': () => tscoreForm(),
+  'uc-new': () => ucolNameForm(null),
+  'uc-rename': el => { const c = ucolById(el.dataset.id); if (c) ucolNameForm(c); },
+  'uc-del': async el => {
+    const c = ucolById(el.dataset.id); if (!c) return;
+    const n = itemsIn(c.id).length;
+    if (!await confirmBox(`Delete “${c.name}”?`, n ? `The collection is removed. Its ${plural(n, 'entry', 'entries')} stay in My Collections, under their content type.` : 'This collection is empty.', 'Delete collection')) return;
+    itemsIn(c.id).forEach(r => Store.put({...clone(r), collectionIds:(r.collectionIds || []).filter(x => x !== c.id)}));
+    Store.del(c.id); toast('Collection deleted'); go('collections');
+  },
+  'uc-type': el => { S.ucType = el.dataset.v; render(); },
+  'uc-clear': () => { S.ucType = ''; S.ucQ = ''; render(); },
   'lm-link': () => loginLink(),
   'lm-unlink': async el => {
     const ids = LOGIN.ids || [], g = ids.find(i => (i.identity_id || i.id) === el.dataset.id);
