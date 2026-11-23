@@ -859,8 +859,23 @@ details.more .fld+.fld,details.more .grid2+.fld{margin-top:12px}
 
 /* sign-in screen (website only) */
 body.auth-open .app{visibility:hidden}
-#auth{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:24px;background:var(--bg);overflow:auto}
-.auth-card{width:min(400px,100%);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px 28px 22px}
+#auth{position:fixed;inset:0;z-index:200;background:#22195a;overflow:auto}
+.auth-sky{position:fixed;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges;display:block}
+.auth-in{position:relative;min-height:100%;display:grid;place-items:center;padding:24px}
+.auth-card{width:min(400px,100%);position:relative;background:color-mix(in srgb,var(--surface) 78%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);
+  border:1px solid color-mix(in srgb,#fff 45%,transparent);border-radius:22px;padding:28px 28px 0;
+  box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 24px 60px -18px rgba(20,8,60,.55),0 0 0 1px rgba(40,20,90,.06)}
+[data-theme=dark] .auth-card{background:color-mix(in srgb,var(--surface) 74%,transparent);border-color:rgba(200,185,255,.22);box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 24px 60px -18px rgba(0,0,0,.7)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.auth-card{background:var(--surface)}}
+.auth-alt{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:10px;border:0;background:none;color:var(--primary);font:600 14px var(--f-ui);padding:9px;border-radius:10px;cursor:pointer}
+.auth-alt:hover{background:color-mix(in srgb,var(--primary) 9%,transparent)}
+.auth-alt .ic{width:16px;height:16px}
+.auth-help{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 18px;margin:12px 0 0;font-size:13px;color:var(--muted)}
+.auth-help .link{font-size:13px;color:var(--text-2)}
+.auth-foot{margin:18px -28px 0;padding:14px 28px;border-top:1px solid color-mix(in srgb,var(--border) 80%,transparent);text-align:center;font-size:14px;color:var(--text-2);background:color-mix(in srgb,var(--surface-2) 45%,transparent);border-radius:0 0 22px 22px}
+.auth-foot .link{font-size:14px;font-weight:650;display:inline-flex;align-items:center;gap:4px}.auth-foot .ic{width:15px;height:15px}
+.auth-card>:last-child:not(.auth-foot){margin-bottom:24px}
+@media (max-width:520px){.auth-in{padding:16px;align-items:start;padding-top:max(16px,8vh)}.auth-card{padding:22px 20px 0}.auth-foot{margin:16px -20px 0;padding:13px 20px}}
 .auth-brand{display:flex;align-items:center;gap:10px;font:800 19px/1 var(--f-ui);letter-spacing:-.025em;margin-bottom:22px}
 .auth-card h1{font:750 22px/1.25 var(--f-ui);letter-spacing:-.02em;margin:0 0 6px}
 .auth-card>p{margin:0 0 18px;font-size:14.5px}
@@ -869,8 +884,6 @@ body.auth-open .app{visibility:hidden}
 .auth-msg{margin:0;font-size:14px;padding:9px 12px;border-radius:10px}
 .auth-msg.ok{background:var(--primary-soft);color:var(--primary-ink)}
 .auth-msg.err{background:color-mix(in srgb,#E5484D 12%,var(--surface));color:var(--text)}
-.auth-links{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:16px;font-size:14px;color:var(--muted)}
-.auth-links .link{font-size:14px}
 
 
 /* ---------- Add vocabulary (one column, lookup as you type) */
@@ -1532,6 +1545,106 @@ function authCallbackInfo(){
 /* where email links send people back to: the production site in production, the current site elsewhere */
 const authBack = () => ((Web.cfg && Web.cfg.siteUrl) || location.origin).replace(/\/*$/, '/');
 
+/* ---------- Sign-in backdrop: a pixel-art city at twilight, drawn on a small canvas and scaled up.
+   Dusk deepens into evening over the first minute while windows switch on; lights shimmer softly.
+   ~10 frames a second, paused when hidden; a single still frame when reduced motion is on. */
+const authSky = (() => {
+  let cv, cx, raf = 0, t0 = 0, last = 0, W = 0, H = 0, scene = null, onResize = null, still = false;
+  const rnd = seed => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let x = Math.imul(seed ^ seed >>> 15, 1 | seed); x = x + Math.imul(x ^ x >>> 7, 61 | x) ^ x; return ((x ^ x >>> 14) >>> 0) / 4294967296; };
+  const mix = (a, b, k) => { const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)); const x = p(a), y = p(b); return `rgb(${x.map((v, i) => Math.round(v + (y[i] - v) * k)).join(',')})`; };
+  const SKY = {dusk:['#2a1d5e', '#5b3f9e', '#b47bc4', '#f2b6c6'], night:['#0e0b2a', '#22195a', '#4a3291', '#8a5cb0']};
+  const LAYERS = [
+    {dusk:'#9c86d6', night:'#3b2d74', hMin:.26, hMax:.46, wMin:10, wMax:26, lit:.18, haze:.0},
+    {dusk:'#6a51ad', night:'#2a1f5c', hMin:.18, hMax:.36, wMin:12, wMax:30, lit:.32, haze:.0},
+    {dusk:'#3a2a72', night:'#170f38', hMin:.10, hMax:.24, wMin:14, wMax:34, lit:.45, haze:.0},
+  ];
+  const WARM = ['#ffd38a', '#ffbf7a', '#ffe2a8', '#f7a8cf', '#cdb9ff'];
+  function build(){
+    const r = rnd(7331), base = Math.min(W, H * 1.8);
+    const layers = LAYERS.map((L, li) => {
+      const blds = [], wins = [];
+      let x = -4 - Math.floor(r() * 8);
+      while (x < W + 4) {
+        const w = Math.round(L.wMin + r() * (L.wMax - L.wMin)), h = Math.round(base * (L.hMin + r() * (L.hMax - L.hMin)) * (H > W ? 1.25 : 1));
+        const top = H - h, b = {x, w, top, ant:r() < .25 ? Math.round(3 + r() * 7) : 0, step:r() < .3 ? Math.round(2 + r() * 4) : 0};
+        blds.push(b);
+        const cols = Math.floor((w - 3) / 3), rows = Math.floor((h - 4) / (li === 2 ? 4 : 3));
+        for (let cI = 0; cI < cols; cI++) for (let rI = 0; rI < rows; rI++) {
+          if (r() > L.lit + .25) continue;
+          wins.push({x:x + 2 + cI * 3, y:top + 3 + b.step + rI * (li === 2 ? 4 : 3), w:li === 2 ? 2 : 1, h:li === 2 ? 2 : 1, c:WARM[Math.floor(r() * WARM.length)], on:r(), ph:r() * 6.28, sp:.4 + r() * 1.2, fl:r() < .03});
+        }
+        x += w + Math.round(r() * 3) - 1;
+      }
+      return {L, blds, wins};
+    });
+    const stars = [...Array(Math.round(W * H / 260))].map(() => ({x:Math.floor(r() * W), y:Math.floor(r() * H * .55), ph:r() * 6.28, sp:.3 + r() * .9, big:r() < .08}));
+    const clouds = [...Array(5)].map((_, i) => ({x:r() * W, y:Math.round(H * (.1 + r() * .32)), w:Math.round(26 + r() * 36), sp:.6 + r() * 1.4, tone:i % 2}));
+    const moon = {x:Math.round(W * .8), y:Math.round(H * .16), r:Math.max(7, Math.round(Math.min(W, H) * .05))};
+    // crescent cut out on its own little canvas, so the sky shows through the shadowed side
+    const mi = document.createElement('canvas'); mi.width = mi.height = moon.r * 2 + 2; const mc = mi.getContext('2d');
+    mc.fillStyle = '#f4ecff'; mc.beginPath(); mc.arc(moon.r + 1, moon.r + 1, moon.r, 0, 6.29); mc.fill();
+    mc.globalCompositeOperation = 'destination-out'; mc.beginPath(); mc.arc(moon.r + 1 - moon.r * .5, moon.r + 1 - moon.r * .25, moon.r * .92, 0, 6.29); mc.fill();
+    scene = {layers, stars, clouds, moon, moonImg:mi};
+  }
+  function size(){
+    if (!cv) return;
+    W = Math.max(150, Math.min(400, Math.round(innerWidth / 4))); H = Math.max(110, Math.round(W * innerHeight / innerWidth));
+    cv.width = W; cv.height = H; cx = cv.getContext('2d'); cx.imageSmoothingEnabled = false; build(); draw(still ? 50 : (performance.now() - t0) / 1000);
+  }
+  // a stepped pixel cloud: a wide base and two rounded puffs on top
+  function cloud(x, y, w, c){ const h = Math.max(3, Math.round(w / 8)); cx.fillStyle = c;
+    cx.fillRect(x + 2, y, w - 4, h); cx.fillRect(x, y + 1, w, h - 1);
+    const p1 = Math.round(w * .2), p2 = Math.round(w * .48);
+    cx.fillRect(x + p1 + 1, y - h, Math.round(w * .3) - 2, h); cx.fillRect(x + p1, y - h + 1, Math.round(w * .3), h - 1);
+    cx.fillRect(x + p2 + 1, y - Math.round(h * 1.6), Math.round(w * .26) - 2, h); cx.fillRect(x + p2, y - Math.round(h * 1.6) + 1, Math.round(w * .26), h); }
+  function draw(sec){
+    if (!cx || !scene) return;
+    const k = Math.min(1, sec / 60) * .85;                       // 0 = dusk … .85 = evening
+    const g = cx.createLinearGradient(0, 0, 0, H);
+    SKY.dusk.forEach((c, i) => g.addColorStop(i / 3, mix(c, SKY.night[i], k)));
+    cx.fillStyle = g; cx.fillRect(0, 0, W, H);
+    // horizon glow
+    const hg = cx.createLinearGradient(0, H * .45, 0, H);
+    hg.addColorStop(0, 'rgba(255,170,200,0)'); hg.addColorStop(1, `rgba(255,170,200,${(.35 * (1 - k)).toFixed(3)})`);
+    cx.fillStyle = hg; cx.fillRect(0, H * .45, W, H * .55);
+    // stars brighten as the sky darkens
+    scene.stars.forEach(s => { const a = (.25 + .75 * k) * (.55 + .45 * Math.sin(sec * s.sp + s.ph)); cx.fillStyle = `rgba(255,248,255,${a.toFixed(3)})`; cx.fillRect(s.x, s.y, s.big ? 2 : 1, s.big ? 2 : 1); });
+    // moon with a soft halo
+    const m = scene.moon, halo = cx.createRadialGradient(m.x, m.y, m.r * .8, m.x, m.y, m.r * 3);
+    halo.addColorStop(0, `rgba(235,220,255,${(.18 + .1 * k).toFixed(3)})`); halo.addColorStop(1, 'rgba(235,220,255,0)');
+    cx.fillStyle = halo; cx.fillRect(m.x - m.r * 3, m.y - m.r * 3, m.r * 6, m.r * 6);
+    cx.drawImage(scene.moonImg, m.x - m.r - 1, m.y - m.r - 1);
+    // drifting clouds
+    scene.clouds.forEach(c => { const x = ((c.x + sec * c.sp) % (W + c.w * 2)) - c.w; cloud(Math.round(x), c.y, c.w, c.tone ? `rgba(246,190,226,${(.5 - .3 * k).toFixed(3)})` : `rgba(190,170,240,${(.45 - .25 * k).toFixed(3)})`); });
+    // skyline layers, back to front, windows switching on through the evening
+    scene.layers.forEach(({L, blds, wins}, li) => {
+      cx.fillStyle = mix(L.dusk, L.night, k);
+      blds.forEach(b => { cx.fillRect(b.x, b.top + b.step, b.w, H); if (b.step) cx.fillRect(b.x + 2, b.top, b.w - 4, b.step + 1); if (b.ant) cx.fillRect(b.x + Math.floor(b.w / 2), b.top - b.ant, 1, b.ant); });
+      wins.forEach(w => {
+        if (w.on > .35 + k * .75) return;                     // more windows light up as evening falls
+        let a = .78 + .22 * Math.sin(sec * w.sp + w.ph);
+        if (w.fl && Math.sin(sec * 2.3 + w.ph * 3) > .93) a *= .35;   // the odd flickering bulb
+        cx.globalAlpha = a * (li === 0 ? .55 : li === 1 ? .8 : 1); cx.fillStyle = w.c; cx.fillRect(w.x, w.y, w.w, w.h);
+      });
+      cx.globalAlpha = 1;
+      if (li < 2) { const hz = cx.createLinearGradient(0, H * .45, 0, H); hz.addColorStop(0, 'rgba(60,40,120,0)'); hz.addColorStop(1, `rgba(60,40,120,${(.22 + .12 * k).toFixed(3)})`); cx.fillStyle = hz; cx.fillRect(0, H * .45, W, H * .55); }   // haze between layers
+    });
+  }
+  function loop(now){
+    raf = requestAnimationFrame(loop);
+    if (document.hidden || now - last < 100) return;
+    last = now; draw((now - t0) / 1000);
+  }
+  return {
+    start(canvas){
+      cv = canvas; t0 = performance.now(); still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      size(); onResize = () => { clearTimeout(onResize.t); onResize.t = setTimeout(size, 150); }; addEventListener('resize', onResize);
+      if (!still) raf = requestAnimationFrame(loop);
+    },
+    stop(){ cancelAnimationFrame(raf); raf = 0; if (onResize) removeEventListener('resize', onResize); cv = cx = scene = null; },
+  };
+})();
+
 /* ---------- Sign-in screen (website only) */
 const AUTH = {mode:'in', busy:false, msg:'', err:false};
 function authHTML(){
@@ -1543,14 +1656,16 @@ function authHTML(){
   const google = (m === 'in' || m === 'up') ? `<button type="button" class="btn block gbtn" data-auth-google ${AUTH.busy ? 'disabled' : ''} aria-busy="${AUTH.busy === 'google'}">${AUTH.busy === 'google' ? ic('loader-circle', 'spin') : GOOGLE_G}<span>${AUTH.busy === 'google' ? 'Connecting to Google…' : 'Continue with Google'}</span></button>
     <div class="auth-or"><span>or ${m === 'up' ? 'sign up' : 'sign in'} with email</span></div>` : '';
   const btn = {in:'Sign in', up:'Create account', link:'Email me a link', reset:'Save new password', forgot:'Email me a reset link', resend:'Send a new link'}[m];
-  const links = {
-    in:`<button type="button" class="link" data-auth="link">Email me a sign-in link instead</button><button type="button" class="link" data-auth="forgot">Forgot password?</button><button type="button" class="link" data-auth="resend">Resend confirmation email</button><span>New here? <button type="button" class="link" data-auth="up">Create an account</button></span>`,
-    resend:`<button type="button" class="link" data-auth="in">Back to sign in</button>`,
-    up:`<span>Already have an account? <button type="button" class="link" data-auth="in">Sign in</button></span>`,
-    link:`<button type="button" class="link" data-auth="in">Sign in with a password</button>`,
-    forgot:`<button type="button" class="link" data-auth="in">Back to sign in</button>`,
-    reset:'',
-  }[m];
+  // secondary option under the main button, small account-help links, then a footer that switches between sign in and sign up
+  const alt = {in:`<button type="button" class="auth-alt" data-auth="link">${ic('mail')} Email me a sign-in link instead</button>`,
+    link:`<button type="button" class="auth-alt" data-auth="in">${ic('key-round')} Sign in with a password instead</button>`}[m] || '';
+  const help = {in:`<button type="button" class="link" data-auth="forgot">Forgot password?</button><button type="button" class="link" data-auth="resend">Resend confirmation email</button>`,
+    up:`<span>Didn’t get the confirmation email?</span><button type="button" class="link" data-auth="resend">Resend it</button>`}[m] || '';
+  const foot = {in:`New here? <button type="button" class="link" data-auth="up">Create an account</button>`,
+    up:`Already have an account? <button type="button" class="link" data-auth="in">Sign in</button>`,
+    link:`New here? <button type="button" class="link" data-auth="up">Create an account</button>`,
+    forgot:`<button type="button" class="link" data-auth="in">${ic('arrow-left')} Back to sign in</button>`,
+    resend:`<button type="button" class="link" data-auth="in">${ic('arrow-left')} Back to sign in</button>`, reset:''}[m];
   return `<div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-t">
     <div class="auth-brand">${$('.brand .mark') ? $('.brand .mark').outerHTML : ''}<span>Thuverse</span></div>
     <h1 id="auth-t">${title}</h1><p class="muted">${sub}</p>
@@ -1559,18 +1674,20 @@ function authHTML(){
       ${AUTH.msg ? `<p class="auth-msg ${AUTH.err ? 'err' : 'ok'}" role="status">${esc(AUTH.msg)}</p>` : ''}
       <button class="btn primary block" ${AUTH.busy ? 'disabled' : ''}>${AUTH.busy === true ? ic('loader-circle', 'spin') : ''} ${btn}</button>
     </form>
-    <div class="auth-links">${links}</div>
+    ${alt}
+    ${help ? `<div class="auth-help">${help}</div>` : ''}
+    ${foot ? `<div class="auth-foot">${foot}</div>` : ''}
   </div>`;
 }
 function authShow(mode){
   if (mode) { AUTH.mode = mode; }
   let el = $('#auth');
-  if (!el) { el = document.createElement('div'); el.id = 'auth'; document.body.appendChild(el); }
-  el.innerHTML = authHTML(); drawIcons();
+  if (!el) { el = document.createElement('div'); el.id = 'auth'; el.innerHTML = '<canvas class="auth-sky" aria-hidden="true"></canvas><div class="auth-in" id="auth-in"></div>'; document.body.appendChild(el); authSky.start($('.auth-sky', el)); }
+  $('#auth-in').innerHTML = authHTML(); drawIcons();
   document.body.classList.add('auth-open');
   const first = el.querySelector('input'); if (first && !AUTH.busy) first.focus();
 }
-function authHide(){ const el = $('#auth'); if (el) el.remove(); document.body.classList.remove('auth-open'); AUTH.msg = ''; }
+function authHide(){ const el = $('#auth'); authSky.stop(); if (el) el.remove(); document.body.classList.remove('auth-open'); AUTH.msg = ''; }
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-auth]'); if (!b) return;
   const f = $('#auth-form'); if (f && f.elements.email) AUTH.email = f.elements.email.value;
