@@ -42,8 +42,13 @@
 5. `ANTHROPIC_API_KEY` is not set, so Lumi's free chat is off (lookups, saving and app help work).
 6. Test suite flake: `test/web/goog.py` occasionally times out on the first run and passes on rerun (mock timing).
 
+## Tarot Corner (feature/tarot, built 24 Nov — awaiting approval)
+- Deck generated from the Taro's Tarot dataset (tarot.js, ids like `the-fool`, `ace-of-wands`), images in `tarot/<id>.webp` (1909 RWS, public domain), `tarot/LICENSE.txt`, CC BY 4.0 credit on the page.
+- `/api/tarot` (needs ANTHROPIC_API_KEY); without it: card meanings + keywords to study. Route `#tarot`, English only. Records `kind:'tarot'` (saved readings).
+- Test: `test/web/tarot.py` (add `ai` arg with WITH_AI=1 server).
+
 ## Next steps (priority order)
-1. **Tarot Corner** (English workspace only). Plan agreed in chat:
+1. **Tarot Corner** (done, see above; original plan kept for reference) (English workspace only). Plan agreed in chat:
    - Cards: static metadata for 78 cards (stable ids `maj-00`…`maj-21`, `wands-01`…`pentacles-14`), upright and
      reversed meanings written by us, in a static JS/JSON file (no AI needed for card meanings).
    - Art: the original 1909 Rider–Waite–Smith artwork (Pamela Colman Smith) is public domain; use scans from

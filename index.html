@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..800;1,14..32,400..600&family=Gentium+Book+Plus:ital@0;1&display=swap" rel="stylesheet">
 <script src="content.js"></script>
+<script src="tarot.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0/dist/umd/lucide.min.js" onerror="var x=document.createElement('script');x.src='https://unpkg.com/lucide@0/dist/umd/lucide.min.js';x.onload=function(){window.drawIcons&&drawIcons()};document.head.appendChild(x)"></script>
 <style>
 /* =========================================================
@@ -1306,6 +1307,77 @@ body.auth-open .app{visibility:hidden}
 .uc-pick{align-items:center}
 .uc-newin{border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:7px 10px;font:500 13.5px var(--f-ui);color:var(--text);min-width:0;width:190px}
 .uc-newin.plain{border-style:dashed;background:transparent;width:170px}
+/* ---------- Tarot Corner */
+.tarot{--tg:#d9b872;--tg2:#f3e1b0;--tink:#f4efff;background:radial-gradient(120% 90% at 20% 0%,#3a2a7a 0%,#1c1440 45%,#0f0b26 100%);color:var(--tink);border-radius:24px;padding:28px;position:relative;overflow:hidden}
+.tarot::before{content:"";position:absolute;inset:0;background-image:radial-gradient(1.2px 1.2px at 12% 18%,#fff8 50%,transparent),radial-gradient(1px 1px at 72% 12%,#fff6 50%,transparent),radial-gradient(1.4px 1.4px at 88% 64%,#fff5 50%,transparent),radial-gradient(1px 1px at 32% 82%,#fff5 50%,transparent),radial-gradient(1px 1px at 55% 40%,#fff4 50%,transparent);pointer-events:none}
+.tarot h1{font:600 34px/1.15 var(--f-serif);margin:0 0 10px;color:var(--tg2);letter-spacing:.01em}
+.tr-hero{display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:36px;align-items:center;position:relative}
+.tr-intro p{color:#ddd5f5;font-size:16px;line-height:1.6;max-width:52ch;margin:0 0 18px}
+.tr-cta{background:linear-gradient(180deg,#e8cd8c,#c9a45a);color:#22163f;border:0;font-weight:700;padding:12px 22px;font-size:16px;box-shadow:0 8px 24px -10px #e8cd8c88}
+.tr-cta:hover{filter:brightness(1.05)}
+.tr-note{display:flex;gap:8px;font-size:13.5px!important;color:#bfb4e6!important;margin-top:16px!important}.tr-note .ic{width:15px;height:15px;flex:none;margin-top:3px}
+.tr-deck{position:relative;height:250px}
+.tr-fan{position:absolute;left:50%;top:10px;width:136px;height:239px;transform:translateX(-50%) rotate(calc((var(--i) - 1) * 9deg)) translateY(calc(var(--i) * -2px));transform-origin:50% 110%}
+.tc-back{display:grid;place-items:center;border-radius:14px;border:2px solid var(--tg);background:repeating-linear-gradient(45deg,#2a1d5e 0 8px,#251a54 8px 16px);box-shadow:inset 0 0 0 6px #1a1240,inset 0 0 0 7px #d9b87266,0 14px 30px -14px #000a}
+.tc-star{color:var(--tg);font-size:34px;text-shadow:0 0 14px #d9b87266}
+.tr-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;position:relative}
+.tr-top h1{margin:0}.tr-acts{display:flex;gap:8px}
+.tr-ghost{background:#ffffff14;color:var(--tink);border:1px solid #ffffff2a}.tr-ghost:hover{background:#ffffff22}
+.tr-lede{color:#cfc6ee;margin:6px 0 18px;position:relative}
+.tr-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;position:relative}
+.tr-slot{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:0}
+.tr-pos{text-align:center;min-height:62px}.tr-pos b{display:block;color:var(--tg2);font:600 18px var(--f-serif)}.tr-pos small{color:#b9afe0;font-size:12.5px}
+.tc{all:unset;cursor:pointer;width:100%;max-width:210px;aspect-ratio:300/527;perspective:1200px;display:block;border-radius:14px}
+.tc:focus-visible{outline:3px solid var(--tg);outline-offset:4px}
+.tc-in{position:relative;display:block;width:100%;height:100%;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.tc.up .tc-in{transform:rotateY(180deg)}
+.tc .tc-back,.tc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.tc:not(.up):hover .tc-back{box-shadow:inset 0 0 0 6px #1a1240,inset 0 0 0 7px #d9b872aa,0 16px 34px -12px #d9b87255}
+.tc-face{transform:rotateY(180deg);border-radius:14px;background:linear-gradient(180deg,#f7f0de,#eadfc2);border:2px solid var(--tg);box-shadow:inset 0 0 0 5px #f7f0de,inset 0 0 0 6px #b8964f,0 14px 30px -14px #000a;color:#2a1d4e}
+.tc-art{position:absolute;inset:10px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;padding:10px 6px}
+.tc-face.rev .tc-art,.tc-face.rev .tc-img{transform:rotate(180deg)}
+.tc-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:12px;z-index:1;background:#f7f0de}
+.tr-credit{font-size:12px;color:var(--muted);margin:14px 2px 0;line-height:1.5}.tr-credit a{color:inherit}
+.tc-num{font:600 15px var(--f-serif);letter-spacing:.12em;color:#8a6a2a}
+.tc-ic{width:44px;height:44px;color:#5b3fa8;stroke-width:1.5}
+.tc-name{font:600 clamp(15px,1.7vw,20px)/1.2 var(--f-serif)}
+.tc-keys{font-size:11.5px;color:#6d5b8f;letter-spacing:.02em}
+.tr-mean{text-align:center;max-width:240px}.tr-mean p{margin:6px 0 0;color:#e7e0fb;font-size:14px;line-height:1.45}
+.tr-or{display:inline-block;font-size:12px;font-weight:700;padding:2px 10px;border-radius:99px;background:#d9b87226;color:var(--tg2)}.tr-or.rev{background:#ff9fc026;color:#ffc6da}
+.tr-read{margin-top:20px;display:flex;flex-direction:column;gap:16px}
+.tr-sec{background:var(--surface);border:1px solid var(--border);border-left:4px solid #c9a45a;border-radius:16px;padding:20px 22px}
+.tr-sec h2{display:flex;align-items:center;gap:8px;font:600 20px var(--f-serif);margin:0 0 10px}.tr-sec h2 .ic{width:19px;height:19px;color:#a8873f}
+.tr-en p,.tr-vi p{font-size:16.5px;line-height:1.7;margin:0 0 10px;max-width:72ch}
+.tr-vi summary{list-style:none;cursor:pointer}.tr-vi summary::-webkit-details-marker{display:none}.tr-vi summary h2{margin-bottom:8px}
+.tw{all:unset;cursor:pointer;background:linear-gradient(transparent 58%,#e8cd8c88 58%);border-radius:2px;padding:0 1px;font-weight:600}
+.tw:hover,.tw:focus-visible{background:#e8cd8c;outline:none}
+.tr-tip,.tr-why{font-size:13.5px;color:var(--muted);margin:4px 0 0;display:flex;gap:6px}.tr-why{margin:0 0 12px;color:var(--text-2)}.tr-why .ic{width:15px;height:15px;flex:none;margin-top:2px}
+.tr-loading{display:flex;align-items:center;gap:10px;padding:18px 22px;border-radius:16px;background:var(--surface);border:1px solid var(--border);color:var(--text-2)}
+.tr-vocab{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.tr-vocab li{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border-2);border-radius:12px}
+.tr-vocab li.on{border-color:#c9a45a;background:color-mix(in srgb,#e8cd8c 14%,transparent)}
+.tr-chk input{width:18px;height:18px;accent-color:#a8873f}
+.tr-term{all:unset;cursor:pointer;flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:2px 8px;align-items:baseline}.tr-term b{font-size:15.5px}.tr-term em{font-size:12.5px;color:var(--muted)}
+.tr-term span{flex-basis:100%;font-size:13.5px;color:var(--text-2)}.tr-term:focus-visible{outline:2px solid var(--primary);border-radius:6px}
+.tr-saved{display:inline-flex;align-items:center;gap:4px;font-size:13px;color:var(--green);font-weight:600;white-space:nowrap}.tr-saved .ic{width:14px;height:14px}
+.tr-savebar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;font-size:14px;color:var(--text-2)}.tr-savebar>span{flex:1}
+.tr-sel{border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:8px 10px;font:500 14px var(--f-ui);color:var(--text);max-width:220px}
+.tr-end{display:flex;gap:10px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
+.tr-hist{position:relative;margin-top:26px}.tr-hist h2{display:flex;gap:8px;align-items:center;font:600 18px var(--f-serif);color:var(--tg2);margin:0 0 10px}.tr-hist h2 .ic{width:18px;height:18px}
+.tr-hist ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.tr-hist li{display:flex;align-items:center;gap:6px;background:#ffffff10;border:1px solid #ffffff1f;border-radius:12px;padding:4px 6px 4px 12px}
+.tr-hist a{flex:1;min-width:0;color:var(--tink);text-decoration:none;display:flex;gap:10px;align-items:baseline;padding:6px 0;flex-wrap:wrap}.tr-hist a span{color:#b9afe0;font-size:13px}.tr-hist a b{font-weight:500;font-size:14px}.tr-hist a small{color:#b9afe0}
+.tr-hist .icon-btn{color:#cfc6ee}
+.tw-pop{min-width:min(420px,86vw)}
+.tw-meta{display:flex;align-items:center;gap:10px;margin:-4px 0 10px}.tw-def{font-size:16px;margin:0 0 8px}.tw-vi{color:var(--text-2);margin:0 0 8px}
+.tw-ex{font-style:italic;color:var(--text-2);margin:0 0 8px}.tw-ctx{font-size:14px;background:var(--surface-2);border-radius:10px;padding:8px 10px;margin:0 0 10px}.tw-ctx small{display:block;color:var(--muted);font-size:12px}
+.tw-have{display:flex;gap:6px;color:var(--green);font-size:14px;margin:0 0 10px}.tw-have .ic{width:15px;height:15px;flex:none;margin-top:2px}
+.tw-save{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--border-2);padding-top:12px}.tw-save label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}.tw-save .tr-sel{max-width:none}
+.tw-new{display:grid;gap:6px}.tw-new input{border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:8px 10px;font:14px var(--f-ui);color:var(--text)}
+.tw-save .btn{align-self:flex-end}
+.uc-desc{color:var(--text-2);margin:4px 0 0}
+@media (max-width:820px){.tarot{padding:20px 16px}.tr-hero{grid-template-columns:1fr;gap:10px}.tr-deck{height:210px}.tr-fan{width:120px;height:196px}.tr-cards{gap:12px}.tc-ic{width:32px;height:32px}.tc-keys{display:none}.tr-sec{padding:16px}}
+@media (prefers-reduced-motion:reduce){.tc-in{transition:none}}
 </style>
 </head>
 <body>
@@ -2064,11 +2136,11 @@ const itemsIn = id => items().filter(r => (r.collectionIds || []).includes(id));
 const ucolFind = name => { const k = String(name || '').trim().toLowerCase(); return k ? ucols().find(c => c.name.toLowerCase() === k) || null : null; };
 // ids come from the name, so two devices creating "Environment" end up with the same collection
 const ucolIdFor = name => 'uc-' + (String(name).trim().toLowerCase().normalize('NFC').replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '').slice(0, 40) || newId());
-function ucolCreate(name){
+function ucolCreate(name, desc = ''){
   name = String(name || '').replace(/\s+/g, ' ').trim().slice(0, 40); if (!name) return null;
   const ex = ucolFind(name); if (ex) return ex;
   let id = ucolIdFor(name); if (Store.get(id)) id = 'uc-' + newId();
-  const rec = {id, kind:'ucol', name, createdAt:Date.now()}; Store.put(rec); return rec;
+  const rec = {id, kind:'ucol', name, createdAt:Date.now()}; if (String(desc).trim()) rec.desc = String(desc).trim().slice(0, 200); Store.put(rec); return rec;
 }
 /* One-time, per workspace: give every entry its content type, and turn existing topics into collections
    (the topic text stays on each entry as a backup). Safe to run on two devices: ids are derived from names. */
@@ -2092,18 +2164,20 @@ function migrateContentTypes(){
     Store.put({id:'meta-ct1', kind:'meta', at:Date.now(), typed, linked, collections:made.size});
   } finally { ctMigrating = false; }
 }
-function ucolNameForm(r){
+function ucolNameForm(r, onCreated){
   openModal(`<form class="form" id="uc-form" style="max-width:420px">
     <div class="form-head"><h3>${r ? 'Rename collection' : 'New collection'}</h3><button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>
     <label class="fld"><span>Name</span><input name="name" value="${esc(r ? r.name : '')}" maxlength="40" required autofocus placeholder="e.g. Environment, IELTS Writing, Daily conversation" dir="auto"></label>
+    <label class="fld"><span>Description <em>optional</em></span><input name="desc" value="${esc(r && r.desc || '')}" maxlength="200" placeholder="What goes in this collection?" dir="auto"></label>
     <p class="muted" style="margin:-4px 0 0;font-size:13.5px">A collection can hold any kind of entry: words, collocations, phrasal verbs, sentences and more.</p>
     <div class="form-foot"><button type="button" class="btn ghost" data-act="close">Cancel</button><button class="btn primary">${r ? 'Save name' : 'Create collection'}</button></div>
   </form>`, {onMount: el => { const f = $('#uc-form', el); f.addEventListener('submit', e => {
     e.preventDefault(); const name = f.name.value.replace(/\s+/g, ' ').trim().slice(0, 40);
     if (!name) { f.name.focus(); return; }
     const other = ucolFind(name); if (other && (!r || other.id !== r.id)) { toast(`You already have a collection called “${other.name}”.`, true); return; }
-    if (r) { Store.put({...clone(r), name}); closeModal(); toast('Collection renamed'); }
-    else { const c = ucolCreate(name); closeModal(); toast(`Created “${c.name}”`); go('mycol-' + c.id); }
+    const desc = f.desc.value.trim().slice(0, 200);
+    if (r) { Store.put({...clone(r), name, desc}); closeModal(); toast('Collection saved'); }
+    else { const c = ucolCreate(name, desc); closeModal(); toast(`Created “${c.name}”`); if (onCreated) onCreated(c); else go('mycol-' + c.id); }
   }); }});
 }
 function ucolGridHTML(){
@@ -2124,7 +2198,7 @@ function vUcol(){
   return `<nav class="crumb"><a href="#collections">My Collections</a> ${ic('chevron-right')} <span>Collection</span></nav>
   <div class="uc-head"><h1 class="page" dir="auto">${esc(c.name)}</h1>
     <div class="uc-acts"><button class="btn primary" data-act="new" data-type="item" data-ucol="${esc(c.id)}">${ic('plus')} Add entry</button><button class="btn ghost" data-act="uc-rename" data-id="${esc(c.id)}">${ic('pencil')} Rename</button><button class="btn ghost" data-act="uc-del" data-id="${esc(c.id)}">${ic('trash-2')} Delete</button></div></div>
-  <p class="lede">${plural(its.length, 'entry', 'entries')}${types.length ? ' · ' + types.map(t => CONTENT_TYPES[t].label.toLowerCase() + 's').join(', ') : ''}</p>
+  ${c.desc ? `<p class="uc-desc" dir="auto">${esc(c.desc)}</p>` : ''}<p class="lede">${plural(its.length, 'entry', 'entries')}${types.length ? ' · ' + types.map(t => CONTENT_TYPES[t].label.toLowerCase() + 's').join(', ') : ''}</p>
   ${its.length ? `<div class="toolbar">
     <label class="sbox">${ic('search')}<input class="fsearch" id="ucq" type="search" placeholder="Filter this collection" value="${esc(S.ucQ || '')}" data-input="ucQ" aria-label="Filter this collection"></label>
     ${types.length > 1 ? `<div class="seg" role="group" aria-label="Content type"><button class="${!tf?'on':''}" data-act="uc-type" data-v="">All</button>${types.map(t => `<button class="${tf===t?'on':''}" data-act="uc-type" data-v="${t}">${ic(CONTENT_TYPES[t].icon)} ${CONTENT_TYPES[t].label}</button>`).join('')}</div>` : ''}
@@ -2133,11 +2207,190 @@ function vUcol(){
   : `<div class="empty">${ic('folder-open')}<h3>This collection is empty</h3><p>Add entries here, or choose “Add to collection” when you save a word anywhere in Thuverse.</p><button class="btn primary" data-act="new" data-type="item" data-ucol="${esc(c.id)}">${ic('plus')} Add entry</button></div>`}`;
 }
 
+/* ---------- Tarot Corner (English workspace): a 3-card draw, an AI reading for English practice, vocabulary to save.
+   Card metadata lives in tarot.js (window.TAROT). Readings are saved only on request (records of kind 'tarot'). */
+const TAR = {cards:null, shown:[false, false, false], status:'', ai:null, why:'', sel:new Set(), savedId:null, lk:new Map(), busy:false};
+const tarotRand = n => { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] % n; };   // n ≤ 78: bias is negligible
+const ROMAN = n => n === 0 ? '0' : ['','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI'][n];
+const TAROT_IC = {major:'sparkles', wands:'flame', cups:'wine', swords:'sword', pentacles:'coins'};
+const tarotReadings = () => all().filter(r => r.kind === 'tarot').sort((a, b) => b.createdAt - a.createdAt);
+function tarotDraw(){
+  const ids = TAROT.cards.map(c => c.id), pick = [];
+  while (pick.length < 3) { const id = ids[tarotRand(ids.length)]; if (!pick.includes(id)) pick.push(id); }
+  pick.forEach(id => { const im = new Image(); im.src = TAROT.byId[id].img; });          // start loading the three faces now
+  Object.assign(TAR, {cards:pick.map(id => ({id, reversed:tarotRand(2) === 1})), shown:[false, false, false], status:'', ai:null, why:'', sel:new Set(), savedId:null});
+  render(); setTimeout(() => { const n = $('.tr-cards'); if (n) n.scrollIntoView({block:'nearest', behavior:'smooth'}); }, 30);
+}
+function tarotCardHTML(slot, i){
+  const c = TAROT.byId[slot.id], pos = TAROT.positions[i], up = TAR.shown[i];
+  const top = c.arcana === 'major' ? ROMAN(c.number) : cap(c.rank || '');
+  return `<div class="tr-slot">
+    <div class="tr-pos"><b>${pos.label}</b><small>${pos.hint}</small></div>
+    <button type="button" class="tc ${up ? 'up' : ''}" data-act="tarot-flip" data-i="${i}" aria-label="${up ? `${pos.label}: ${esc(c.name)}${slot.reversed ? ', reversed' : ''}` : `Reveal the ${pos.label.toLowerCase()} card`}" ${up ? 'aria-pressed="true"' : ''}>
+      <span class="tc-in">
+        <span class="tc-back" aria-hidden="true"><span class="tc-star">✦</span></span>
+        <span class="tc-face ${slot.reversed ? 'rev' : ''}" aria-hidden="true"><span class="tc-art">
+          <span class="tc-num">${esc(top)}</span>${ic(TAROT_IC[c.suit || 'major'], 'tc-ic')}<span class="tc-name">${esc(c.name)}</span>
+          <span class="tc-keys">${c.keys.slice(0, 3).map(esc).join(' · ')}</span></span>${c.img && !IMG_BAD.has(c.img) ? `<img class="tc-img" src="${esc(c.img)}" alt="" decoding="async" data-fb>` : ''}</span>
+      </span>
+    </button>
+    <div class="tr-mean" ${up ? '' : 'hidden'}><span class="tr-or ${slot.reversed ? 'rev' : ''}">${slot.reversed ? 'Reversed' : 'Upright'}</span><p>${esc(slot.reversed ? c.rev : c.up)}</p></div>
+  </div>`;
+}
+function tarotFlip(i, btn){
+  if (!TAR.cards || TAR.shown[i]) return;
+  TAR.shown[i] = true;
+  if (btn) { btn.classList.add('up'); btn.setAttribute('aria-pressed', 'true'); const m = btn.parentElement.querySelector('.tr-mean'); if (m) m.hidden = false; }
+  if (TAR.shown.every(Boolean)) setTimeout(tarotInterpret, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 750);
+}
+const tarotAiOn = () => !isClaude() && !!(Web.cfg && Web.cfg.ai) && !!Web.uid;
+function tarotValid(o, cards){
+  if (!o || typeof o.en !== 'string' || typeof o.vi !== 'string' || o.en.length < 150 || o.vi.length < 100 || !Array.isArray(o.vocab)) return null;
+  if (!Array.isArray(o.cards) || o.cards.length !== 3 || o.cards.some((c, i) => c.id !== cards[i].id || !!c.reversed !== cards[i].reversed)) return null;
+  const low = o.en.toLowerCase(), vocab = o.vocab.filter(v => v && typeof v.term === 'string' && v.term.trim() && low.includes(v.term.toLowerCase()) && typeof v.def === 'string').slice(0, 8)
+    .map(v => ({term:v.term.trim(), pos:String(v.pos || ''), def:String(v.def || ''), vi:String(v.vi || ''), example:String(v.example || ''), context:String(v.context || '')}));
+  return vocab.length >= 3 ? {en:o.en, vi:o.vi, vocab} : null;
+}
+// Without the AI: each card's own meaning, and the cards' keywords as words to study (looked up in the dictionary)
+function tarotFallback(why){
+  const vocab = []; TAR.cards.forEach(s => TAROT.byId[s.id].keys.slice(0, 3).forEach(k => { if (!vocab.some(v => v.term === k)) vocab.push({term:k, pos:'', def:'', vi:'', example:'', context:`Keyword of ${TAROT.byId[s.id].name}`, lookup:true}); }));
+  TAR.ai = {fallback:true, vocab}; TAR.why = why; TAR.status = 'done'; render();
+}
+async function tarotInterpret(){
+  if (!TAR.cards || TAR.status === 'loading') return;
+  const cards = TAR.cards.map(c => ({...c}));
+  if (!tarotAiOn()) return tarotFallback(isClaude() || !Web.uid ? 'unavailable' : 'nokey');
+  TAR.status = 'loading'; render();
+  let token = ''; try { const {data} = await Web.sb.auth.getSession(); token = (data && data.session && data.session.access_token) || ''; } catch {}
+  let r = null, b = null;
+  try { r = await fetch('/api/tarot', {method:'POST', headers:{'Content-Type':'application/json', ...(token ? {Authorization:'Bearer ' + token} : {})}, body:JSON.stringify({cards}), signal:AbortSignal.timeout(60000)}); b = await r.json().catch(() => null); } catch {}
+  if (TAR.cards !== null && TAR.cards.some((c, i) => c.id !== cards[i].id)) return;      // a new draw started meanwhile
+  if (r && b && b.error === 'ai_not_configured') { if (Web.cfg) Web.cfg.ai = false; return tarotFallback('nokey'); }
+  const ok = r && r.ok && tarotValid(b, cards);
+  if (!ok) return tarotFallback(r && r.status === 429 ? 'busy' : 'error');
+  TAR.ai = ok; TAR.status = 'done'; TAR.why = ''; render();
+}
+function tarotEnHTML(en, vocab){
+  let h = esc(en);
+  [...vocab.keys()].sort((a, b) => vocab[b].term.length - vocab[a].term.length).forEach(i => {
+    const t = esc(vocab[i].term).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    h = h.replace(new RegExp(`(^|[^A-Za-z>"=-])(${t})(?![A-Za-z<])`, 'i'), (m, a, w) => `${a}<button type="button" class="tw" data-act="tarot-word" data-i="${i}">${w}</button>`);
+  });
+  return h.split(/\n{2,}|\n/).filter(p => p.trim()).map(p => `<p>${p}</p>`).join('');
+}
+function tarotVocabHTML(vocab){
+  const sel = TAR.sel;
+  return `<ul class="tr-vocab">${vocab.map((v, i) => { const saved = bdFindSaved(v.term);
+    return `<li class="${sel.has(i) ? 'on' : ''}"><label class="tr-chk"><input type="checkbox" data-tsel="${i}" ${sel.has(i) ? 'checked' : ''} aria-label="Select ${esc(v.term)}"></label>
+      <button type="button" class="tr-term" data-act="tarot-word" data-i="${i}"><b>${esc(v.term)}</b>${v.pos ? ` <em>${esc(v.pos)}</em>` : ''}<span>${esc(v.def || (v.lookup ? 'Tap to look it up' : ''))}${v.vi ? ` · <i lang="vi">${esc(v.vi)}</i>` : ''}</span></button>
+      ${saved ? `<span class="tr-saved" title="In your library">${ic('circle-check')} Saved</span>` : ''}</li>`; }).join('')}</ul>
+  <div class="tr-savebar"><span>${TAR.sel.size ? plural(TAR.sel.size, 'word') + ' selected' : 'Select words to save several at once'}</span>
+    ${ucolSelectHTML('tr-ucol')}<button class="btn primary" data-act="tarot-save-sel" ${TAR.sel.size ? '' : 'disabled'}>${ic('bookmark-plus')} Save selected</button></div>`;
+}
+function ucolSelectHTML(id, value = ''){
+  return `<select id="${id}" class="tr-sel" aria-label="Add to collection"><option value="">No collection</option>${ucols().map(c => `<option value="${esc(c.id)}" ${value === c.id ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}<option value="__new">+ New collection…</option></select>`;
+}
+function vTarot(){
+  const hist = tarotReadings();
+  if (!TAR.cards) return `<div class="tarot">
+    <section class="tr-hero">
+      <div class="tr-deck" aria-hidden="true">${[0, 1, 2].map(i => `<span class="tc-back tr-fan" style="--i:${i}"><span class="tc-star">✦</span></span>`).join('')}</div>
+      <div class="tr-intro"><h1>Tarot Corner</h1>
+        <p>Draw three cards for your past, present and future. You get a short reading in English, an explanation in Vietnamese, and useful words from the reading to save to your library.</p>
+        <button class="btn tr-cta" data-act="tarot-draw">${ic('sparkles')} Draw 3 cards</button>
+        <p class="tr-note">${ic('info')} Tarot here is for fun and self-reflection, not a prediction. Please don’t make important decisions based on a reading.</p></div>
+    </section>
+    ${tarotHistoryHTML(hist)}</div>${tarotCredit()}`;
+  const all3 = TAR.shown.every(Boolean), a = TAR.ai;
+  return `<div class="tarot">
+    <div class="tr-top"><h1>Tarot Corner</h1><div class="tr-acts">${all3 ? '' : `<button class="btn tr-ghost" data-act="tarot-reveal">${ic('eye')} Reveal all</button>`}<button class="btn tr-ghost" data-act="tarot-new">${ic('rotate-ccw')} New reading</button></div></div>
+    <p class="tr-lede">${all3 ? 'Your three cards' : 'Tap each card to turn it over.'}</p>
+    <div class="tr-cards">${TAR.cards.map(tarotCardHTML).join('')}</div>
+  </div>
+  ${all3 ? `<section class="tr-read" aria-live="polite">
+    ${TAR.status === 'loading' ? `<div class="tr-loading">${ic('loader-circle', 'spin')} Reading the cards…</div>` : ''}
+    ${a && !a.fallback ? `<div class="tr-sec"><h2>${ic('book-open-text')} Your reading</h2><div class="tr-en" lang="en">${tarotEnHTML(a.en, a.vocab)}</div><p class="tr-tip">Highlighted words are worth learning. Tap one to see its meaning.</p></div>
+      <details class="tr-sec tr-vi" open><summary><h2>${ic('languages')} Giải thích bằng tiếng Việt</h2></summary><div lang="vi">${a.vi.split(/\n+/).filter(Boolean).map(p => `<p>${esc(p)}</p>`).join('')}</div></details>` : ''}
+    ${a && a.fallback ? `<div class="tr-sec"><h2>${ic('book-open-text')} What your cards mean</h2>
+      <p class="tr-why">${ic('info')} ${{nokey:'The AI reading isn’t switched on yet (it needs ANTHROPIC_API_KEY in Vercel), so here is what each card means on its own.', busy:'The AI reading is busy right now, so here is what each card means on its own. Try a new reading in a minute.', error:'The AI reading couldn’t be created this time, so here is what each card means on its own.', unavailable:'AI readings work when you’re signed in on the website, so here is what each card means on its own.'}[TAR.why] || ''}</p>
+      ${TAR.cards.map((s, i) => { const c = TAROT.byId[s.id]; return `<p><b>${TAROT.positions[i].label} · ${esc(c.name)}${s.reversed ? ' (reversed)' : ''}:</b> ${esc(s.reversed ? c.rev : c.up)}</p>`; }).join('')}
+      ${TAR.why === 'error' || TAR.why === 'busy' ? `<button class="btn sm" data-act="tarot-retry">${ic('rotate-ccw')} Try the AI reading again</button>` : ''}</div>` : ''}
+    ${a ? `<div class="tr-sec"><h2>${ic('book-a')} ${a.fallback ? 'Keywords to learn' : 'Vocabulary from this reading'}</h2>${tarotVocabHTML(a.vocab)}</div>
+      <div class="tr-end">${TAR.savedId ? `<span class="tr-saved">${ic('circle-check')} Reading saved</span>` : `<button class="btn" data-act="tarot-save">${ic('bookmark')} Save reading</button>`}<button class="btn primary" data-act="tarot-new">${ic('sparkles')} Draw a new reading</button></div>` : ''}
+  </section>` : ''}${tarotCredit()}`;
+}
+const tarotCredit = () => `<p class="tr-credit">Card images: the 1909 Rider–Waite–Smith deck by Pamela Colman Smith (public domain), via <a href="https://tarostarot.com/tarot-card-data" target="_blank" rel="noopener">Taro’s Tarot</a>. Card meanings: Tarot card data by Taro’s Tarot, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.</p>`;
+function tarotHistoryHTML(hist){
+  if (!hist.length) return '';
+  return `<section class="tr-hist"><h2>${ic('history')} Saved readings</h2><ul>${hist.slice(0, 30).map(r => `<li><a href="#tarot" data-act="tarot-open" data-id="${esc(r.id)}"><span>${fmtD(r.createdAt)}</span><b>${r.cards.map((c, i) => `${TAROT.positions[i].label}: ${esc((TAROT.byId[c.id] || {}).name || c.id)}${c.reversed ? ' ↺' : ''}`).join(' · ')}</b>${r.source === 'ai' ? '' : '<small>card meanings</small>'}</a><button class="icon-btn" data-act="tarot-del" data-id="${esc(r.id)}" aria-label="Delete this reading">${ICON.del}</button></li>`).join('')}</ul></section>`;
+}
+async function tarotWord(i){
+  const a = TAR.ai; if (!a || !a.vocab[i]) return;
+  const v = a.vocab[i], key = termKey(v.term);
+  const box = () => $('#tw-pop');
+  const paint = () => { const b = box(); if (!b) return; const lk = TAR.lk.get(key), m = (lk && lk.m) || {}, saved = bdFindSaved(v.term);
+    const ipa = (m.ipaUK && m.ipaUK.value) || (m.ipaUS && m.ipaUS.value) || (m.ipaAny && m.ipaAny.value) || '';
+    const def = v.def || (m.def && m.def.value) || '', vi = v.vi || (m.vi && m.vi.value) || '', ex = v.example || (m.ex && m.ex.value && m.ex.value[0]) || '';
+    b.innerHTML = `<div class="form-head"><h3>${esc(v.term)}</h3><button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>
+      <div class="tw-meta">${v.pos || (m.pos && m.pos.value) ? `<span class="chip">${esc(v.pos || m.pos.value)}</span>` : ''}${ipa ? `<span class="ipa">${esc(ipa)}</span>` : TAR.lk.has(key) ? '' : `<span class="muted">${ic('loader-circle', 'spin')} looking up…</span>`}<button type="button" class="icon-btn" data-act="speak" data-t="${esc(v.term)}" aria-label="Listen">${ic('volume-2')}</button></div>
+      ${def ? `<p class="tw-def">${esc(def)}</p>` : TAR.lk.has(key) ? `<p class="muted">No dictionary definition found.</p>` : ''}
+      ${vi ? `<p class="tw-vi" lang="vi">${esc(vi)}</p>` : ''}
+      ${ex ? `<p class="tw-ex">“${esc(ex)}”</p>` : ''}
+      ${v.context && !v.lookup ? `<p class="tw-ctx"><small>In your reading</small>${hl(v.context, v.term)}</p>` : ''}
+      ${saved ? `<p class="tw-have">${ic('circle-check')} Already in your library (${esc(CONTENT_TYPES[typeOf(saved)].label.toLowerCase())})${(saved.collectionIds || []).length ? ', in ' + saved.collectionIds.map(id => ucolById(id)).filter(Boolean).map(c => esc(c.name)).join(', ') : ''}.</p>` : ''}
+      <div class="tw-save"><label><span>${saved ? 'Add it to a collection' : 'Save to your library'}</span>${ucolSelectHTML('tw-ucol', TAR.lastCol || '')}</label>
+        <div class="tw-new" hidden><input id="tw-nname" maxlength="40" placeholder="Collection name, e.g. Tarot Vocabulary"><input id="tw-ndesc" maxlength="200" placeholder="Description (optional)"></div>
+        <button class="btn primary" data-act="tarot-save-one" data-i="${i}">${ic(saved ? 'folder-plus' : 'bookmark-plus')} ${saved ? 'Add to collection' : 'Save word'}</button></div>`;
+    drawIcons(); const sel = $('#tw-ucol'); sel.addEventListener('change', () => { $('.tw-new').hidden = sel.value !== '__new'; if (sel.value === '__new') $('#tw-nname').focus(); }); };
+  openModal(`<div class="tw-pop" id="tw-pop"></div>`, {size:'tw', onMount: () => paint()});
+  if (!TAR.lk.has(key)) {
+    try { if (await lkInit()) { const o = await lkLookup(v.term); TAR.lk.set(key, o); } else TAR.lk.set(key, null); } catch { TAR.lk.set(key, null); }
+    paint();
+  }
+}
+function tarotPickCollection(sel, nameEl, descEl){
+  if (sel !== '__new') return {c:ucolById(sel)};
+  const name = String(nameEl && nameEl.value || '').replace(/\s+/g, ' ').trim();
+  if (!name) return {err:'Give the new collection a name.'};
+  const c = ucolCreate(name), desc = String(descEl && descEl.value || '').trim().slice(0, 200);
+  if (c && desc && !c.desc) Store.put({...clone(c), desc});
+  return {c:ucolById(c.id) || c};
+}
+function tarotSaveOne(v, c){
+  const ex = bdFindSaved(v.term);
+  if (ex) {
+    if (c && !(ex.collectionIds || []).includes(c.id)) { Store.put({...clone(ex), collectionIds:[...(ex.collectionIds || []), c.id]}); return 'linked'; }
+    return 'exists';
+  }
+  const lk = TAR.lk.get(termKey(v.term)), m = (lk && lk.m) || {};
+  const rec = bdCreate({term:v.term, ipa:(m.ipaUK && m.ipaUK.value) || (m.ipaAny && m.ipaAny.value) || '', ipaUS:(m.ipaUS && m.ipaUS.value) || '', pos:v.pos || (m.pos && m.pos.value) || '',
+    def:v.def || (m.def && m.def.value) || '', vi:v.vi || (m.vi && m.vi.value) || '', examples:[v.example, v.lookup ? '' : v.context].filter(Boolean).join('\n'),
+    synonyms:(m.syn && m.syn.value || []).slice(0, 6), antonyms:[], collocations:[], related:[], col:bdGuessCol(v.term), topic:c ? c.name : '', sources:m.sources || [], at:lk && lk.at});
+  Store.put({...clone(rec), context:'Tarot Corner reading'});
+  return 'saved';
+}
+async function tarotSaveWords(idxs, sel, nameEl, descEl){
+  const a = TAR.ai; if (!a) return;
+  const {c, err} = tarotPickCollection(sel, nameEl, descEl); if (err) { toast(err, true); return false; }
+  const need = idxs.filter(i => a.vocab[i] && !bdFindSaved(a.vocab[i].term) && !TAR.lk.has(termKey(a.vocab[i].term)));
+  if (need.length) { toast(`Looking up ${plural(need.length, 'word')}…`); try { if (await lkInit()) await Promise.all(need.map(async i => { try { TAR.lk.set(termKey(a.vocab[i].term), await lkLookup(a.vocab[i].term)); } catch { TAR.lk.set(termKey(a.vocab[i].term), null); } })); } catch {} }
+  const n = {saved:0, linked:0, exists:0};
+  idxs.forEach(i => { if (a.vocab[i]) n[tarotSaveOne(a.vocab[i], c)]++; });
+  if (c) TAR.lastCol = c.id;
+  toast([n.saved && `Saved ${plural(n.saved, 'word')}`, n.linked && `added ${plural(n.linked, 'word')} you already had`, n.exists && `${plural(n.exists, 'word')} already in your library`].filter(Boolean).join(', ').replace(/^./, x => x.toUpperCase()) + (c ? ` · ${c.name}` : ''));
+  return true;
+}
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset && t.dataset.tsel !== undefined) { const i = Number(t.dataset.tsel); t.checked ? TAR.sel.add(i) : TAR.sel.delete(i); render(); }
+  if (t.id === 'tr-ucol' && t.value === '__new') { t.value = ''; ucolNameForm(null, c => { TAR.lastCol = c.id; render(); setTimeout(() => { const s = $('#tr-ucol'); if (s) s.value = c.id; }, 0); }); }
+});
+
 /* ---------- language workspace switching */
 const WS_COLS = {en:null, ko:['vocabulary','grammar','structures','mistakes']};
 const wsCols = () => WS_COLS[WS.active] || Object.keys(COLS);
 function wsAllowed(v, sub){
-  if (isKo()) { if (['library','collection','lesson','structure','ielts'].includes(v)) return false; if ((v === 'collections' || v === 'knowledge') && sub && !wsCols().includes(sub)) return false; }
+  if (isKo()) { if (['library','collection','lesson','structure','ielts','tarot'].includes(v)) return false;   /* Tarot Corner: English only for now */ if ((v === 'collections' || v === 'knowledge') && sub && !wsCols().includes(sub)) return false; }
   else if (v === 'topik') return false;
   return true;
 }
@@ -2527,7 +2780,7 @@ function route(){
   else if (v === 'structure' && STRUCTS[sub]) { S.view = 'structure'; S.structId = sub; openStructure(sub); }
   else if (v === 'article') { S.view = 'article'; S.artId = sub; openArticle(sub); }
   else if (v === 'mycol') { S.view = 'ucol'; if (S.ucId !== sub) { S.ucId = sub; S.ucType = ''; S.ucQ = ''; } }
-  else if (['dashboard','review','journal','preferences','reading','sources','study','topik'].includes(v)) S.view = v;
+  else if (['dashboard','review','journal','preferences','reading','sources','study','topik','tarot'].includes(v)) S.view = v;
   else S.view = 'dashboard';
   if (S.view !== 'study') S.summary = null;
   if (S.search) { S.search = ''; $('#gsearch').value = ''; }
@@ -2547,7 +2800,7 @@ function render(){
   const a = document.activeElement, id = a && a.id && $('#view').contains(a) ? a.id : null;
   let ss = null, se = null; try { ss = a.selectionStart; se = a.selectionEnd; } catch {}
   renderNav();
-  const v = S.search ? vSearch() : ({dashboard:vDashboard, library:vLibrary, collection:vCollection, lesson:vLesson, structure:vStructure, reading:vReading, sources:vSources, topik:vTopik, ucol:vUcol, article:vArticle, study:vStudy, knowledge:vKnowledge, ielts:vIelts, review:vReview, journal:vJournal, preferences:vPrefs}[S.view] || vDashboard)();
+  const v = S.search ? vSearch() : ({dashboard:vDashboard, library:vLibrary, collection:vCollection, lesson:vLesson, structure:vStructure, reading:vReading, sources:vSources, topik:vTopik, ucol:vUcol, tarot:vTarot, article:vArticle, study:vStudy, knowledge:vKnowledge, ielts:vIelts, review:vReview, journal:vJournal, preferences:vPrefs}[S.view] || vDashboard)();
   $('#view').innerHTML = v;
   const nm = settings().name; $('#brand-sub').textContent = nm ? nm + '’s language universe' : 'Your language universe';
   if (id) { const n = document.getElementById(id); if (n) { n.focus(); try { if (ss !== null) n.setSelectionRange(ss, se); } catch {} } }
@@ -2564,7 +2817,7 @@ function renderNav(){
   const groups = isKo()
     ? [[null, [['dashboard','Dashboard','layout-dashboard']]], ['Learn', [['review','Review','repeat-2']]],
       ['My learning', [['collections','My Collections','bookmark'],['reading','Reading list','newspaper'],['topik','TOPIK Workspace','graduation-cap'],['journal','Learning Journal','notebook-pen']]]]
-    : [[null, [['dashboard','Dashboard','layout-dashboard']]], ['Learn', [['library','Library','library'],['review','Review','repeat-2']]],
+    : [[null, [['dashboard','Dashboard','layout-dashboard']]], ['Learn', [['library','Library','library'],['review','Review','repeat-2'],['tarot','Tarot Corner','sparkles']]],
       ['My learning', [['collections','My Collections','bookmark'],['reading','Reading list','newspaper'],['ielts','IELTS Workspace','graduation-cap'],['journal','Learning Journal','notebook-pen']]]];
   const slot = $('#ws-slot'); if (slot && slot.dataset.ws !== WS.active) { slot.dataset.ws = WS.active; slot.innerHTML = wsSlotHTML(); }
   const active = {collection:'library', lesson:'library', structure:'library', article:'reading', sources:'reading', study:'review', topik:'topik', knowledge:'collections', ucol:'collections'}[S.view] || S.view;
@@ -5924,6 +6177,27 @@ const ACT = {
   'lesson-done': el => { const s0 = Store.get('lp-' + el.dataset.id) || {id:'lp-' + el.dataset.id, kind:'lesson', lid:el.dataset.id, createdAt:Date.now()}; const s1 = clone(s0); s1.status = 'done'; s1.completedAt = Date.now(); Store.put(s1); toast('Lesson complete'); },
   'r-filter': el => { S.rFilter = el.dataset.v; render(); },
   'tscore-new': () => tscoreForm(),
+  'tarot-draw': () => tarotDraw(),
+  'tarot-new': () => { TAR.cards = null; tarotDraw(); },
+  'tarot-flip': el => tarotFlip(Number(el.dataset.i), el),
+  'tarot-reveal': () => { [0, 1, 2].forEach(i => tarotFlip(i, $(`.tc[data-i="${i}"]`))); },
+  'tarot-retry': () => { TAR.status = ''; TAR.ai = null; tarotInterpret(); },
+  'tarot-word': el => tarotWord(Number(el.dataset.i)),
+  'tarot-save-one': async el => { const ok = await tarotSaveWords([Number(el.dataset.i)], ($('#tw-ucol') || {}).value || '', $('#tw-nname'), $('#tw-ndesc')); if (ok) { closeModal(); render(); } },
+  'tarot-save-sel': async () => { const ok = await tarotSaveWords([...TAR.sel].sort(), ($('#tr-ucol') || {}).value || ''); if (ok) { TAR.sel.clear(); render(); } },
+  'tarot-save': () => {
+    const a = TAR.ai; if (!a || !TAR.cards) return;
+    const rec = {id:newId(), kind:'tarot', cards:TAR.cards.map(c => ({id:c.id, reversed:!!c.reversed})), source:a.fallback ? 'meanings' : 'ai',
+      en:a.fallback ? '' : a.en, vi:a.fallback ? '' : a.vi, vocab:a.vocab.map(v => ({term:v.term, pos:v.pos, def:v.def, vi:v.vi, example:v.example, context:v.context, lookup:!!v.lookup})), createdAt:Date.now()};
+    Store.put(rec); TAR.savedId = rec.id; render(); toast('Reading saved. Find it in Tarot Corner under Saved readings.');
+  },
+  'tarot-open': el => {
+    const r = Store.get(el.dataset.id); if (!r || r.kind !== 'tarot') return;
+    Object.assign(TAR, {cards:r.cards.map(c => ({...c})), shown:[true, true, true], status:'done', why:r.source === 'ai' ? '' : 'saved', sel:new Set(), savedId:r.id,
+      ai:r.source === 'ai' ? {en:r.en, vi:r.vi, vocab:r.vocab} : {fallback:true, vocab:r.vocab}});
+    render(); scrollTo(0, 0);
+  },
+  'tarot-del': async el => { if (await confirmBox('Delete this reading?', 'Words you saved from it stay in your library.', 'Delete')) { Store.del(el.dataset.id); toast('Reading deleted'); } },
   'uc-new': () => ucolNameForm(null),
   'uc-rename': el => { const c = ucolById(el.dataset.id); if (c) ucolNameForm(c); },
   'uc-del': async el => {
