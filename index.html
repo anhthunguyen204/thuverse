@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<script>/* apply the saved theme before anything is drawn, so there is no flash */try{var j=JSON.parse(localStorage.getItem('thuverse.theme')||'null'),m=(j&&j.mode)||localStorage.getItem('englishHub.theme')||'system';document.documentElement.dataset.theme=(m==='dark'||m==='light')?m:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.themeMode=m;}catch(e){}</script>
+<script>/* apply the saved theme before anything is drawn, so there is no flash */try{var j=JSON.parse(localStorage.getItem('thuverse.theme')||'null'),m=(j&&j.at?j.mode:'')||(!j&&localStorage.getItem('englishHub.theme'))||'light';if(m!=='dark'&&m!=='system')m='light';document.documentElement.dataset.theme=(m==='dark'||m==='light')?m:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.themeMode=m;}catch(e){}</script>
 <title>Thuverse</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Crect width='36' height='36' rx='10' fill='%23121216'/%3E%3Crect x='9' y='9.5' width='18' height='4.4' rx='2.2' fill='%23fff'/%3E%3Crect x='15.8' y='9.5' width='4.4' height='17.5' rx='2.2' fill='%23fff'/%3E%3Ccircle cx='27.2' cy='25.2' r='2.6' fill='%238B7FFF'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -178,6 +178,9 @@ h2.sec{font:700 20px/1.3 var(--f-ui);letter-spacing:-.015em;margin:0}
 .tab .ic{width:16px;height:16px;color:var(--muted)}
 .tab.on .ic{color:var(--text)}
 .tab small{color:var(--muted);font-weight:500;font-size:13px}
+.ktabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:4px -4px 16px;padding:2px 4px;scroll-padding-inline:24px}.ktabs::-webkit-scrollbar{display:none}
+.ktabs .tab{flex:none;font-size:14.5px;padding:7px 13px}
+.ktabs .tab:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 .seg{display:inline-flex;gap:6px;flex-wrap:wrap}
 .seg button,.seg label span{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);padding:7px 12px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:500}
 .seg label{padding:0;cursor:pointer}
@@ -1377,6 +1380,97 @@ body.auth-open .app{visibility:hidden}
 .tw-new{display:grid;gap:6px}.tw-new input{border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:8px 10px;font:14px var(--f-ui);color:var(--text)}
 .tw-save .btn{align-self:flex-end}
 .uc-desc{color:var(--text-2);margin:4px 0 0}
+/* ---------- Tarot reading modal (draw → reveal → interpretation) */
+html.trm-lock,html.trm-lock body{overflow:hidden}
+.trm-wrap{position:fixed;inset:0;z-index:95;display:grid;place-items:center;padding:max(14px,2.5vh) max(14px,2.5vw)}
+.trm-back{position:absolute;inset:0;background:rgba(10,8,26,.62);backdrop-filter:blur(3px);animation:fade .2s}
+.trm{--tg:#d9b872;--tg2:#f3e1b0;--tink:#f4efff;--night:#120e30;position:relative;width:min(1320px,100%);height:100%;max-height:940px;display:flex;flex-direction:column;border-radius:24px;overflow:hidden;
+  background:linear-gradient(180deg,#100c2c 0%,#1c1648 100%);color:var(--tink);box-shadow:0 40px 90px -30px rgba(0,0,0,.7);border:1px solid #ffffff1a;animation:trm-in .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes trm-in{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+.trm::before{content:"";position:absolute;inset:0 0 40% 0;pointer-events:none;background-image:radial-gradient(1.2px 1.2px at 9% 16%,#fff9 50%,transparent),radial-gradient(1px 1px at 23% 41%,#fff6 50%,transparent),radial-gradient(1.3px 1.3px at 41% 11%,#fff7 50%,transparent),radial-gradient(1px 1px at 63% 28%,#fff5 50%,transparent),radial-gradient(1.2px 1.2px at 81% 9%,#fff8 50%,transparent),radial-gradient(1px 1px at 92% 36%,#fff5 50%,transparent),radial-gradient(1px 1px at 52% 52%,#fff4 50%,transparent)}
+.trm-sky{position:absolute;left:0;right:0;bottom:0;height:92px;pointer-events:none;opacity:.9}
+.trm-sky svg{display:block;width:100%;height:100%}
+.trm-h{position:relative;z-index:2;display:flex;align-items:center;gap:12px;padding:14px 16px 14px 24px;min-height:64px;border-bottom:1px solid #ffffff14}
+.trm-t{flex:1;min-width:0}.trm-t h2{font:600 21px/1.2 var(--f-serif);margin:0;color:var(--tg2)}.trm-t p{margin:2px 0 0;font-size:13px;color:#b9afe0}
+.trm-h .btn{white-space:nowrap}
+.trm-x{all:unset;cursor:pointer;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;color:#d8d0f5}.trm-x:hover{background:#ffffff14}.trm-x:focus-visible,.trm-back-btn:focus-visible,.trm-th:focus-visible{outline:2px solid var(--tg);outline-offset:2px}
+.trm-back-btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:8px 12px 8px 8px;border-radius:12px;color:#e6dffb;font-weight:600;font-size:14px}.trm-back-btn:hover{background:#ffffff12}
+.trm-ths{display:flex;gap:6px}
+.trm-th{all:unset;cursor:pointer;width:30px;height:52px;border-radius:5px;overflow:hidden;border:1px solid #d9b87299;background:#f7f0de}.trm-th img{width:100%;height:100%;object-fit:cover;display:block}.trm-th.rev img{transform:rotate(180deg)}
+.trm-saved{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:#a6e3c1;padding:0 6px}.trm-saved .ic{width:16px;height:16px}
+.trm-ghost{background:#ffffff12;color:var(--tink);border:1px solid #ffffff2a}.trm-ghost:hover{background:#ffffff20}
+.trm-body{position:relative;z-index:1;flex:1;min-height:0;overflow:auto;overscroll-behavior:contain}
+/* stage 1: the three cards */
+.trm-stage{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(12px,2.2vh,24px);padding:clamp(14px,2.6vh,32px) 24px 44px}
+.trm-lede{margin:0;color:#cfc6ee;font-size:15px;text-align:center}
+.trm-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,3vw,48px);width:100%;max-width:900px}
+.trm-cards .tr-slot{gap:12px}
+.trm-cards .tr-pos{min-height:66px}.trm-cards .tr-pos b{font-size:19px}
+.trm-cards .tc{width:min(100%,calc((min(100dvh,940px) - 470px) * .569));max-width:250px;min-width:96px}
+.trm-cards .tr-mean{min-height:52px;max-width:none}
+.tr-cn{display:block;font:600 17px/1.25 var(--f-serif);color:#fff;margin-bottom:6px}
+.trm-foot{display:flex;flex-direction:column;align-items:center;gap:8px;min-height:72px}
+.trm-cta{background:var(--tg2);color:#1d1440;border:0;font-weight:700;padding:13px 24px;font-size:16px}.trm-cta:hover{background:#fff0c8}.trm-cta:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.trm-status{display:flex;align-items:center;gap:8px;font-size:13.5px;color:#b9afe0;margin:0}.trm-status .ic{width:15px;height:15px}
+/* stage 2: interpretation */
+.trm.read .trm-body{background:var(--bg);color:var(--text)}
+.trm-read{display:grid;grid-template-columns:minmax(0,7fr) minmax(300px,3fr);height:100%}
+.trm-main{overflow:auto;overscroll-behavior:contain;padding:28px clamp(20px,4vw,56px) 40px}
+.trm-main>*{max-width:68ch}
+.trm-rail{overflow:auto;overscroll-behavior:contain;background:var(--side);border-left:1px solid var(--border);display:flex;flex-direction:column}
+.trm-mh{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.trm-mh h3{font:600 24px/1.2 var(--f-serif);margin:0}
+.trm-vt{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text-2);background:none;border:1px solid var(--border);border-radius:99px;padding:6px 12px 6px 8px;cursor:pointer;font-family:inherit}
+.trm-vt .sw{width:28px;height:16px;border-radius:99px;background:var(--surface-3);position:relative;transition:background .15s}.trm-vt .sw::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 1px 2px #0003;transition:transform .15s}
+.trm-vt[aria-pressed=true] .sw{background:var(--primary)}.trm-vt[aria-pressed=true] .sw::after{transform:translateX(12px)}
+.trm-vt:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.trs{padding:22px 0;border-bottom:1px solid var(--border-2)}.trs:last-of-type{border-bottom:0}
+.trs-h{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.trs-th{width:38px;height:66px;border-radius:6px;object-fit:cover;border:1px solid #c9a45a88;background:#f7f0de;flex:none}.trs-th.rev{transform:rotate(180deg)}
+.trs-pos{display:block;font-size:12.5px;font-weight:600;color:#9a7a38;letter-spacing:.02em}[data-theme=dark] .trs-pos{color:#d9b872}
+.trs-h h4{font:600 19px/1.25 var(--f-serif);margin:1px 0 3px}
+.trs-h .tr-or{background:color-mix(in srgb,#c9a45a 18%,transparent);color:#7d5f22}[data-theme=dark] .trs-h .tr-or{color:var(--tg2)}
+.trs-h .tr-or.rev{background:color-mix(in srgb,#e54c8e 14%,transparent);color:#a3335f}[data-theme=dark] .trs-h .tr-or.rev{color:#ffc6da}
+.trs-en p{font-size:17px;line-height:1.72;margin:0 0 10px}
+.trs-vi{margin-top:10px;padding:10px 0 2px 14px;border-left:2px solid var(--border)}.trs-vi p{font-size:15.5px;line-height:1.68;color:var(--text-2);margin:0 0 8px}
+.trs-vi small{display:block;font-size:12px;color:var(--muted);margin-bottom:2px}
+.trm-why{display:flex;gap:8px;font-size:14px;color:var(--text-2);background:var(--surface-2);border-radius:12px;padding:10px 12px;margin:12px 0 4px}.trm-why .ic{width:16px;height:16px;flex:none;margin-top:2px}
+.trm-loading{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:30px 0}.trm-loading p{margin:0;color:var(--text-2);display:flex;gap:8px;align-items:center}
+.trm-sk{height:14px;border-radius:7px;background:var(--surface-3);animation:sk 1.4s ease-in-out infinite}
+@keyframes sk{50%{opacity:.45}}
+.trm-end{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px;padding-top:18px;border-top:1px solid var(--border-2)}
+.trm-note{font-size:12.5px;color:var(--muted);margin:16px 0 0;line-height:1.5}.trm-note a{color:inherit}
+.trr-h{padding:22px 20px 4px;display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.trr-h h3{font:600 18px/1.25 var(--f-serif);margin:0}
+.trr-all{all:unset;cursor:pointer;font-size:13px;font-weight:600;color:var(--primary-ink);white-space:nowrap}.trr-all:hover{text-decoration:underline}.trr-all:focus-visible{outline:2px solid var(--primary);border-radius:4px}
+[data-theme=dark] .trr-all{color:#b4abff}
+.trr-tip{font-size:13px;color:var(--muted);margin:2px 20px 12px;line-height:1.45}
+.trm-rail .tr-vocab{padding:0 14px 12px}.trm-rail .tr-vocab li{background:var(--surface)}
+.trm-rail .tr-savebar{position:sticky;bottom:0;margin:auto 0 0;padding:12px 14px 14px;background:var(--side);border-top:1px solid var(--border);display:grid;grid-template-columns:1fr auto;gap:8px}
+.trm-rail .tr-savebar>span{grid-column:1/-1;font-size:13px}.trm-rail .tr-sel{max-width:none;width:100%}
+.trm-rail .tr-savebar .btn{white-space:nowrap}
+/* hover preview and the word card */
+.trm-tip{position:absolute;z-index:6;max-width:280px;background:var(--text);color:var(--bg);border-radius:10px;padding:8px 11px;font-size:13.5px;line-height:1.4;pointer-events:none;box-shadow:var(--shadow-pop)}
+.trm-tip b{font-weight:700}.trm-tip em{opacity:.7;font-size:12px;margin-left:4px}.trm-tip span{display:block}.trm-tip .vi{opacity:.85}
+.trm-pop{position:absolute;z-index:7;width:min(400px,calc(100% - 24px));max-height:calc(100% - 24px);overflow:auto;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:18px;box-shadow:0 24px 60px -20px rgba(0,0,0,.5);padding:16px 18px;animation:pop .16s ease-out}
+.trm-pop .tw-pop{min-width:0}.trm-pop .form-head{margin-bottom:8px}.trm-pop .form-head h3{font-size:20px}
+.trm-pop.sheet{left:0!important;right:0;bottom:0;top:auto!important;width:auto;max-height:78%;border-radius:20px 20px 0 0}
+.tw.on{background:#e8cd8c}
+.trm-live{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:1023px){
+  .trm-read{display:block;height:auto}.trm-main,.trm-rail{overflow:visible}
+  .trm.read .trm-body{overflow:auto}
+  .trm-rail{border-left:0;border-top:1px solid var(--border)}
+  .trm-main{padding:22px clamp(18px,4vw,40px) 26px}.trm-main>*{max-width:72ch}
+}
+@media (max-width:720px){
+  .trm-wrap{padding:0}.trm{border-radius:0;max-height:none;border:0}
+  .trm-h{padding:10px 10px 10px 16px}.trm-ths{display:none}
+  .trm-stage{padding:16px 12px 100px}.trm-cards{gap:10px}.trm-cards .tr-pos{min-height:0}.trm-cards .tr-pos small{display:none}.trm-cards .tr-pos b{font-size:16px}
+  .trm-cards .tc{width:100%}.tr-cn{font-size:14px}
+  .trm-h .btn .lbl{display:none}
+}
+@media (prefers-reduced-motion:reduce){.trm,.trm-back,.trm-pop{animation:none}.trm .tc-in{transition:none}.trm-sk{animation:none}}
 @media (max-width:820px){.tarot{padding:20px 16px}.tr-hero{grid-template-columns:1fr;gap:10px}.tr-deck{height:210px}.tr-fan{width:120px;height:196px}.tr-cards{gap:12px}.tc-ic{width:32px;height:32px}.tc-keys{display:none}.tr-sec{padding:16px}}
 @media (prefers-reduced-motion:reduce){.tc-in{transition:none}}
 /* ---------- My Collections: toolbar, popovers, grid and board views */
@@ -1644,6 +1738,7 @@ async function webStart(session){
   const sb = Web.sb, uid = session.user.id;
   if (Web.uid === uid) return;
   Web.uid = uid; Web.email = session.user.email || '';
+  themeSignedIn(uid);
   try { sessionStorage.removeItem('thuverse.oauth'); } catch {}
   authDebug('signed-in', {providers:((session.user.app_metadata || {}).providers || []).join(',')});
   authHide();
@@ -1705,6 +1800,7 @@ async function webSignOut(){
   if (!Web.sb) return;
   if (Store.pending.size && !await confirmBox('Sign out now?', `${plural(Store.pending.size, 'change')} haven’t reached your account yet and will be lost on this device.`, 'Sign out')) return;
   try { Web.sb.removeChannel(Web.chan); } catch {}
+  themeSignedOut(Web.uid);
   Web.uid = null; Web.mirror = new Map(); Store.col = null;
   Store.recs.clear(); Store.dirty.clear(); Store.pending.clear(); Store.owner = null;
   try { Object.keys(WS_LIST).forEach(w => localStorage.removeItem(w === 'en' ? LS_KEY : `thuverse.${w}.v1`)); localStorage.removeItem('thuverse.ws'); } catch {}
@@ -2270,13 +2366,14 @@ function tarotCardHTML(slot, i){
           <span class="tc-keys">${c.keys.slice(0, 3).map(esc).join(' · ')}</span></span>${c.img && !IMG_BAD.has(c.img) ? `<img class="tc-img" src="${esc(c.img)}" alt="" decoding="async" data-fb>` : ''}</span>
       </span>
     </button>
-    <div class="tr-mean" ${up ? '' : 'hidden'}><span class="tr-or ${slot.reversed ? 'rev' : ''}">${slot.reversed ? 'Reversed' : 'Upright'}</span><p>${esc(slot.reversed ? c.rev : c.up)}</p></div>
+    <div class="tr-mean" ${up ? '' : 'hidden'}><b class="tr-cn">${esc(c.name)}</b><span class="tr-or ${slot.reversed ? 'rev' : ''}">${slot.reversed ? 'Reversed' : 'Upright'}</span></div>
   </div>`;
 }
 function tarotFlip(i, btn){
   if (!TAR.cards || TAR.shown[i]) return;
   TAR.shown[i] = true;
-  if (btn) { btn.classList.add('up'); btn.setAttribute('aria-pressed', 'true'); const m = btn.parentElement.querySelector('.tr-mean'); if (m) m.hidden = false; }
+  if (btn) { const c = TAROT.byId[TAR.cards[i].id], pos = TAROT.positions[i].label; btn.classList.add('up'); btn.setAttribute('aria-pressed', 'true'); btn.setAttribute('aria-label', `${pos}: ${c.name}${TAR.cards[i].reversed ? ', reversed' : ''}`); const m = btn.parentElement.querySelector('.tr-mean'); if (m) m.hidden = false; }
+  trmFlipped(i);
   if (TAR.shown.every(Boolean)) setTimeout(tarotInterpret, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 750);
 }
 const tarotAiOn = () => !isClaude() && !!(Web.cfg && Web.cfg.ai) && !!Web.uid;
@@ -2306,13 +2403,15 @@ async function tarotInterpret(){
   if (!ok) return tarotFallback(r && r.status === 429 ? 'busy' : 'error');
   TAR.ai = ok; TAR.status = 'done'; TAR.why = ''; render();
 }
-function tarotEnHTML(en, vocab){
+const tarotParas = t => { const a = String(t || '').split(/\n\s*\n/).map(x => x.trim()).filter(Boolean); return a.length > 1 ? a : String(t || '').split(/\n/).map(x => x.trim()).filter(Boolean); };
+function tarotEnParas(en, vocab){ return tarotParas(tarotEnHTML(en, vocab, true)); }
+function tarotEnHTML(en, vocab, raw){
   let h = esc(en);
   [...vocab.keys()].sort((a, b) => vocab[b].term.length - vocab[a].term.length).forEach(i => {
     const t = esc(vocab[i].term).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     h = h.replace(new RegExp(`(^|[^A-Za-z>"=-])(${t})(?![A-Za-z<])`, 'i'), (m, a, w) => `${a}<button type="button" class="tw" data-act="tarot-word" data-i="${i}">${w}</button>`);
   });
-  return h.split(/\n{2,}|\n/).filter(p => p.trim()).map(p => `<p>${p}</p>`).join('');
+  return raw ? h : h.split(/\n{2,}|\n/).filter(p => p.trim()).map(p => `<p>${p}</p>`).join('');
 }
 function tarotVocabHTML(vocab){
   const sel = TAR.sel;
@@ -2328,46 +2427,29 @@ function ucolSelectHTML(id, value = ''){
 }
 function vTarot(){
   const hist = tarotReadings();
-  if (!TAR.cards) return `<div class="tarot">
+  return `<div class="tarot">
     <section class="tr-hero">
       <div class="tr-deck" aria-hidden="true">${[0, 1, 2].map(i => `<span class="tc-back tr-fan" style="--i:${i}"><span class="tc-star">✦</span></span>`).join('')}</div>
       <div class="tr-intro"><h1>Tarot Corner</h1>
         <p>Draw three cards for your past, present and future. You get a short reading in English, an explanation in Vietnamese, and useful words from the reading to save to your library.</p>
-        <button class="btn tr-cta" data-act="tarot-draw">${ic('sparkles')} Draw 3 cards</button>
+        <button class="btn tr-cta" id="tr-draw" data-act="tarot-draw">${ic('sparkles')} Draw 3 cards</button>
         <p class="tr-note">${ic('info')} Tarot here is for fun and self-reflection, not a prediction. Please don’t make important decisions based on a reading.</p></div>
     </section>
     ${tarotHistoryHTML(hist)}</div>${tarotCredit()}`;
-  const all3 = TAR.shown.every(Boolean), a = TAR.ai;
-  return `<div class="tarot">
-    <div class="tr-top"><h1>Tarot Corner</h1><div class="tr-acts">${all3 ? '' : `<button class="btn tr-ghost" data-act="tarot-reveal">${ic('eye')} Reveal all</button>`}<button class="btn tr-ghost" data-act="tarot-new">${ic('rotate-ccw')} New reading</button></div></div>
-    <p class="tr-lede">${all3 ? 'Your three cards' : 'Tap each card to turn it over.'}</p>
-    <div class="tr-cards">${TAR.cards.map(tarotCardHTML).join('')}</div>
-  </div>
-  ${all3 ? `<section class="tr-read" aria-live="polite">
-    ${TAR.status === 'loading' ? `<div class="tr-loading">${ic('loader-circle', 'spin')} Reading the cards…</div>` : ''}
-    ${a && !a.fallback ? `<div class="tr-sec"><h2>${ic('book-open-text')} Your reading</h2><div class="tr-en" lang="en">${tarotEnHTML(a.en, a.vocab)}</div><p class="tr-tip">Highlighted words are worth learning. Tap one to see its meaning.</p></div>
-      <details class="tr-sec tr-vi" open><summary><h2>${ic('languages')} Giải thích bằng tiếng Việt</h2></summary><div lang="vi">${a.vi.split(/\n+/).filter(Boolean).map(p => `<p>${esc(p)}</p>`).join('')}</div></details>` : ''}
-    ${a && a.fallback ? `<div class="tr-sec"><h2>${ic('book-open-text')} What your cards mean</h2>
-      <p class="tr-why">${ic('info')} ${{nokey:'The AI reading isn’t switched on yet (it needs ANTHROPIC_API_KEY in Vercel), so here is what each card means on its own.', busy:'The AI reading is busy right now, so here is what each card means on its own. Try a new reading in a minute.', error:'The AI reading couldn’t be created this time, so here is what each card means on its own.', unavailable:'AI readings work when you’re signed in on the website, so here is what each card means on its own.'}[TAR.why] || ''}</p>
-      ${TAR.cards.map((s, i) => { const c = TAROT.byId[s.id]; return `<p><b>${TAROT.positions[i].label} · ${esc(c.name)}${s.reversed ? ' (reversed)' : ''}:</b> ${esc(s.reversed ? c.rev : c.up)}</p>`; }).join('')}
-      ${TAR.why === 'error' || TAR.why === 'busy' ? `<button class="btn sm" data-act="tarot-retry">${ic('rotate-ccw')} Try the AI reading again</button>` : ''}</div>` : ''}
-    ${a ? `<div class="tr-sec"><h2>${ic('book-a')} ${a.fallback ? 'Keywords to learn' : 'Vocabulary from this reading'}</h2>${tarotVocabHTML(a.vocab)}</div>
-      <div class="tr-end">${TAR.savedId ? `<span class="tr-saved">${ic('circle-check')} Reading saved</span>` : `<button class="btn" data-act="tarot-save">${ic('bookmark')} Save reading</button>`}<button class="btn primary" data-act="tarot-new">${ic('sparkles')} Draw a new reading</button></div>` : ''}
-  </section>` : ''}${tarotCredit()}`;
 }
 const tarotCredit = () => `<p class="tr-credit">Card images: the 1909 Rider–Waite–Smith deck by Pamela Colman Smith (public domain), via <a href="https://tarostarot.com/tarot-card-data" target="_blank" rel="noopener">Taro’s Tarot</a>. Card meanings: Tarot card data by Taro’s Tarot, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.</p>`;
 function tarotHistoryHTML(hist){
   if (!hist.length) return '';
   return `<section class="tr-hist"><h2>${ic('history')} Saved readings</h2><ul>${hist.slice(0, 30).map(r => `<li><a href="#tarot" data-act="tarot-open" data-id="${esc(r.id)}"><span>${fmtD(r.createdAt)}</span><b>${r.cards.map((c, i) => `${TAROT.positions[i].label}: ${esc((TAROT.byId[c.id] || {}).name || c.id)}${c.reversed ? ' ↺' : ''}`).join(' · ')}</b>${r.source === 'ai' ? '' : '<small>card meanings</small>'}</a><button class="icon-btn" data-act="tarot-del" data-id="${esc(r.id)}" aria-label="Delete this reading">${ICON.del}</button></li>`).join('')}</ul></section>`;
 }
-async function tarotWord(i){
+async function tarotWord(i, anchor){
   const a = TAR.ai; if (!a || !a.vocab[i]) return;
   const v = a.vocab[i], key = termKey(v.term);
-  const box = () => $('#tw-pop');
-  const paint = () => { const b = box(); if (!b) return; const lk = TAR.lk.get(key), m = (lk && lk.m) || {}, saved = bdFindSaved(v.term);
+  const box = () => TRM.pop === i ? $('#tw-pop') : null;
+  const paint = () => { const b = box(); if (!b) return; const ae = document.activeElement, fk = ae && b.contains(ae) ? (ae.id ? '#' + ae.id : ae.dataset.act ? `[data-act="${ae.dataset.act}"]` : '') : ''; const lk = TAR.lk.get(key), m = (lk && lk.m) || {}, saved = bdFindSaved(v.term);
     const ipa = (m.ipaUK && m.ipaUK.value) || (m.ipaUS && m.ipaUS.value) || (m.ipaAny && m.ipaAny.value) || '';
     const def = v.def || (m.def && m.def.value) || '', vi = v.vi || (m.vi && m.vi.value) || '', ex = v.example || (m.ex && m.ex.value && m.ex.value[0]) || '';
-    b.innerHTML = `<div class="form-head"><h3>${esc(v.term)}</h3><button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>
+    b.innerHTML = `<div class="form-head"><h3 id="tw-h">${esc(v.term)}</h3><button type="button" class="icon-btn" data-act="trm-pop-close" aria-label="Close">${ICON.x}</button></div>
       <div class="tw-meta">${v.pos || (m.pos && m.pos.value) ? `<span class="chip">${esc(v.pos || m.pos.value)}</span>` : ''}${ipa ? `<span class="ipa">${esc(ipa)}</span>` : TAR.lk.has(key) ? '' : `<span class="muted">${ic('loader-circle', 'spin')} looking up…</span>`}<button type="button" class="icon-btn" data-act="speak" data-t="${esc(v.term)}" aria-label="Listen">${ic('volume-2')}</button></div>
       ${def ? `<p class="tw-def">${esc(def)}</p>` : TAR.lk.has(key) ? `<p class="muted">No dictionary definition found.</p>` : ''}
       ${vi ? `<p class="tw-vi" lang="vi">${esc(vi)}</p>` : ''}
@@ -2377,8 +2459,9 @@ async function tarotWord(i){
       <div class="tw-save"><label><span>${saved ? 'Add it to a collection' : 'Save to your library'}</span>${ucolSelectHTML('tw-ucol', TAR.lastCol || '')}</label>
         <div class="tw-new" hidden><input id="tw-nname" maxlength="40" placeholder="Collection name, e.g. Tarot Vocabulary"><input id="tw-ndesc" maxlength="200" placeholder="Description (optional)"></div>
         <button class="btn primary" data-act="tarot-save-one" data-i="${i}">${ic(saved ? 'folder-plus' : 'bookmark-plus')} ${saved ? 'Add to collection' : 'Save word'}</button></div>`;
-    drawIcons(); const sel = $('#tw-ucol'); sel.addEventListener('change', () => { $('.tw-new').hidden = sel.value !== '__new'; if (sel.value === '__new') $('#tw-nname').focus(); }); };
-  openModal(`<div class="tw-pop" id="tw-pop"></div>`, {size:'tw', onMount: () => paint()});
+    drawIcons(); const sel = $('#tw-ucol'); sel.addEventListener('change', () => { $('.tw-new').hidden = sel.value !== '__new'; if (sel.value === '__new') $('#tw-nname').focus(); trmPopPlace(); }); trmPopPlace(); if (fk) { const f = b.querySelector(fk); if (f) f.focus({preventScroll:true}); } };
+  if (!trmPopShow(i, anchor)) return;
+  paint(); const cl = $('#trm-pop [data-act=trm-pop-close]'); if (cl) cl.focus();
   if (!TAR.lk.has(key)) {
     try { if (await lkInit()) { const o = await lkLookup(v.term); TAR.lk.set(key, o); } else TAR.lk.set(key, null); } catch { TAR.lk.set(key, null); }
     paint();
@@ -2423,8 +2506,208 @@ document.addEventListener('change', e => {
 });
 
 const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
+/* ---------- Tarot reading modal: draw → reveal → interpretation in one focused layer.
+   It uses the same TAR state and functions as before; it sits under #modal-root so confirmations
+   and the "New collection" form open on top of it. */
+const TRM = {open:false, stage:'cards', key:'', rail:'', ret:null, pop:-1, anchor:null, tipT:0, vi:true};
+const TRM_SKY = (() => {   // a faint pixel skyline, drawn once (same night palette as the sign-in page)
+  let seed = 4242; const r = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+  const layer = (fill, hMin, hMax, wMin, wMax) => { let x = 0, d = ''; while (x < 1200) { const w = Math.round(wMin + r() * (wMax - wMin)), h = Math.round(hMin + r() * (hMax - hMin)); d += `<rect x="${x}" y="${92 - h}" width="${w + 1}" height="${h}"/>`; x += w; } return `<g fill="${fill}">${d}</g>`; };
+  return `<svg viewBox="0 0 1200 92" preserveAspectRatio="xMidYMax slice" aria-hidden="true">${layer('#1d1650', 34, 76, 18, 46)}${layer('#150f3a', 14, 48, 22, 60)}</svg>`;
+})();
+const trmUnsaved = () => !!(TAR.cards && TAR.shown.some(Boolean) && !TAR.savedId);
+function trmOpen(stage){
+  if (!TAR.cards) return;
+  if (!TRM.open) TRM.ret = document.activeElement;
+  Object.assign(TRM, {open:true, stage, key:'', rail:'', pop:-1, anchor:null});
+  let el = $('#trm');
+  if (!el) { el = document.createElement('div'); el.id = 'trm'; el.className = 'trm-wrap'; document.body.insertBefore(el, $('#modal-root')); }
+  document.documentElement.classList.add('trm-lock');
+  trmPaint();
+  const f = stage === 'cards' ? $('#trm .tc:not(.up)') || $('#trm .trm-cta') : $('#trm-mh');
+  if (f) f.focus({preventScroll:true});
+}
+async function trmClose(force){
+  if (!TRM.open) return;
+  if (!force && trmUnsaved() && !await confirmBox('Close this reading?', 'You haven’t saved it, so your cards and the interpretation will be gone. Save the reading first if you want to come back to it.', 'Close without saving')) return;
+  TRM.open = false; TRM.pop = -1; clearTimeout(TRM.tipT);
+  const el = $('#trm'); if (el) el.remove();
+  document.documentElement.classList.remove('trm-lock');
+  TAR.cards = null; render();
+  const ret = TRM.ret; setTimeout(() => { const r = ret && document.contains(ret) ? ret : $('[data-act=tarot-draw]'); if (r) r.focus({preventScroll:true}); }, 60);
+}
+function trmHead(){
+  const close = `<button type="button" class="trm-x" data-act="trm-close" aria-label="Close the reading">${ic('x')}</button>`;
+  if (TRM.stage === 'cards') { const n = TAR.shown.filter(Boolean).length;
+    return `<div class="trm-t"><h2 id="trm-t">Your three cards</h2><p>${n === 3 ? 'All three cards are face up' : `Past, present and future · ${n} of 3 revealed`}</p></div>${close}`; }
+  const thumbs = TAR.cards.map((s, i) => { const c = TAROT.byId[s.id]; return `<button type="button" class="trm-th ${s.reversed ? 'rev' : ''}" data-act="trm-cards" title="${TAROT.positions[i].label}: ${esc(c.name)}${s.reversed ? ' (reversed)' : ''}" aria-label="Back to the cards: ${TAROT.positions[i].label}, ${esc(c.name)}">${c.img && !IMG_BAD.has(c.img) ? `<img src="${esc(c.img)}" alt="">` : ''}</button>`; }).join('');
+  const save = TAR.savedId ? `<span class="trm-saved" role="status">${ic('circle-check')} Reading saved</span>`
+    : `<button class="btn trm-ghost" data-act="tarot-save" ${TAR.ai ? '' : 'disabled'}>${ic('bookmark')} <span class="lbl">Save reading</span></button>`;
+  return `<button type="button" class="trm-back-btn" data-act="trm-cards">${ic('arrow-left')} <span>Cards</span></button>
+    <div class="trm-t"><h2 id="trm-t">Your reading</h2></div><div class="trm-ths">${thumbs}</div>${save}${close}`;
+}
+function trmFootHTML(){
+  if (!TAR.shown.every(Boolean)) return `<button class="btn trm-ghost" data-act="tarot-reveal">${ic('eye')} Reveal all</button><p class="trm-status">Tap a card to turn it over.</p>`;
+  const st = TAR.status === 'loading' ? `<p class="trm-status">${ic('loader-circle', 'spin')} Preparing your reading…</p>` : '';
+  return `<button class="btn trm-cta" data-act="trm-read">${ic('book-open-text')} Read the interpretation</button>${st}`;
+}
+function trmCardsHTML(){
+  return `<div class="trm-stage"><p class="trm-lede">Take a breath, then turn the cards over one at a time.</p>
+    <div class="trm-cards">${TAR.cards.map(tarotCardHTML).join('')}</div>
+    <div class="trm-foot" id="trm-foot">${trmFootHTML()}</div></div>`;
+}
+const TRM_WHY = {nokey:'The AI reading isn’t switched on yet (it needs ANTHROPIC_API_KEY in Vercel), so here is what each card means on its own.', busy:'The AI reading is busy right now, so here is what each card means on its own. Try a new reading in a minute.', error:'The AI reading couldn’t be created this time, so here is what each card means on its own.', unavailable:'AI readings work when you’re signed in on the website, so here is what each card means on its own.', saved:'This reading was saved with the cards’ own meanings.'};
+function trmSecHead(i){
+  const s = TAR.cards[i], c = TAROT.byId[s.id];
+  return `<div class="trs-h">${c.img && !IMG_BAD.has(c.img) ? `<img class="trs-th ${s.reversed ? 'rev' : ''}" src="${esc(c.img)}" alt="">` : ''}<div><span class="trs-pos">${TAROT.positions[i].label}</span><h4>${esc(c.name)}</h4><span class="tr-or ${s.reversed ? 'rev' : ''}">${s.reversed ? 'Reversed' : 'Upright'}</span></div></div>`;
+}
+function trmMainHTML(){
+  const a = TAR.ai;
+  const head = (vi) => `<div class="trm-mh"><h3 id="trm-mh" tabindex="-1">Interpretation</h3>${vi ? `<button type="button" class="trm-vt" data-act="trm-vi" aria-pressed="${TRM.vi}"><span class="sw" aria-hidden="true"></span>Vietnamese explanation</button>` : ''}</div>`;
+  if (!a) {
+    if (TAR.status === 'loading') return `${head(false)}<div class="trm-loading" aria-live="polite"><p>${ic('loader-circle', 'spin')} Reading the cards…</p>${[92, 100, 84, 96, 60].map(w => `<div class="trm-sk" style="width:${w}%"></div>`).join('')}</div>`;
+    return `${head(false)}<p class="trm-why">${ic('info')} The interpretation will appear once all three cards are turned over.</p>`;
+  }
+  let body;
+  if (a.fallback) {
+    const paras = tarotEnParas(TAR.cards.map(s => { const c = TAROT.byId[s.id]; return s.reversed ? c.rev : c.up; }).join('\n\n'), a.vocab);
+    body = `<p class="trm-why">${ic('info')} ${TRM_WHY[TAR.why] || ''}</p>
+      ${TAR.cards.map((s, i) => `<section class="trs">${trmSecHead(i)}<div class="trs-en" lang="en"><p>${paras[i] || esc(s.reversed ? TAROT.byId[s.id].rev : TAROT.byId[s.id].up)}</p></div></section>`).join('')}
+      ${TAR.why === 'error' || TAR.why === 'busy' ? `<button class="btn sm" data-act="tarot-retry">${ic('rotate-ccw')} Try the AI reading again</button>` : ''}`;
+  } else {
+    const en = tarotEnParas(a.en, a.vocab), vi = tarotParas(a.vi);
+    const viP = ps => TRM.vi && ps.length ? `<div class="trs-vi" lang="vi"><small>Tiếng Việt</small>${ps.map(p => `<p>${esc(p)}</p>`).join('')}</div>` : '';
+    if (en.length === 3 || en.length === 4) {
+      const pair = en.length === vi.length;
+      body = en.map((p, i) => `<section class="trs">${i < 3 ? trmSecHead(i) : `<div class="trs-h"><div><span class="trs-pos">Bringing it together</span><h4>The overall message</h4></div></div>`}
+        <div class="trs-en" lang="en"><p>${p}</p></div>${pair ? viP([vi[i]]) : ''}</section>`).join('') + (pair ? '' : `<section class="trs">${viP(vi)}</section>`);
+    } else {
+      body = `<section class="trs"><div class="trs-h">${TAR.cards.map((s, i) => trmSecHead(i)).join('')}</div><div class="trs-en" lang="en">${en.map(p => `<p>${p}</p>`).join('')}</div>${viP(vi)}</section>`;
+    }
+  }
+  return `${head(!a.fallback)}${body}
+    <div class="trm-end">${TAR.savedId ? `<span class="tr-saved">${ic('circle-check')} Saved to Tarot Corner</span>` : `<button class="btn primary" data-act="tarot-save">${ic('bookmark')} Save reading</button>`}<button class="btn" data-act="tarot-new">${ic('sparkles')} Draw a new reading</button></div>
+    <p class="trm-note">Tarot here is for fun and self-reflection, not a prediction. ${tarotCredit().replace(/^<p class="tr-credit">|<\/p>$/g, '')}</p>`;
+}
+function trmRailHTML(){
+  const a = TAR.ai;
+  if (!a) return `<div class="trr-h"><h3>Words from this reading</h3></div><p class="trr-tip">${TAR.status === 'loading' ? 'Useful words will appear here with the reading.' : 'Turn over all three cards first.'}</p>`;
+  const all = a.vocab.length && TAR.sel.size === a.vocab.length;
+  return `<div class="trr-h"><h3>${a.fallback ? 'Keywords to learn' : 'Words from this reading'}</h3><button type="button" class="trr-all" data-act="trm-selall">${all ? 'Clear selection' : 'Select all'}</button></div>
+    <p class="trr-tip">${a.fallback ? 'Click a keyword to look it up and save it.' : 'Hover a highlighted word for a quick meaning. Click it for pronunciation, an example and saving.'}</p>
+    ${tarotVocabHTML(a.vocab)}`;
+}
+function trmPaint(){
+  const el = $('#trm'); if (!el) return;
+  const ae = document.activeElement, keep = ae && el.contains(ae) ? (ae.id ? '#' + ae.id : ae.dataset.act ? `[data-act="${ae.dataset.act}"]${ae.dataset.i !== undefined ? `[data-i="${ae.dataset.i}"]` : ''}` : ae.dataset.tsel !== undefined ? `[data-tsel="${ae.dataset.tsel}"]` : '') : '';
+  const sc = [...el.querySelectorAll('.trm-main,.trm-rail,.trm-body')].map(x => x.scrollTop), same = el.dataset.stage === TRM.stage;
+  TRM.pop = -1;
+  el.dataset.stage = TRM.stage;
+  el.innerHTML = `<div class="trm-back" aria-hidden="true"></div>
+    <div class="trm ${TRM.stage}" role="dialog" aria-modal="true" aria-labelledby="trm-t" tabindex="-1">
+      ${TRM.stage === 'cards' ? `<div class="trm-sky" aria-hidden="true">${TRM_SKY}</div>` : ''}
+      <header class="trm-h">${trmHead()}</header>
+      <div class="trm-body">${TRM.stage === 'cards' ? trmCardsHTML() : `<div class="trm-read"><article class="trm-main" aria-labelledby="trm-mh">${trmMainHTML()}</article><aside class="trm-rail" aria-label="Words from this reading" id="trm-rail">${TRM.rail = trmRailHTML()}</aside></div>`}</div>
+      <div class="trm-tip" id="trm-tip" role="tooltip" hidden></div>
+      <div class="trm-pop" id="trm-pop" role="dialog" aria-labelledby="tw-h" hidden></div>
+      <div class="trm-live" id="trm-live" aria-live="polite"></div>
+    </div>`;
+  TRM.key = trmKey();
+  drawIcons();
+  if (same) [...el.querySelectorAll('.trm-main,.trm-rail,.trm-body')].forEach((x, k) => { if (sc[k]) x.scrollTop = sc[k]; });
+  if (keep) { const f = el.querySelector(keep); if (f) f.focus({preventScroll:true}); else if (el.contains(ae) || !document.contains(ae)) $('.trm', el).focus({preventScroll:true}); }
+}
+const trmKey = () => [TRM.stage, TAR.status, TAR.ai ? (TAR.ai.fallback ? 'f' : 'a') : '-', TAR.why, TAR.savedId || '', TRM.vi, (TAR.cards || []).map(c => c.id).join()].join('|');
+/* called from render(): repaint only what changed, so flips, scroll and hover survive ordinary syncs */
+function trmSync(){
+  if (!TRM.open) return;
+  if (!TAR.cards) { trmClose(true); return; }
+  if (trmKey() !== TRM.key) return trmPaint();
+  if (TRM.stage === 'read') { const h = trmRailHTML(); if (h !== TRM.rail) { const r = $('#trm-rail'); if (r) { const st = r.scrollTop, ae = document.activeElement, ts = ae && r.contains(ae) && ae.dataset.tsel; r.innerHTML = TRM.rail = h; drawIcons(); r.scrollTop = st; if (ts !== undefined && ts !== false) { const f = r.querySelector(`[data-tsel="${ts}"]`); if (f) f.focus({preventScroll:true}); } } } }
+}
+function trmFlipped(i){
+  if (!TRM.open) return;
+  const s = TAR.cards[i], c = TAROT.byId[s.id], live = $('#trm-live');
+  if (live) live.textContent = `${TAROT.positions[i].label}: ${c.name}, ${s.reversed ? 'reversed' : 'upright'}.`;
+  const h = $('#trm .trm-t p'), n = TAR.shown.filter(Boolean).length; if (h) h.textContent = n === 3 ? 'All three cards are face up' : `Past, present and future · ${n} of 3 revealed`;
+  if (n === 3) { const f = $('#trm-foot'), had = document.activeElement && document.activeElement.classList.contains('tc'); if (f) { f.innerHTML = trmFootHTML(); drawIcons(); } if (had) { const b = $('#trm .trm-cta'); if (b) setTimeout(() => b.focus({preventScroll:true}), 400); } }
+}
+function trmStage(stage){ if (!TRM.open || TRM.stage === stage) return; TRM.stage = stage; trmPaint(); const f = stage === 'read' ? $('#trm-mh') : $('#trm .trm-cta') || $('#trm .tc'); if (f) f.focus({preventScroll:true}); }
+/* hover preview */
+function trmTip(el){
+  const tip = $('#trm-tip'), a = TAR.ai; if (!tip) return;
+  if (!el || !a) { tip.hidden = true; return; }
+  const v = a.vocab[Number(el.dataset.i)]; if (!v) return;
+  tip.innerHTML = `<b>${esc(v.term)}</b>${v.pos ? `<em>${esc(v.pos)}</em>` : ''}${v.def ? `<span>${esc(v.def)}</span>` : `<span>Click to look it up</span>`}${v.vi ? `<span class="vi" lang="vi">${esc(v.vi)}</span>` : ''}`;
+  tip.hidden = false;
+  const box = $('#trm .trm').getBoundingClientRect(), r = el.getBoundingClientRect(), tw = tip.offsetWidth, th = tip.offsetHeight;
+  let x = r.left - box.left + r.width / 2 - tw / 2, y = r.top - box.top - th - 8;
+  if (y < 70) y = r.bottom - box.top + 8;
+  tip.style.left = Math.max(8, Math.min(box.width - tw - 8, x)) + 'px'; tip.style.top = y + 'px';
+}
+/* the word card (rich popover) */
+function trmPopShow(i, anchor){
+  const pop = $('#trm-pop'); if (!pop) return false;
+  trmTip(null); $$('#trm .tw.on').forEach(x => x.classList.remove('on'));
+  TRM.pop = i; TRM.anchor = anchor || null; if (anchor && anchor.classList.contains('tw')) anchor.classList.add('on');
+  pop.innerHTML = `<div class="tw-pop" id="tw-pop"></div>`; pop.hidden = false; return true;
+}
+function trmPopPlace(){
+  const pop = $('#trm-pop'), dlg = $('#trm .trm'); if (!pop || pop.hidden || !dlg) return;
+  const box = dlg.getBoundingClientRect(), an = TRM.anchor && document.contains(TRM.anchor) ? TRM.anchor : null;
+  pop.classList.toggle('sheet', box.width < 640 || !an);
+  if (box.width < 640 || !an) { pop.style.left = ''; pop.style.top = ''; return; }
+  const r = an.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight, H = box.height;
+  let x = r.left - box.left, y = r.bottom - box.top + 8;
+  if (y + ph > H - 12) y = Math.max(12, r.top - box.top - ph - 8);
+  if (y + ph > H - 12) y = Math.max(12, H - ph - 12);
+  pop.style.left = Math.max(12, Math.min(box.width - pw - 12, x)) + 'px'; pop.style.top = y + 'px';
+}
+function trmPopClose(refocus){
+  const pop = $('#trm-pop'); if (!pop || pop.hidden) return false;
+  pop.hidden = true; pop.innerHTML = ''; const i = TRM.pop; TRM.pop = -1; $$('#trm .tw.on').forEach(x => x.classList.remove('on'));
+  if (refocus) { TRM.noTip = true; setTimeout(() => { TRM.noTip = false; }, 0); const a = TRM.anchor && document.contains(TRM.anchor) ? TRM.anchor : $(`#trm [data-act=tarot-word][data-i="${i}"]`); if (a) a.focus({preventScroll:true}); }
+  TRM.anchor = null; return true;
+}
+document.addEventListener('pointerover', e => {
+  if (!TRM.open || e.pointerType === 'touch') return;
+  const w = e.target.closest && e.target.closest('#trm [data-act=tarot-word]');
+  clearTimeout(TRM.tipT);
+  if (w && TRM.pop < 0) TRM.tipT = setTimeout(() => { if (TRM.pop < 0) trmTip(w); }, 180); else if (!w) trmTip(null);
+});
+document.addEventListener('focusin', e => { if (!TRM.open) return; const w = e.target.closest && e.target.closest('#trm .tw'); if (w && TRM.pop < 0 && !TRM.noTip) trmTip(w); else if (!(e.target.closest && e.target.closest('#trm-pop'))) trmTip(null); });
+document.addEventListener('pointerdown', e => {
+  if (!TRM.open || TRM.pop < 0 || $('#modal-root').firstElementChild) return;
+  if (e.target.closest('#trm-pop') || e.target.closest('#trm [data-act=tarot-word]')) return;
+  trmPopClose(false);
+});
+/* Escape closes the innermost thing; Tab stays inside the reading. Dialogs opened on top handle their own keys. */
+document.addEventListener('keydown', e => {
+  if (!TRM.open || $('#modal-root').firstElementChild) return;
+  if (e.key === 'Escape') {
+    e.preventDefault(); e.stopPropagation();
+    if (trmPopClose(true)) return;
+    if (!$('#trm-tip').hidden) { trmTip(null); return; }
+    trmClose(); return;
+  }
+  if (e.key === 'Tab') {
+    const scope = TRM.pop >= 0 && $('#trm-pop').contains(document.activeElement) ? $('#trm-pop') : $('#trm .trm');
+    const fs = $$('button:not([disabled]),select,input:not([type=hidden]),a[href],[tabindex="0"]', scope).filter(x => x.offsetParent !== null && !x.closest('[hidden]'));
+    if (!fs.length) return;
+    const i = fs.indexOf(document.activeElement);
+    if (e.shiftKey && (i <= 0)) { e.preventDefault(); fs[fs.length - 1].focus(); }
+    else if (!e.shiftKey && (i === -1 || i === fs.length - 1)) { e.preventDefault(); fs[0].focus(); }
+  }
+}, true);
+addEventListener('resize', () => { if (TRM.open) { trmPopPlace(); trmTip(null); } });
 /* ---------- My Collections: one filtered list, three views (list, grid, board) — like database views.
    Views only change how the same entries are shown; status changes on the board are ordinary entry updates. */
+/* Entry-type tabs: the same S.kCol filter the #collections-<type> routes set (one source of truth).
+   Switching keeps the search, status filters and view mode; only a tag filter is reset, as before. */
+function kTypeTabsHTML(){
+  const tabs = [['all', 'All entries', 'layers', items().length], ...Object.entries(COLS).filter(([c]) => wsCols().includes(c)).map(([c, o]) => [c, o.label, COLIC[c], items(c).length])];
+  return `<nav class="tabs ktabs" aria-label="Entries by type">${tabs.map(([c, l, i, n]) => `<a class="tab ${S.kCol === c ? 'on' : ''}" href="#collections${c === 'all' ? '' : '-' + c}" ${S.kCol === c ? 'aria-current="page"' : ''}>${ic(i)} ${esc(l)}<small>${n}</small></a>`).join('')}</nav>`;
+}
 const K_VIEWS = [['list','List','list'],['grid','Grid','layout-grid'],['board','Board','square-kanban']];
 const kStats = () => (S.kStatuses || []).filter(s => STATUSES.includes(s));
 function kApplyFilters(its, {q = S.kQ, type = ''} = {}){
@@ -2487,8 +2770,6 @@ function kPopHTML(kind){
   const sec = (t, body) => `<p class="mp-note kp-h">${t}</p>${body}`;
   const opt = (k, v, l, on, icon) => `<button type="button" class="mp-i ${on ? 'on' : ''}" role="menuitemradio" aria-checked="${on}" data-kp="set" data-k="${k}" data-v="${esc(v)}">${ic(icon || (on ? 'circle-dot' : 'circle'))}<span>${l}</span></button>`;
   let h = '';
-  if (S.view === 'knowledge') h += sec('All entries by type', [['all', 'All entries', 'layers', items().length], ...Object.entries(COLS).filter(([c]) => wsCols().includes(c)).map(([c, o]) => [c, o.label, COLIC[c], items(c).length])]
-    .map(([c, l, i, n]) => `<a class="mp-i ${S.kCol === c ? 'on' : ''}" role="menuitemradio" aria-checked="${S.kCol === c}" href="#collections${c === 'all' ? '' : '-' + c}" data-kp="nav">${ic(i)}<span>${esc(l)}</span><small>${n}</small></a>`).join(''));
   if (S.view === 'ucol') { const its = itemsIn(S.ucId), types = [...new Set(its.map(typeOf))];
     if (types.length > 1) h += sec('Content type', opt('ucType', '', 'All types', !S.ucType) + types.map(t => opt('ucType', t, CONTENT_TYPES[t].label, S.ucType === t)).join('')); }
   if (!isKo()) h += sec('Source', [['any', 'Any source'], ['linked', 'Linked to IELTS'], ['difficult', 'Marked difficult'], ...Object.entries(SK).map(([k, o]) => [k, o.label])].map(([v, l]) => opt('kLink', v, l, S.kLink === v)).join(''));
@@ -2991,6 +3272,7 @@ let rq = 0;
 function scheduleRender(){ if (!rq) rq = requestAnimationFrame(() => { rq = 0; render(); }); }
 function render(){
   themeReconcile();
+  if (typeof trmSync === 'function') trmSync();
   const a = document.activeElement, id = a && a.id && $('#view').contains(a) ? a.id : null;
   let ss = null, se = null; try { ss = a.selectionStart; se = a.selectionEnd; } catch {}
   renderNav();
@@ -3001,6 +3283,7 @@ function render(){
   else if (S.view === 'study' && !S.search && !$('#modal-root').firstElementChild) { const f = $('#typein:not([disabled])') || $('#s-focus'); if (f) f.focus({preventScroll:true}); }
   mountCharts();
   drawIcons();
+  if (S.view === 'knowledge' && !S.search) { const t = $('.ktabs'), on = t && $('.tab.on', t); if (on && t.scrollWidth > t.clientWidth) t.scrollLeft = Math.max(0, on.offsetLeft - t.offsetLeft - 24); }
   if (ME.open) meRender();
   if (KPOP.open) kPopPaint();
   bdMount(); bdVisibility();
@@ -3863,19 +4146,35 @@ function initSidebar(){
   matchMedia('(max-width:820px)').addEventListener('change', () => setDrawer(false));
 }
 
-/* ---------- Appearance: light / dark / system.
+/* ---------- Appearance: light / dark / system. Light is the default until someone chooses.
    Saved in the account's settings record (theme, themeAt) so it follows the person;
-   a small local copy ({mode, at, owner}) applies it instantly on the next load. */
+   a small local copy ({mode, at, owner}) applies it instantly on the next load.
+   at = 0 means "never chosen" and always reads as Light. */
 const THEME_KEY = 'thuverse.theme';
 const sysDark = matchMedia('(prefers-color-scheme: dark)');
-const THEME_LBL = {light:'Light', dark:'Dark', system:'System'};
+const THEME_LBL = {light:'Light', dark:'Dark', system:'System'}, THEME_DEF = 'light';
+const THEME_ACCTS = 'thuverse.theme.accts';                       // per-account copies, so a sign-in on this browser shows the right theme at once
 function themeLocal(){
-  try { const j = JSON.parse(localStorage.getItem(THEME_KEY) || 'null'); if (j && THEME_LBL[j.mode]) return j; } catch {}
+  try { const j = JSON.parse(localStorage.getItem(THEME_KEY) || 'null'); if (j && THEME_LBL[j.mode]) return j.at ? j : {...j, mode:THEME_DEF, at:0}; if (j) return {mode:THEME_DEF, at:0, owner:j.owner || null}; } catch {}
   const legacy = lsGet('englishHub.theme');                       // older versions kept only light/dark here
-  return THEME_LBL[legacy] ? {mode:legacy, at:1, owner:null} : {mode:'system', at:0, owner:null};
+  return THEME_LBL[legacy] ? {mode:legacy, at:1, owner:null} : {mode:THEME_DEF, at:0, owner:null};
 }
 const themeSave = o => lsSet(THEME_KEY, JSON.stringify(o));
-const themeMode = () => document.documentElement.dataset.themeMode || 'system';
+const themeMode = () => document.documentElement.dataset.themeMode || THEME_DEF;
+function themeAccts(){ try { const o = JSON.parse(localStorage.getItem(THEME_ACCTS) || '{}'); return o && typeof o === 'object' ? o : {}; } catch { return {}; } }
+function themeRemember(owner, mode, at){ if (!owner || !at) return; const o = themeAccts(); o[owner] = {mode, at}; lsSet(THEME_ACCTS, JSON.stringify(o)); }
+/* Signing out: keep this account's choice for its next sign-in here, and show the default meanwhile. */
+function themeSignedOut(uid){
+  const loc = themeLocal(); if (uid && loc.owner === uid) themeRemember(uid, loc.mode, loc.at);
+  themeSave({mode:THEME_DEF, at:0, owner:null}); applyTheme(THEME_DEF);
+}
+/* Signing in: if this browser already knows the account's choice, show it straight away (the account copy is checked once it loads). */
+function themeSignedIn(uid){
+  const loc = themeLocal(); if (loc.owner === uid) return;
+  const k = themeAccts()[uid];
+  if (k && THEME_LBL[k.mode]) { themeSave({mode:k.mode, at:k.at, owner:uid}); applyTheme(k.mode); }
+  else if (loc.owner) { themeSave({mode:THEME_DEF, at:0, owner:uid}); applyTheme(THEME_DEF); }   // never inherit another account's choice
+}
 /* the signed-in account whose settings are loaded, or null */
 const themeAcct = () => Store.mode === 'cloud' ? (Web.uid || (isClaude() ? 'claude' : null)) : null;
 function applyTheme(mode){
@@ -3885,7 +4184,7 @@ function applyTheme(mode){
 function setTheme(mode){
   if (!THEME_LBL[mode]) return;
   const at = Date.now(), owner = Web.uid || (isClaude() ? 'claude' : null);
-  themeSave({mode, at, owner}); applyTheme(mode);
+  themeSave({mode, at, owner}); themeRemember(owner, mode, at); applyTheme(mode);
   const st = settings(); if (st.theme !== mode) Store.put({...clone(st), theme:mode, themeAt:at});
   render();
 }
@@ -3894,14 +4193,15 @@ function setTheme(mode){
 function themeReconcile(){
   const owner = themeAcct(); if (!owner) return;
   const st = settings(), loc = themeLocal(), accAt = st.themeAt || 0;
-  if (st.theme && THEME_LBL[st.theme] && accAt >= loc.at) {
-    if (loc.mode !== st.theme || loc.owner !== owner || loc.at !== accAt) themeSave({mode:st.theme, at:accAt, owner});
+  const mine = !loc.owner || loc.owner === owner;
+  if (st.theme && THEME_LBL[st.theme] && (accAt >= loc.at || !mine)) {
+    if (loc.mode !== st.theme || loc.owner !== owner || loc.at !== accAt) { themeSave({mode:st.theme, at:accAt, owner}); themeRemember(owner, st.theme, accAt); }
     if (themeMode() !== st.theme) applyTheme(st.theme);
-  } else if (loc.at > accAt && (!loc.owner || loc.owner === owner)) {
-    Store.put({...clone(st), theme:loc.mode, themeAt:loc.at}); themeSave({...loc, owner});
-  } else if (!st.theme && loc.owner && loc.owner !== owner) {
-    themeSave({mode:'system', at:0, owner}); applyTheme('system');
-  }
+  } else if (loc.at > accAt && mine) {
+    Store.put({...clone(st), theme:loc.mode, themeAt:loc.at}); themeSave({...loc, owner}); themeRemember(owner, loc.mode, loc.at);
+  } else if (!st.theme && !mine) {
+    themeSave({mode:THEME_DEF, at:0, owner}); applyTheme(THEME_DEF);
+  } else if (!st.theme && !loc.at && themeMode() !== THEME_DEF) applyTheme(THEME_DEF);
 }
 sysDark.addEventListener('change', () => { if (themeMode() === 'system') { applyTheme('system'); render(); } });
 
@@ -4657,6 +4957,7 @@ function vKnowledge(){
   return `
   <h1 class="page">${title}</h1><p class="lede">${lede}</p>
   ${col === 'all' ? ucolGridHTML() : ''}
+  ${kTypeTabsHTML()}
   ${kToolbarHTML({addCol, addLabel})}
   ${['grammar','structures'].includes(col) ? savedTopicsHTML(col === 'grammar' ? 'g' : 's') : ''}
   ${kEntriesHTML(list, {showType:col === 'all', empty: its.length ? `<div class="empty">${ic('search-x')}<h3>No entries match these filters</h3><p>Try a different word or reset the filters.</p><button class="btn" data-act="k-clear">Reset filters</button></div>`
@@ -6340,25 +6641,34 @@ const ACT = {
   'lesson-done': el => { const s0 = Store.get('lp-' + el.dataset.id) || {id:'lp-' + el.dataset.id, kind:'lesson', lid:el.dataset.id, createdAt:Date.now()}; const s1 = clone(s0); s1.status = 'done'; s1.completedAt = Date.now(); Store.put(s1); toast('Lesson complete'); },
   'r-filter': el => { S.rFilter = el.dataset.v; render(); },
   'tscore-new': () => tscoreForm(),
-  'tarot-draw': () => tarotDraw(),
-  'tarot-new': () => { TAR.cards = null; tarotDraw(); },
+  'tarot-draw': () => { tarotDraw(); trmOpen('cards'); },
+  'tarot-new': async () => {
+    if (trmUnsaved() && !await confirmBox('Draw a new reading?', 'This reading isn’t saved yet, so it will be replaced. Save it first if you want to keep it.', 'Draw new cards')) return;
+    tarotDraw(); if (TRM.open) { TRM.stage = 'cards'; trmPaint(); const f = $('#trm .tc'); if (f) f.focus({preventScroll:true}); } else trmOpen('cards');
+  },
   'tarot-flip': el => tarotFlip(Number(el.dataset.i), el),
-  'tarot-reveal': () => { [0, 1, 2].forEach(i => tarotFlip(i, $(`.tc[data-i="${i}"]`))); },
+  'tarot-reveal': () => { const rm = matchMedia('(prefers-reduced-motion: reduce)').matches; TAR.shown.map((u, i) => u ? -1 : i).filter(i => i >= 0).forEach((i, k) => setTimeout(() => tarotFlip(i, $(`#trm .tc[data-i="${i}"]`)), rm ? 0 : k * 220)); },
+  'trm-read': () => trmStage('read'),
+  'trm-cards': () => trmStage('cards'),
+  'trm-close': () => trmClose(),
+  'trm-vi': () => { TRM.vi = !TRM.vi; trmPaint(); const b = $('#trm [data-act=trm-vi]'); if (b) b.focus({preventScroll:true}); },
+  'trm-selall': () => { const a = TAR.ai; if (!a) return; if (TAR.sel.size === a.vocab.length) TAR.sel.clear(); else a.vocab.forEach((v, i) => TAR.sel.add(i)); trmSync(); const b = $('#trm [data-act=trm-selall]'); if (b) b.focus({preventScroll:true}); },
+  'trm-pop-close': () => trmPopClose(true),
   'tarot-retry': () => { TAR.status = ''; TAR.ai = null; tarotInterpret(); },
-  'tarot-word': el => tarotWord(Number(el.dataset.i)),
-  'tarot-save-one': async el => { const ok = await tarotSaveWords([Number(el.dataset.i)], ($('#tw-ucol') || {}).value || '', $('#tw-nname'), $('#tw-ndesc')); if (ok) { closeModal(); render(); } },
+  'tarot-word': el => { if (TRM.pop === Number(el.dataset.i) && TRM.anchor === el) { trmPopClose(true); return; } tarotWord(Number(el.dataset.i), el); },
+  'tarot-save-one': async el => { const ok = await tarotSaveWords([Number(el.dataset.i)], ($('#tw-ucol') || {}).value || '', $('#tw-nname'), $('#tw-ndesc')); if (ok) { trmPopClose(true); render(); } },
   'tarot-save-sel': async () => { const ok = await tarotSaveWords([...TAR.sel].sort(), ($('#tr-ucol') || {}).value || ''); if (ok) { TAR.sel.clear(); render(); } },
   'tarot-save': () => {
     const a = TAR.ai; if (!a || !TAR.cards) return;
     const rec = {id:newId(), kind:'tarot', cards:TAR.cards.map(c => ({id:c.id, reversed:!!c.reversed})), source:a.fallback ? 'meanings' : 'ai',
       en:a.fallback ? '' : a.en, vi:a.fallback ? '' : a.vi, vocab:a.vocab.map(v => ({term:v.term, pos:v.pos, def:v.def, vi:v.vi, example:v.example, context:v.context, lookup:!!v.lookup})), createdAt:Date.now()};
-    Store.put(rec); TAR.savedId = rec.id; render(); toast('Reading saved. Find it in Tarot Corner under Saved readings.');
+    Store.put(rec); TAR.savedId = rec.id; render(); toast('Reading saved. Find it in Tarot Corner under Saved readings.'); const f = $('#trm .trm-saved') || $('#trm [data-act=tarot-new]'); if (f && f.tagName === 'BUTTON') f.focus({preventScroll:true});
   },
   'tarot-open': el => {
     const r = Store.get(el.dataset.id); if (!r || r.kind !== 'tarot') return;
     Object.assign(TAR, {cards:r.cards.map(c => ({...c})), shown:[true, true, true], status:'done', why:r.source === 'ai' ? '' : 'saved', sel:new Set(), savedId:r.id,
       ai:r.source === 'ai' ? {en:r.en, vi:r.vi, vocab:r.vocab} : {fallback:true, vocab:r.vocab}});
-    render(); scrollTo(0, 0);
+    trmOpen('read');
   },
   'tarot-del': async el => { if (await confirmBox('Delete this reading?', 'Words you saved from it stay in your library.', 'Delete')) { Store.del(el.dataset.id); toast('Reading deleted'); } },
   'uc-new': () => ucolNameForm(null),
@@ -6441,7 +6751,7 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('keydown', e => {
   const tag = (e.target.tagName || '').toLowerCase(), typing = ['input','textarea','select'].includes(tag) || e.target.isContentEditable;
-  const modal = !!$('#modal-root').firstElementChild;
+  const modal = !!$('#modal-root').firstElementChild || TRM.open;
   if (e.key === 'Escape') {
     if (modal) { closeModal(); return; }
     if (S.search) { S.search = ''; $('#gsearch').value = ''; $('#gsearch').blur(); render(); return; }

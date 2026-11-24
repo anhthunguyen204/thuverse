@@ -43,8 +43,8 @@ Tarot here is entertainment and a tool for self-reflection, never a prediction. 
 Use only the three cards, positions, orientations and meanings you are given. Do not add or change cards.
 Answer with one JSON object and nothing else:
 {"en": string, "vi": string, "vocab": [{"term","pos","def","vi","example","context"}]}
-- "en": 140–220 words of natural English at B1–B2 level. Cover Past, Present and Future, show how the cards connect, and end with an overall theme or gentle takeaway. Plain paragraphs, no markdown.
-- "vi": a natural Vietnamese explanation of the same reading (not word for word), 120–220 words.
+- "en": 170–260 words of natural English at B1–B2 level, as exactly four paragraphs separated by a blank line, in this order: the Past card, the Present card, the Future card, then how the cards connect with an overall theme or gentle takeaway. No headings or labels, no markdown.
+- "vi": a natural Vietnamese explanation of the same reading (not word for word), 140–240 words, as four paragraphs separated by a blank line that match the English paragraphs in the same order. No headings or labels.
 - "vocab": 6 to 8 useful words or short phrases that appear exactly (same spelling) in "en": everyday, emotional or descriptive vocabulary and common collocations a B1–B2 learner can reuse. For each: "pos" part of speech, "def" a simple English definition, "vi" Vietnamese meaning, "example" a new everyday example sentence, "context" the sentence from "en" where it appears.`;
 
 function send(res, status, body) {
