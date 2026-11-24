@@ -1516,7 +1516,27 @@ body.auth-open .app{visibility:hidden}
 .tw-new{display:grid;gap:6px}.tw-new input{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:8px 10px;font:14px var(--f-ui);color:var(--text)}
 .tw-save .btn{align-self:flex-end}
 .uc-desc{color:var(--text-2);margin:4px 0 0}
+/* ---------- Delete account */
+.panel.danger-zone{border-color:color-mix(in srgb,var(--red) 35%,var(--border))}
+.danger-zone .sec .ic{color:var(--red)}
+.stm-body .panel.danger-zone{border:1px solid color-mix(in srgb,var(--red) 35%,var(--border));border-radius:14px;padding:16px 18px;margin:22px 0 4px}
+.stm-body .danger-zone h2.sec{color:var(--red)}.stm-body .danger-zone h2.sec .ic{display:inline-block;width:16px;height:16px;color:var(--red)}
+.dz-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}.dz-row p{margin:0;color:var(--text-2);font-size:14.5px;max-width:56ch}
+.btn.danger-solid{background:var(--red);border-color:var(--red);color:#fff}.btn.danger-solid:hover{filter:brightness(.95)}.btn.danger-solid:disabled{opacity:.45;filter:none;cursor:not-allowed}
+.del{display:flex;flex-direction:column;gap:14px}
+.del>p{margin:0;font-size:15px;line-height:1.55;color:var(--text-2)}
+.del-list{margin:0;padding-left:20px;color:var(--text-2);font-size:14.5px;line-height:1.7}
+.del-warn{display:flex;gap:8px;align-items:flex-start;background:var(--red-soft);color:var(--text);border-radius:12px;padding:10px 12px;font-size:14.5px}.del-warn .ic{width:17px;height:17px;color:var(--red);flex:none;margin-top:2px}
+.del-warn .link{font-size:inherit}
+.del-step{border-top:1px solid var(--border-2);padding-top:14px;display:flex;flex-direction:column;gap:10px}
+.del-step h4{margin:0;font-size:14px;font-weight:700}
+.del-ok{display:flex;gap:6px;align-items:center;color:var(--green);font-size:14px;font-weight:600;margin:0}.del-ok .ic{width:16px;height:16px}
+.del-err{display:flex;gap:8px;color:var(--red);background:var(--red-soft);border-radius:10px;padding:9px 12px;font-size:14px;margin:0}.del-err .ic{width:16px;height:16px;flex:none;margin-top:2px}
+.del .row{display:flex;justify-content:flex-end;gap:10px;margin-top:4px}
+.del input[name=word]{letter-spacing:.08em;font-weight:650}
+[data-theme=dark] .del-warn{background:color-mix(in srgb,var(--red) 16%,transparent)}
 /* ---------- Settings modal */
+html.stm-lock #modal-root .modal{border:1px solid var(--border-strong);box-shadow:0 30px 80px -20px rgba(0,0,0,.6)}
 html.stm-lock,html.stm-lock body{overflow:hidden}
 .stm-wrap{position:fixed;inset:0;z-index:93;display:grid;place-items:center;padding:max(14px,4vh) max(14px,3vw)}
 .stm-back{position:absolute;inset:0;background:rgba(18,18,22,.45);backdrop-filter:blur(2px);animation:fade .18s}
@@ -1988,10 +2008,13 @@ async function webConnect(){
   const {data, error:sessErr} = await sb.auth.getSession();          // also finishes any ?code= exchange (email link or Google)
   authDebug('session', {hasSession:!!(data && data.session), error:sessErr && sessErr.message, provider:data && data.session && ((data.session.user.app_metadata || {}).provider || '')});
   if (cb.any) history.replaceState(null, '', location.pathname + (cb.routeHash || ''));
-  if (data && data.session) { await webStart(data.session); if (linkRet) linkFinish(linkRet); }
+  let delFlag = ''; try { delFlag = sessionStorage.getItem('thuverse.delete') || ''; } catch {}
+  if (data && data.session) { await webStart(data.session); if (linkRet) linkFinish(linkRet); if (delFlag) delReturn(); }
   else {
     setMode('starting');
-    if (cb.error) { AUTH.msg = cb.error; AUTH.err = true; }
+    let gone = ''; try { gone = sessionStorage.getItem('thuverse.deleted') || ''; sessionStorage.removeItem('thuverse.deleted'); sessionStorage.removeItem('thuverse.delete'); } catch {}
+    if (gone) { AUTH.msg = 'Your Thuverse account and everything in it have been deleted. Thank you for learning with us.'; AUTH.err = false; }
+    else if (cb.error) { AUTH.msg = cb.error; AUTH.err = true; }
     else if (cb.code && cb.oauth) { AUTH.msg = `Google sign-in couldn’t finish in this browser${sessErr && sessErr.message ? ` (${sessErr.message})` : ''}. Please try again, and finish it in the same browser tab.`; AUTH.err = true; }
     else if (cb.code) { AUTH.msg = 'Your email is confirmed. This link was opened in a different browser from the one you signed up in, so sign in here to continue.'; AUTH.err = false; }
     authShow('in');
@@ -2038,6 +2061,109 @@ function authCallbackInfo(){
     ? 'That email link has expired or was already used. If you already confirmed your email, just sign in. Otherwise choose “Resend confirmation email”.'
     : `The email link didn’t work (${(ed || er || ec).replace(/\+/g, ' ')}). Sign in, or ask for a new link.`;
   return {code, error, oauth:!!oauth, any: !!(code || error || hashIsAuth), routeHash: hashIsAuth ? '' : location.hash};
+}
+/* ---------- Delete account.
+   The database function public.delete_my_account (supabase/schema.sql) does the deletion with the person's own token:
+   it deletes only auth.uid(), needs a sign-in from the last 10 minutes and the word DELETE, and the cascade removes
+   every record of theirs in the same transaction. The page only asks, re-checks who it is, then clears this browser. */
+const DEL = {busy:false, google:false, err:''};
+const DEL_FLAG = 'thuverse.delete';
+function jwtAuthAt(tok){            // newest sign-in time (seconds) in the access token's amr claim, or 0
+  try { const p = JSON.parse(atob(tok.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))); return Math.max(0, ...(p.amr || []).map(a => Number(a.timestamp) || 0)); } catch { return 0; }
+}
+async function delSession(){ try { const {data} = await Web.sb.auth.getSession(); return (data && data.session) || null; } catch { return null; } }
+async function delAccountOpen(opts = {}){
+  if (!Web.uid || !Web.sb) return;
+  if (LOGIN.ids === null) { try { await loginLoad(); } catch {} }
+  const ids = LOGIN.ids || [], hasPw = ids.some(i => i.provider === 'email'), hasGoogle = ids.some(i => i.provider === 'google');
+  const sess = await delSession(), recent = !!sess && jwtAuthAt(sess.access_token) > Date.now() / 1000 - 540;
+  Object.assign(DEL, {busy:false, google:!!opts.google, err:opts.err || ''});
+  const who = opts.google ? `<p class="del-ok">${ic('circle-check')} Google confirmed it’s you.</p>`
+    : recent ? `<p class="del-ok">${ic('circle-check')} You signed in a moment ago, so there’s no need to confirm again.</p>`
+    : hasPw ? `<label class="fld"><span>Your password</span><input type="password" name="pw" autocomplete="current-password" required></label>`
+    : hasGoogle ? `<p class="muted" style="margin:0;font-size:14px">You sign in with Google, so Google will ask you to confirm. You’ll come back here to finish.</p><div><button type="button" class="btn" data-del="google">${ic('log-in')} Confirm with Google</button></div>`
+    : `<label class="fld"><span>Your password</span><input type="password" name="pw" autocomplete="current-password" required></label>`;
+  const needPw = !opts.google && !recent && (hasPw || !hasGoogle), needGoogle = !opts.google && !recent && !hasPw && hasGoogle;
+  openModal(`<form class="del" id="del-form" novalidate aria-describedby="del-d">
+    <div class="form-head"><h3 id="del-h">Delete your account?</h3><button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>
+    <p id="del-d">This permanently deletes the Thuverse account <b>${esc(Web.email || 'you’re signed in with')}</b> and everything saved in it, in every language workspace:</p>
+    <ul class="del-list"><li>vocabulary and all other entries, with their review progress</li><li>your collections</li><li>reading list, learning journal and notes</li><li>saved Tarot readings</li><li>profile, settings and preferences</li></ul>
+    <p class="del-warn">${ic('triangle-alert')}<span>This can’t be undone, and nobody can restore it later. If you’d like a copy first, <button type="button" class="link" data-act="export">copy a backup</button>.</span></p>
+    <div class="del-step"><h4>1. Confirm it’s you</h4>${who}</div>
+    <div class="del-step"><label class="fld"><span>2. Type DELETE to confirm</span><input name="word" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="del-wh"></label><small class="muted" id="del-wh">In capital letters.</small></div>
+    <p class="del-err" role="alert" ${DEL.err ? '' : 'hidden'}>${ic('circle-alert')}<span>${esc(DEL.err)}</span></p>
+    <div class="row"><button type="button" class="btn ghost" data-act="close">Cancel</button><button type="submit" class="btn danger-solid" id="del-go" disabled>${ic('trash-2')} Delete account</button></div>
+  </form>`, {size:'sm', onMount: el => {
+    el.setAttribute('aria-labelledby', 'del-h');
+    const f = el.querySelector('#del-form'), go = f.querySelector('#del-go');
+    const ready = () => f.elements.word.value.trim() === 'DELETE' && (!needPw || (f.elements.pw && f.elements.pw.value.length > 0)) && !needGoogle && !DEL.busy;
+    f.addEventListener('input', () => { go.disabled = !ready(); });
+    f.addEventListener('click', e => { const b = e.target.closest('[data-del=google]'); if (b) delGoogle(); });
+    f.addEventListener('submit', e => { e.preventDefault(); if (ready()) delAccountRun(f, needPw); });
+    setTimeout(() => { const x = needPw ? f.elements.pw : f.elements.word; if (x) x.focus(); }, 40);
+  }});
+}
+function delShowErr(f, msg){ DEL.err = msg; const p = f && f.querySelector('.del-err'); if (p) { p.hidden = false; p.querySelector('span').textContent = msg; } }
+function delBusy(f, on){              // while deleting, nothing in the dialog can be changed and it can't be dismissed
+  DEL.busy = on; if (!f) return;
+  f.querySelectorAll('input,button').forEach(x => { x.disabled = on; });
+  const go = f.querySelector('#del-go'); go.innerHTML = on ? `${ic('loader-circle', 'spin')} Deleting…` : `${ic('trash-2')} Delete account`; drawIcons();
+  f.setAttribute('aria-busy', on ? 'true' : 'false');
+}
+async function delAccountRun(f, needPw){
+  if (DEL.busy) return;                                    // one request at a time
+  delBusy(f, true);
+  const fail = msg => { delBusy(f, false); delShowErr(f, msg); f.querySelector('#del-go').disabled = f.elements.word.value.trim() !== 'DELETE' || (needPw && !f.elements.pw.value); };
+  const uid = Web.uid;
+  try {
+    if (needPw) {
+      const {error} = await Web.sb.auth.signInWithPassword({email:Web.email, password:f.elements.pw.value});
+      if (error) return fail(/invalid|credentials/i.test(error.message || '') ? 'That password isn’t right. Your account wasn’t deleted.' : 'Your password couldn’t be checked right now. Your account wasn’t deleted. Please try again.');
+    }
+    if (Web.uid !== uid) return fail('You’re signed in to a different account now, so nothing was deleted.');
+    const {error} = await Web.sb.rpc('delete_my_account', {confirm:'DELETE'});
+    const m = String((error && (error.message || '')) || ''), code = error && (error.code || '');
+    if (error && !/account_not_found/.test(m) && code !== 'P0002') {
+      if (/reauth_required/.test(m)) return fail('Please confirm it’s you again: your last sign-in was too long ago. Your account wasn’t deleted.');
+      if (/jwt|expired|401/i.test(m) || error.status === 401) return fail('Your session has expired. Sign out, sign in again, then delete your account. Nothing was deleted.');
+      if (/failed to fetch|network/i.test(m)) return fail('Couldn’t reach Thuverse. Check your connection and try again. Your account wasn’t deleted.');
+      return fail('Something went wrong and your account wasn’t deleted. Please try again in a minute.');
+    }
+  } catch { return fail('Couldn’t reach Thuverse. Check your connection and try again. Your account wasn’t deleted.'); }
+  await delAccountDone(uid);
+}
+/* the account is gone: forget it in this browser and start again at the sign-in screen */
+async function delAccountDone(uid){
+  try { Web.sb.removeChannel(Web.chan); } catch {}
+  Store.timers.forEach(t => clearTimeout(t)); Store.timers.clear();
+  Store.recs.clear(); Store.dirty.clear(); Store.pending.clear(); Store.owner = null; Web.mirror = new Map(); Store.col = null;
+  try {
+    Object.keys(WS_LIST).forEach(w => localStorage.removeItem(w === 'en' ? LS_KEY : `thuverse.${w}.v1`));
+    ['thuverse.ws', THEME_KEY].forEach(k => localStorage.removeItem(k));
+    const a = themeAccts(); if (uid && a[uid]) { delete a[uid]; lsSet(THEME_ACCTS, JSON.stringify(a)); }
+    ['thuverse.oauth', 'thuverse.linking', DEL_FLAG].forEach(k => sessionStorage.removeItem(k));
+  } catch {}
+  Web.uid = null;
+  try { await Web.sb.auth.signOut({scope:'local'}); } catch {}
+  try { Object.keys(localStorage).filter(k => /^sb-.*-auth-token/.test(k)).forEach(k => localStorage.removeItem(k)); sessionStorage.setItem('thuverse.deleted', '1'); } catch {}
+  location.replace(location.pathname);            // a fresh page: nothing from the account stays in memory
+}
+/* Google-only accounts confirm by signing in with Google again; we come back here with a fresh sign-in */
+async function delGoogle(){
+  try { sessionStorage.setItem(DEL_FLAG, `${Web.uid}:${Date.now()}`); sessionStorage.setItem('thuverse.oauth', 'google:' + Date.now()); } catch {}
+  const r = await Web.sb.auth.signInWithOAuth({provider:'google', options:{redirectTo:authBack(), queryParams:{prompt:'login', ...(Web.email ? {login_hint:Web.email} : {})}}});
+  if (r && r.error) { try { sessionStorage.removeItem(DEL_FLAG); } catch {} delShowErr($('#del-form'), 'Google couldn’t be opened. Your account wasn’t deleted. Please try again.'); return; }
+  setTimeout(() => delReturn(), 50);                 // only reached if the browser didn't leave (tests)
+}
+function delReturn(){
+  let flag = ''; try { flag = sessionStorage.getItem(DEL_FLAG) || ''; sessionStorage.removeItem(DEL_FLAG); } catch {}
+  if (!flag) return;
+  const [fuid, at] = flag.split(':'); if (Date.now() - Number(at || 0) > 15 * 60e3) return;
+  if (!Web.uid) return;
+  if (Web.uid !== fuid) { toast('That was a different Google account, so nothing was deleted.', true); return; }
+  const q = new URLSearchParams(location.search), h = new URLSearchParams(location.hash.replace(/^#/, ''));
+  if (q.get('error') || h.get('error')) { delAccountOpen({err:'Google confirmation was cancelled. Your account wasn’t deleted.'}); return; }
+  setOpen('account'); delAccountOpen({google:true});
 }
 /* ---------- Login methods: link Google to the signed-in account (Supabase manual identity linking) */
 const LOGIN = {ids:null, loading:false, msg:'', err:false, busy:false};
@@ -5741,7 +5867,10 @@ function setSection(cat){
       </form>
     </section>
     ${loginMethodsHTML()}
-    ${Web.uid ? `<section class="set-sec"><h4 class="set-h">Account actions</h4><p class="muted" style="margin:0 0 12px">Signed in as <b>${esc(Web.email)}</b>.</p><button class="btn" data-act="sign-out">${ic('log-out')} Sign out</button></section>` : ''}`;
+    ${Web.uid ? `<section class="set-sec"><h4 class="set-h">Account actions</h4><p class="muted" style="margin:0 0 12px">Signed in as <b>${esc(Web.email)}</b>.</p><button class="btn" data-act="sign-out">${ic('log-out')} Sign out</button></section>` : ''}
+    ${Web.uid && !isClaude() ? `<section class="panel danger-zone" id="danger-zone"><h2 class="sec si">${ic('shield-alert')} Danger zone</h2>
+      <div class="dz-row"><p>Delete your Thuverse account and everything saved in it, in every language workspace. This can’t be undone.</p>
+        <button class="btn danger" data-act="del-account">${ic('user-x')} Delete account</button></div></section>` : ''}`;
   if (cat === 'appearance') return `
     <section class="set-sec"><h4 class="set-h">Theme</h4>
       <div class="seg theme-seg" role="radiogroup" aria-label="Appearance">${['light','dark','system'].map(v => `<button role="radio" aria-checked="${themeMode()===v}" class="${themeMode()===v?'on':''}" data-act="set-theme" data-v="${v}">${ic({light:'sun', dark:'moon', system:'monitor'}[v])} ${THEME_LBL[v]}</button>`).join('')}</div>
@@ -6022,6 +6151,7 @@ function openModal(html, {drawer=false, size='', onMount, onClose}={}){
   if (f) setTimeout(() => f.focus(), 30);
 }
 function closeModal(silent){
+  if (!silent && typeof DEL !== 'undefined' && DEL.busy) return;      // an account deletion is in progress
   const root = $('#modal-root');
   if (!root.firstElementChild) return;
   root.innerHTML = '';
@@ -7072,6 +7202,7 @@ const ACT = {
   'c-filter': el => { S.cFilter = el.dataset.v; render(); },
   'lk-test': () => lkTest(),
   'sign-out': () => { if (SET.open) setClose(true); webSignOut(); },
+  'del-account': () => delAccountOpen(),
   'set-cat': el => setCat(el.dataset.v),
   'set-close': () => setClose(),
   'nt-toggle': () => NT.open ? ntClose(true) : ntOpen(),
