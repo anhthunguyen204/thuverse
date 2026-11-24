@@ -1143,7 +1143,7 @@ body.auth-open .app{visibility:hidden}
 .wn-it{display:flex;gap:16px;align-items:flex-start;padding:8px 0}
 .wn-it>div:first-child{flex:1;min-width:0}.wn-it b{font-size:15px}.wn-it p{margin:3px 0 0;font-size:14px;line-height:1.55;color:var(--text-2)}
 .wn-pv{flex:none;width:132px;height:84px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:6px;overflow:hidden}
-.wn-pv img{width:30px;height:52px;object-fit:cover;border-radius:4px;border:1px solid #c9a45a88}
+.wn-pv img{width:30px;height:52px;object-fit:cover;border-radius:4px;border:1px solid var(--border)}
 .wn-pv.views{flex-direction:column;align-items:stretch;padding:12px 16px;gap:5px}.wn-pv.views i{height:8px;border-radius:3px;background:var(--surface-3)}.wn-pv.views i:first-child{background:color-mix(in srgb,var(--primary) 35%,var(--surface-3));width:70%}
 .wn-pv.ws span{font-size:12px;font-weight:650;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:4px 8px}
 .wn-pv.ob{flex-direction:column;gap:8px}.wn-pv.ob .mark,.wn-pv.ob svg{width:30px;height:30px}.wn-pv.ob span{display:flex;gap:3px}.wn-pv.ob span i{width:14px;height:3px;border-radius:3px;background:var(--border)}.wn-pv.ob span i:first-child,.wn-pv.ob span i:nth-child(2){background:var(--primary)}
@@ -1431,129 +1431,150 @@ body.auth-open .app{visibility:hidden}
 .uc-pick{align-items:center}
 .uc-newin{border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:7px 10px;font:500 13.5px var(--f-ui);color:var(--text);min-width:0;width:190px}
 .uc-newin.plain{border-style:dashed;background:transparent;width:170px}
-/* ---------- Tarot Corner */
-.tarot{--tg:#d9b872;--tg2:#f3e1b0;--tink:#f4efff;background:radial-gradient(120% 90% at 20% 0%,#3a2a7a 0%,#1c1440 45%,#0f0b26 100%);color:var(--tink);border-radius:24px;padding:28px;position:relative;overflow:hidden}
-.tarot::before{content:"";position:absolute;inset:0;background-image:radial-gradient(1.2px 1.2px at 12% 18%,#fff8 50%,transparent),radial-gradient(1px 1px at 72% 12%,#fff6 50%,transparent),radial-gradient(1.4px 1.4px at 88% 64%,#fff5 50%,transparent),radial-gradient(1px 1px at 32% 82%,#fff5 50%,transparent),radial-gradient(1px 1px at 55% 40%,#fff4 50%,transparent);pointer-events:none}
-.tarot h1{font:600 34px/1.15 var(--f-serif);margin:0 0 10px;color:var(--tg2);letter-spacing:.01em}
-.tr-hero{display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:36px;align-items:center;position:relative}
-.tr-intro p{color:#ddd5f5;font-size:16px;line-height:1.6;max-width:52ch;margin:0 0 18px}
-.tr-cta{background:linear-gradient(180deg,#e8cd8c,#c9a45a);color:#22163f;border:0;font-weight:700;padding:12px 22px;font-size:16px;box-shadow:0 8px 24px -10px #e8cd8c88}
-.tr-cta:hover{filter:brightness(1.05)}
-.tr-note{display:flex;gap:8px;font-size:13.5px!important;color:#bfb4e6!important;margin-top:16px!important}.tr-note .ic{width:15px;height:15px;flex:none;margin-top:3px}
-.tr-deck{position:relative;height:250px}
-.tr-fan{position:absolute;left:50%;top:10px;width:136px;height:239px;transform:translateX(-50%) rotate(calc((var(--i) - 1) * 9deg)) translateY(calc(var(--i) * -2px));transform-origin:50% 110%}
-.tc-back{display:grid;place-items:center;border-radius:14px;border:2px solid var(--tg);background:repeating-linear-gradient(45deg,#2a1d5e 0 8px,#251a54 8px 16px);box-shadow:inset 0 0 0 6px #1a1240,inset 0 0 0 7px #d9b87266,0 14px 30px -14px #000a}
-.tc-star{color:var(--tg);font-size:34px;text-shadow:0 0 14px #d9b87266}
-.tr-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;position:relative}
-.tr-top h1{margin:0}.tr-acts{display:flex;gap:8px}
-.tr-ghost{background:#ffffff14;color:var(--tink);border:1px solid #ffffff2a}.tr-ghost:hover{background:#ffffff22}
-.tr-lede{color:#cfc6ee;margin:6px 0 18px;position:relative}
-.tr-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;position:relative}
-.tr-slot{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:0}
-.tr-pos{text-align:center;min-height:62px}.tr-pos b{display:block;color:var(--tg2);font:600 18px var(--f-serif)}.tr-pos small{color:#b9afe0;font-size:12.5px}
-.tc{all:unset;cursor:pointer;width:100%;max-width:210px;aspect-ratio:300/527;perspective:1200px;display:block;border-radius:14px}
-.tc:focus-visible{outline:3px solid var(--tg);outline-offset:4px}
-.tc-in{position:relative;display:block;width:100%;height:100%;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+/* ---------- Tarot Corner. Built on the app tokens: neutral surfaces, brand indigo for actions and selection,
+   and one accent per position (Past teal, Present indigo, Future coral) carried through both stages. */
+.tarot,.trm{--tr-past:#0E9C88;--tr-past-ink:#0A7566;--tr-pres:var(--primary);--tr-pres-ink:var(--primary-ink);--tr-fut:#F0643F;--tr-fut-ink:#B8431F;
+  --tr-back:#4B3BE6;--tr-back-2:#3D2DD4;--tr-ease:cubic-bezier(.2,.75,.25,1)}
+[data-theme=dark] .tarot,[data-theme=dark] .trm{--tr-past:#2CC7B0;--tr-past-ink:#5FDCC8;--tr-fut:#FF7B5C;--tr-fut-ink:#FF9C82;--tr-back:#4B3BE6;--tr-back-2:#3A2BC4}
+[data-pos=past]{--pc:var(--tr-past);--pci:var(--tr-past-ink)}[data-pos=present]{--pc:var(--tr-pres);--pci:var(--tr-pres-ink)}[data-pos=future]{--pc:var(--tr-fut);--pci:var(--tr-fut-ink)}
+.tr-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--pc,var(--primary));flex:none}
+.tr-tag{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:650;color:var(--pci,var(--text-2))}
+/* landing */
+.tarot{position:relative}
+.tr-hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(260px,.9fr);align-items:center;gap:32px;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:36px 40px;overflow:hidden;position:relative}
+.tr-hero::after{content:"";position:absolute;inset:0 0 0 52%;background-image:radial-gradient(var(--border-strong) 1px,transparent 1.3px);background-size:20px 20px;opacity:.55;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 30%);mask-image:linear-gradient(90deg,transparent,#000 30%)}
+.tr-intro{position:relative;z-index:1}
+.tr-tags{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.tarot h1{font:750 34px/1.12 var(--f-ui);letter-spacing:-.025em;margin:0 0 12px;color:var(--text)}
+.tr-intro>p{color:var(--text-2);font-size:16px;line-height:1.6;max-width:50ch;margin:0 0 22px}
+.tr-cta{font-size:15.5px;padding:12px 20px}
+.tr-note{display:flex;gap:8px;font-size:13px!important;color:var(--muted)!important;margin:18px 0 0!important;max-width:52ch}.tr-note .ic{width:15px;height:15px;flex:none;margin-top:2px}
+.tr-deck{position:relative;height:260px;z-index:1}
+.tr-fan{position:absolute;left:50%;top:14px;width:132px;height:232px;transform:translateX(-50%) rotate(calc((var(--i) - 1) * 10deg)) translateX(calc((var(--i) - 1) * 18px));transform-origin:50% 115%;transition:transform .5s var(--tr-ease)}
+.tr-hero:hover .tr-fan{transform:translateX(-50%) rotate(calc((var(--i) - 1) * 14deg)) translateX(calc((var(--i) - 1) * 30px)) translateY(-4px)}
+/* the card back: brand indigo, a fine line pattern and a small orbit mark */
+.tc-back{display:grid;place-items:center;border-radius:14px;background:repeating-linear-gradient(135deg,transparent 0 9px,rgba(255,255,255,.07) 9px 10px),linear-gradient(160deg,var(--tr-back),var(--tr-back-2));box-shadow:inset 0 0 0 7px var(--tr-back),inset 0 0 0 8px rgba(255,255,255,.28),0 18px 34px -18px rgba(20,16,60,.55)}
+.tc-mark{position:relative;width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(255,255,255,.75)}
+.tc-mark::after{content:"";position:absolute;top:-4px;right:-2px;width:9px;height:9px;border-radius:50%;background:#fff}
+/* saved readings */
+.tr-hist{margin-top:28px}
+.tr-hist h2{display:flex;gap:8px;align-items:center;font:700 17px var(--f-ui);margin:0 0 12px;color:var(--text)}.tr-hist h2 .ic{width:18px;height:18px;color:var(--text-2)}
+.tr-hist ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.tr-hist li{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:4px 6px 4px 14px;transition:border-color .15s}
+.tr-hist li:hover{border-color:var(--border-strong)}
+.tr-hist a{flex:1;min-width:0;color:var(--text);text-decoration:none;display:flex;gap:4px 12px;align-items:center;padding:9px 0;flex-wrap:wrap}
+.tr-hist a span{color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}.tr-hist a b{font-weight:550;font-size:14.5px}.tr-hist a small{color:var(--muted);font-size:12.5px}
+.tr-hist a:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:8px}
+.tr-hist .icon-btn{color:var(--muted)}
+.tr-empty{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:14px;border:1px dashed var(--border-strong);border-radius:14px;padding:16px 18px}.tr-empty .ic{width:18px;height:18px}
+.tr-credit{font-size:12px;color:var(--muted);margin:16px 2px 0;line-height:1.5}.tr-credit a{color:inherit}
+/* cards (shared by the modal) */
+.tr-slot{display:flex;flex-direction:column;align-items:center;gap:12px;min-width:0}
+.tr-pos{text-align:center}.tr-pos b{display:inline-flex;align-items:center;gap:7px;font:700 16px var(--f-ui);color:var(--pci)}.tr-pos small{display:block;color:var(--muted);font-size:12.5px;margin-top:3px;line-height:1.4}
+.tc{all:unset;cursor:pointer;width:100%;max-width:210px;aspect-ratio:300/527;perspective:1200px;display:block;border-radius:14px;transition:transform .25s var(--tr-ease)}
+.tc:not(.up):hover{transform:translateY(-6px)}
+.tc:focus-visible{outline:3px solid var(--primary);outline-offset:4px}
+.tc-in{position:relative;display:block;width:100%;height:100%;transform-style:preserve-3d;transition:transform .65s var(--tr-ease)}
 .tc.up .tc-in{transform:rotateY(180deg)}
 .tc .tc-back,.tc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.tc:not(.up):hover .tc-back{box-shadow:inset 0 0 0 6px #1a1240,inset 0 0 0 7px #d9b872aa,0 16px 34px -12px #d9b87255}
-.tc-face{transform:rotateY(180deg);border-radius:14px;background:linear-gradient(180deg,#f7f0de,#eadfc2);border:2px solid var(--tg);box-shadow:inset 0 0 0 5px #f7f0de,inset 0 0 0 6px #b8964f,0 14px 30px -14px #000a;color:#2a1d4e}
+.tc:not(.up):hover .tc-back{box-shadow:inset 0 0 0 7px var(--tr-back),inset 0 0 0 8px rgba(255,255,255,.4),0 24px 40px -18px rgba(20,16,60,.6)}
+.tc-face{transform:rotateY(180deg);border-radius:14px;background:#fff;border:1px solid var(--border);box-shadow:0 18px 34px -18px rgba(20,16,60,.45);color:#121216;overflow:hidden}
 .tc-art{position:absolute;inset:10px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;padding:10px 6px}
 .tc-face.rev .tc-art,.tc-face.rev .tc-img{transform:rotate(180deg)}
-.tc-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:12px;z-index:1;background:#f7f0de}
-.tr-credit{font-size:12px;color:var(--muted);margin:14px 2px 0;line-height:1.5}.tr-credit a{color:inherit}
-.tc-num{font:600 15px var(--f-serif);letter-spacing:.12em;color:#8a6a2a}
-.tc-ic{width:44px;height:44px;color:#5b3fa8;stroke-width:1.5}
-.tc-name{font:600 clamp(15px,1.7vw,20px)/1.2 var(--f-serif)}
-.tc-keys{font-size:11.5px;color:#6d5b8f;letter-spacing:.02em}
-.tr-mean{text-align:center;max-width:240px}.tr-mean p{margin:6px 0 0;color:#e7e0fb;font-size:14px;line-height:1.45}
-.tr-or{display:inline-block;font-size:12px;font-weight:700;padding:2px 10px;border-radius:99px;background:#d9b87226;color:var(--tg2)}.tr-or.rev{background:#ff9fc026;color:#ffc6da}
-.tr-read{margin-top:20px;display:flex;flex-direction:column;gap:16px}
-.tr-sec{background:var(--surface);border:1px solid var(--border);border-left:4px solid #c9a45a;border-radius:16px;padding:20px 22px}
-.tr-sec h2{display:flex;align-items:center;gap:8px;font:600 20px var(--f-serif);margin:0 0 10px}.tr-sec h2 .ic{width:19px;height:19px;color:#a8873f}
-.tr-en p,.tr-vi p{font-size:16.5px;line-height:1.7;margin:0 0 10px;max-width:72ch}
-.tr-vi summary{list-style:none;cursor:pointer}.tr-vi summary::-webkit-details-marker{display:none}.tr-vi summary h2{margin-bottom:8px}
-.tw{all:unset;cursor:pointer;background:linear-gradient(transparent 58%,#e8cd8c88 58%);border-radius:2px;padding:0 1px;font-weight:600}
-.tw:hover,.tw:focus-visible{background:#e8cd8c;outline:none}
-.tr-tip,.tr-why{font-size:13.5px;color:var(--muted);margin:4px 0 0;display:flex;gap:6px}.tr-why{margin:0 0 12px;color:var(--text-2)}.tr-why .ic{width:15px;height:15px;flex:none;margin-top:2px}
-.tr-loading{display:flex;align-items:center;gap:10px;padding:18px 22px;border-radius:16px;background:var(--surface);border:1px solid var(--border);color:var(--text-2)}
+.tc-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;background:#f5f5f6}
+.tc-num{font:650 13px var(--f-ui);letter-spacing:.14em;color:#55555E}
+.tc-ic{width:40px;height:40px;color:var(--tr-back);stroke-width:1.5}
+.tc-name{font:700 clamp(14px,1.6vw,18px)/1.2 var(--f-ui)}
+.tc-keys{font-size:11px;color:#8B8B94}
+.tr-mean{text-align:center;max-width:240px}
+.tr-cn{display:block;font:700 16px/1.25 var(--f-ui);color:var(--text);margin-bottom:7px}
+.tr-or{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:650;padding:3px 9px;border-radius:99px;background:var(--surface-3);color:var(--text-2)}.tr-or .ic{width:12px;height:12px}
+.tr-or.rev{background:color-mix(in srgb,var(--tr-fut) 14%,transparent);color:var(--tr-fut-ink)}
+/* highlighted words and the vocabulary list */
+.tw{all:unset;cursor:pointer;color:var(--primary-ink);font-weight:600;border-radius:4px;padding:0 2px;background:color-mix(in srgb,var(--primary) 8%,transparent);box-shadow:inset 0 -1.5px 0 color-mix(in srgb,var(--primary) 55%,transparent);transition:background .15s}
+.tw:hover,.tw:focus-visible,.tw.on{background:color-mix(in srgb,var(--primary) 18%,transparent);outline:none}
+.tw:focus-visible{box-shadow:0 0 0 2px var(--primary)}
 .tr-vocab{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-.tr-vocab li{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border-2);border-radius:12px}
-.tr-vocab li.on{border-color:#c9a45a;background:color-mix(in srgb,#e8cd8c 14%,transparent)}
-.tr-chk input{width:18px;height:18px;accent-color:#a8873f}
-.tr-term{all:unset;cursor:pointer;flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:2px 8px;align-items:baseline}.tr-term b{font-size:15.5px}.tr-term em{font-size:12.5px;color:var(--muted)}
-.tr-term span{flex-basis:100%;font-size:13.5px;color:var(--text-2)}.tr-term:focus-visible{outline:2px solid var(--primary);border-radius:6px}
-.tr-saved{display:inline-flex;align-items:center;gap:4px;font-size:13px;color:var(--green);font-weight:600;white-space:nowrap}.tr-saved .ic{width:14px;height:14px}
+.tr-vocab li{display:flex;align-items:center;gap:10px;padding:9px 10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;transition:border-color .15s,background .15s}
+.tr-vocab li:hover{border-color:var(--border-strong)}
+.tr-vocab li.on{border-color:color-mix(in srgb,var(--primary) 55%,var(--border));background:var(--primary-soft)}
+.tr-chk input{width:17px;height:17px;accent-color:var(--primary);cursor:pointer}
+.tr-term{all:unset;cursor:pointer;flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:2px 8px;align-items:baseline}.tr-term b{font-size:15px;font-weight:650}.tr-term em{font-size:12px;color:var(--muted);font-style:normal}
+.tr-term span{flex-basis:100%;font-size:13.5px;color:var(--text-2);line-height:1.45}.tr-term:focus-visible{outline:2px solid var(--primary);border-radius:6px}
+.tr-saved{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;color:var(--green);font-weight:650;white-space:nowrap}.tr-saved .ic{width:14px;height:14px}
 .tr-savebar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;font-size:14px;color:var(--text-2)}.tr-savebar>span{flex:1}
-.tr-sel{border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:8px 10px;font:500 14px var(--f-ui);color:var(--text);max-width:220px}
-.tr-end{display:flex;gap:10px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
-.tr-hist{position:relative;margin-top:26px}.tr-hist h2{display:flex;gap:8px;align-items:center;font:600 18px var(--f-serif);color:var(--tg2);margin:0 0 10px}.tr-hist h2 .ic{width:18px;height:18px}
-.tr-hist ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-.tr-hist li{display:flex;align-items:center;gap:6px;background:#ffffff10;border:1px solid #ffffff1f;border-radius:12px;padding:4px 6px 4px 12px}
-.tr-hist a{flex:1;min-width:0;color:var(--tink);text-decoration:none;display:flex;gap:10px;align-items:baseline;padding:6px 0;flex-wrap:wrap}.tr-hist a span{color:#b9afe0;font-size:13px}.tr-hist a b{font-weight:500;font-size:14px}.tr-hist a small{color:#b9afe0}
-.tr-hist .icon-btn{color:#cfc6ee}
+.tr-sel{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:8px 10px;font:500 14px var(--f-ui);color:var(--text);max-width:220px}
+.tr-sel:focus-visible{outline:2px solid var(--primary);outline-offset:1px}
+/* the word card */
 .tw-pop{min-width:min(420px,86vw)}
-.tw-meta{display:flex;align-items:center;gap:10px;margin:-4px 0 10px}.tw-def{font-size:16px;margin:0 0 8px}.tw-vi{color:var(--text-2);margin:0 0 8px}
-.tw-ex{font-style:italic;color:var(--text-2);margin:0 0 8px}.tw-ctx{font-size:14px;background:var(--surface-2);border-radius:10px;padding:8px 10px;margin:0 0 10px}.tw-ctx small{display:block;color:var(--muted);font-size:12px}
+.tw-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-2px 0 12px}
+.tw-def{font-size:15.5px;line-height:1.55;margin:0 0 8px}.tw-vi{color:var(--text-2);margin:0 0 10px}
+.tw-ex{color:var(--text-2);margin:0 0 10px;padding:8px 12px;border-left:2px solid var(--primary);background:var(--surface-2);border-radius:0 10px 10px 0;font-size:14.5px}
+.tw-ctx{font-size:14px;background:var(--surface-2);border-radius:10px;padding:8px 10px;margin:0 0 10px}.tw-ctx small{display:block;color:var(--muted);font-size:12px;margin-bottom:2px}
 .tw-have{display:flex;gap:6px;color:var(--green);font-size:14px;margin:0 0 10px}.tw-have .ic{width:15px;height:15px;flex:none;margin-top:2px}
 .tw-save{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--border-2);padding-top:12px}.tw-save label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}.tw-save .tr-sel{max-width:none}
-.tw-new{display:grid;gap:6px}.tw-new input{border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:8px 10px;font:14px var(--f-ui);color:var(--text)}
+.tw-new{display:grid;gap:6px}.tw-new input{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:8px 10px;font:14px var(--f-ui);color:var(--text)}
 .tw-save .btn{align-self:flex-end}
-.uc-desc{color:var(--text-2);margin:4px 0 0}
-/* ---------- Tarot reading modal (draw → reveal → interpretation) */
+/* ---------- Tarot reading modal: one shell for both stages (reveal, then read) */
 html.trm-lock,html.trm-lock body{overflow:hidden}
 .trm-wrap{position:fixed;inset:0;z-index:95;display:grid;place-items:center;padding:max(14px,2.5vh) max(14px,2.5vw)}
-.trm-back{position:absolute;inset:0;background:rgba(10,8,26,.62);backdrop-filter:blur(3px);animation:fade .2s}
-.trm{--tg:#d9b872;--tg2:#f3e1b0;--tink:#f4efff;--night:#120e30;position:relative;width:min(1320px,100%);height:100%;max-height:940px;display:flex;flex-direction:column;border-radius:24px;overflow:hidden;
-  background:linear-gradient(180deg,#100c2c 0%,#1c1648 100%);color:var(--tink);box-shadow:0 40px 90px -30px rgba(0,0,0,.7);border:1px solid #ffffff1a;animation:trm-in .28s cubic-bezier(.2,.8,.2,1)}
-@keyframes trm-in{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
-.trm::before{content:"";position:absolute;inset:0 0 40% 0;pointer-events:none;background-image:radial-gradient(1.2px 1.2px at 9% 16%,#fff9 50%,transparent),radial-gradient(1px 1px at 23% 41%,#fff6 50%,transparent),radial-gradient(1.3px 1.3px at 41% 11%,#fff7 50%,transparent),radial-gradient(1px 1px at 63% 28%,#fff5 50%,transparent),radial-gradient(1.2px 1.2px at 81% 9%,#fff8 50%,transparent),radial-gradient(1px 1px at 92% 36%,#fff5 50%,transparent),radial-gradient(1px 1px at 52% 52%,#fff4 50%,transparent)}
-.trm-sky{position:absolute;left:0;right:0;bottom:0;height:92px;pointer-events:none;opacity:.9}
-.trm-sky svg{display:block;width:100%;height:100%}
-.trm-h{position:relative;z-index:2;display:flex;align-items:center;gap:12px;padding:14px 16px 14px 24px;min-height:64px;border-bottom:1px solid #ffffff14}
-.trm-t{flex:1;min-width:0}.trm-t h2{font:600 21px/1.2 var(--f-serif);margin:0;color:var(--tg2)}.trm-t p{margin:2px 0 0;font-size:13px;color:#b9afe0}
+.trm-back{position:absolute;inset:0;background:rgba(18,18,22,.5);backdrop-filter:blur(3px);animation:fade .2s}
+.trm{position:relative;width:min(1280px,100%);height:100%;max-height:920px;display:flex;flex-direction:column;border-radius:24px;overflow:hidden;background:var(--surface);color:var(--text);border:1px solid var(--border);box-shadow:0 40px 90px -30px rgba(0,0,0,.45);animation:trm-in .3s var(--tr-ease)}
+@keyframes trm-in{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+.trm-h{position:relative;z-index:2;display:flex;align-items:center;gap:12px;padding:12px 14px 12px 22px;min-height:64px;border-bottom:1px solid var(--border);background:var(--surface)}
+.trm-t{flex:1;min-width:0;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.trm-t h2{font:700 18px/1.2 var(--f-ui);letter-spacing:-.01em;margin:0;color:var(--text)}.trm-t p{margin:0;font-size:13px;color:var(--muted)}
+.trm-steps{display:flex;align-items:center;gap:6px;list-style:none;margin:0;padding:0;font-size:12.5px;font-weight:600;color:var(--muted)}
+.trm-steps li{display:flex;align-items:center;gap:6px}.trm-steps li+li::before{content:"";width:16px;height:1px;background:var(--border-strong);margin-right:2px}
+.trm-steps i{display:grid;place-items:center;width:18px;height:18px;border-radius:50%;border:1px solid var(--border-strong);font-style:normal;font-size:11px}
+.trm-steps .on{color:var(--text)}.trm-steps .on i{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.trm-steps .done i{background:var(--primary-soft);border-color:transparent;color:var(--primary-ink)}
 .trm-h .btn{white-space:nowrap}
-.trm-x{all:unset;cursor:pointer;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;color:#d8d0f5}.trm-x:hover{background:#ffffff14}.trm-x:focus-visible,.trm-back-btn:focus-visible,.trm-th:focus-visible{outline:2px solid var(--tg);outline-offset:2px}
-.trm-back-btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:8px 12px 8px 8px;border-radius:12px;color:#e6dffb;font-weight:600;font-size:14px}.trm-back-btn:hover{background:#ffffff12}
+.trm-x{all:unset;cursor:pointer;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;color:var(--text-2)}.trm-x:hover{background:var(--surface-2);color:var(--text)}
+.trm-x:focus-visible,.trm-back-btn:focus-visible,.trm-th:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.trm-back-btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:8px 12px 8px 8px;border-radius:10px;color:var(--text-2);font-weight:600;font-size:14px}.trm-back-btn:hover{background:var(--surface-2);color:var(--text)}
 .trm-ths{display:flex;gap:6px}
-.trm-th{all:unset;cursor:pointer;width:30px;height:52px;border-radius:5px;overflow:hidden;border:1px solid #d9b87299;background:#f7f0de}.trm-th img{width:100%;height:100%;object-fit:cover;display:block}.trm-th.rev img{transform:rotate(180deg)}
-.trm-saved{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:#a6e3c1;padding:0 6px}.trm-saved .ic{width:16px;height:16px}
-.trm-ghost{background:#ffffff12;color:var(--tink);border:1px solid #ffffff2a}.trm-ghost:hover{background:#ffffff20}
+.trm-th{all:unset;cursor:pointer;position:relative;width:30px;height:52px;border-radius:6px;overflow:hidden;border:1px solid var(--border);background:var(--surface-2)}.trm-th img{width:100%;height:100%;object-fit:cover;display:block}.trm-th.rev img{transform:rotate(180deg)}
+.trm-th::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--pc)}
+.trm-saved{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--green);padding:0 6px}.trm-saved .ic{width:16px;height:16px}
+.trm-ghost{background:var(--surface);color:var(--text);border:1px solid var(--border)}.trm-ghost:hover{background:var(--surface-2)}
 .trm-body{position:relative;z-index:1;flex:1;min-height:0;overflow:auto;overscroll-behavior:contain}
-/* stage 1: the three cards */
-.trm-stage{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(12px,2.2vh,24px);padding:clamp(14px,2.6vh,32px) 24px 44px}
-.trm-lede{margin:0;color:#cfc6ee;font-size:15px;text-align:center}
-.trm-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,3vw,48px);width:100%;max-width:900px}
-.trm-cards .tr-slot{gap:12px}
-.trm-cards .tr-pos{min-height:66px}.trm-cards .tr-pos b{font-size:19px}
-.trm-cards .tc{width:min(100%,calc((min(100dvh,940px) - 470px) * .569));max-width:250px;min-width:96px}
-.trm-cards .tr-mean{min-height:52px;max-width:none}
-.tr-cn{display:block;font:600 17px/1.25 var(--f-serif);color:#fff;margin-bottom:6px}
+.trm-body>*{animation:trm-stage .28s var(--tr-ease)}
+@keyframes trm-stage{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* stage 1: the table */
+.trm.cards .trm-body{background:var(--surface-2);background-image:radial-gradient(ellipse 60% 55% at 50% 48%,color-mix(in srgb,var(--primary) 7%,transparent),transparent 70%),radial-gradient(var(--border) 1px,transparent 1.3px);background-size:auto,22px 22px}
+.trm-stage{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(12px,2.2vh,24px);padding:clamp(14px,2.6vh,32px) 24px 36px}
+.trm-lede{margin:0;color:var(--text-2);font-size:15px;text-align:center}
+.trm-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,3.4vw,56px);width:100%;max-width:900px}
+.trm-cards .tr-pos{min-height:66px;display:flex;flex-direction:column;justify-content:flex-end}
+.trm-cards .tc{width:min(100%,calc((min(100dvh,920px) - 460px) * .569));max-width:240px;min-width:96px}
+.trm-cards .tr-mean{min-height:56px;max-width:none}
+.trm-cards.deal .tc{animation:tr-deal .5s var(--tr-ease) both;animation-delay:calc(var(--k) * 90ms + 80ms)}
+@keyframes tr-deal{from{opacity:0;transform:translateY(22px) rotate(calc((var(--k) - 1) * 3deg))}to{opacity:1;transform:none}}
+.tr-mean:not([hidden]){animation:trm-stage .3s var(--tr-ease) .35s both}
 .trm-foot{display:flex;flex-direction:column;align-items:center;gap:8px;min-height:72px}
-.trm-cta{background:var(--tg2);color:#1d1440;border:0;font-weight:700;padding:13px 24px;font-size:16px}.trm-cta:hover{background:#fff0c8}.trm-cta:focus-visible{outline:3px solid #fff;outline-offset:3px}
-.trm-status{display:flex;align-items:center;gap:8px;font-size:13.5px;color:#b9afe0;margin:0}.trm-status .ic{width:15px;height:15px}
-/* stage 2: interpretation */
+.trm-cta{font-size:15.5px;padding:12px 22px}
+.trm-status{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--muted);margin:0}.trm-status .ic{width:15px;height:15px}
+/* stage 2: the reading */
 .trm.read .trm-body{background:var(--bg);color:var(--text)}
 .trm-read{display:grid;grid-template-columns:minmax(0,7fr) minmax(300px,3fr);height:100%}
-.trm-main{overflow:auto;overscroll-behavior:contain;padding:28px clamp(20px,4vw,56px) 40px}
+.trm-main{overflow:auto;overscroll-behavior:contain;padding:26px clamp(20px,4vw,56px) 40px}
 .trm-main>*{max-width:68ch}
 .trm-rail{overflow:auto;overscroll-behavior:contain;background:var(--side);border-left:1px solid var(--border);display:flex;flex-direction:column}
-.trm-mh{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px}
-.trm-mh h3{font:600 24px/1.2 var(--f-serif);margin:0}
-.trm-vt{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text-2);background:none;border:1px solid var(--border);border-radius:99px;padding:6px 12px 6px 8px;cursor:pointer;font-family:inherit}
+.trm-mh{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.trm-mh h3{font:750 24px/1.2 var(--f-ui);letter-spacing:-.02em;margin:0;outline:none}
+.trm-vt{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text-2);background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:6px 12px 6px 8px;cursor:pointer;font-family:inherit}
 .trm-vt .sw{width:28px;height:16px;border-radius:99px;background:var(--surface-3);position:relative;transition:background .15s}.trm-vt .sw::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 1px 2px #0003;transition:transform .15s}
 .trm-vt[aria-pressed=true] .sw{background:var(--primary)}.trm-vt[aria-pressed=true] .sw::after{transform:translateX(12px)}
 .trm-vt:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 .trs{padding:22px 0;border-bottom:1px solid var(--border-2)}.trs:last-of-type{border-bottom:0}
 .trs-h{display:flex;align-items:center;gap:14px;margin-bottom:12px}
-.trs-th{width:38px;height:66px;border-radius:6px;object-fit:cover;border:1px solid #c9a45a88;background:#f7f0de;flex:none}.trs-th.rev{transform:rotate(180deg)}
-.trs-pos{display:block;font-size:12.5px;font-weight:600;color:#9a7a38;letter-spacing:.02em}[data-theme=dark] .trs-pos{color:#d9b872}
-.trs-h h4{font:600 19px/1.25 var(--f-serif);margin:1px 0 3px}
-.trs-h .tr-or{background:color-mix(in srgb,#c9a45a 18%,transparent);color:#7d5f22}[data-theme=dark] .trs-h .tr-or{color:var(--tg2)}
-.trs-h .tr-or.rev{background:color-mix(in srgb,#e54c8e 14%,transparent);color:#a3335f}[data-theme=dark] .trs-h .tr-or.rev{color:#ffc6da}
+.trs-th{width:38px;height:66px;border-radius:7px;object-fit:cover;border:1px solid var(--border);background:var(--surface-2);flex:none;box-shadow:0 0 0 2px var(--surface),0 0 0 3.5px var(--pc,var(--border))}.trs-th.rev{transform:rotate(180deg)}
+.trs-pos{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:650;color:var(--pci,var(--text-2))}
+.trs-h h4{font:700 19px/1.25 var(--f-ui);letter-spacing:-.01em;margin:2px 0 5px}
 .trs-en p{font-size:17px;line-height:1.72;margin:0 0 10px}
-.trs-vi{margin-top:10px;padding:10px 0 2px 14px;border-left:2px solid var(--border)}.trs-vi p{font-size:15.5px;line-height:1.68;color:var(--text-2);margin:0 0 8px}
-.trs-vi small{display:block;font-size:12px;color:var(--muted);margin-bottom:2px}
+.trs-vi{margin-top:12px;padding:12px 14px 4px;background:var(--surface-2);border-radius:12px}.trs-vi p{font-size:15.5px;line-height:1.68;color:var(--text-2);margin:0 0 8px}
+.trs-vi small{display:block;font-size:12px;font-weight:650;color:var(--muted);margin-bottom:4px}
 .trm-why{display:flex;gap:8px;font-size:14px;color:var(--text-2);background:var(--surface-2);border-radius:12px;padding:10px 12px;margin:12px 0 4px}.trm-why .ic{width:16px;height:16px;flex:none;margin-top:2px}
 .trm-loading{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:30px 0}.trm-loading p{margin:0;color:var(--text-2);display:flex;gap:8px;align-items:center}
 .trm-sk{height:14px;border-radius:7px;background:var(--surface-3);animation:sk 1.4s ease-in-out infinite}
@@ -1561,21 +1582,19 @@ html.trm-lock,html.trm-lock body{overflow:hidden}
 .trm-end{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px;padding-top:18px;border-top:1px solid var(--border-2)}
 .trm-note{font-size:12.5px;color:var(--muted);margin:16px 0 0;line-height:1.5}.trm-note a{color:inherit}
 .trr-h{padding:22px 20px 4px;display:flex;align-items:baseline;justify-content:space-between;gap:10px}
-.trr-h h3{font:600 18px/1.25 var(--f-serif);margin:0}
+.trr-h h3{font:700 16px/1.25 var(--f-ui);margin:0}
 .trr-all{all:unset;cursor:pointer;font-size:13px;font-weight:600;color:var(--primary-ink);white-space:nowrap}.trr-all:hover{text-decoration:underline}.trr-all:focus-visible{outline:2px solid var(--primary);border-radius:4px}
-[data-theme=dark] .trr-all{color:#b4abff}
 .trr-tip{font-size:13px;color:var(--muted);margin:2px 20px 12px;line-height:1.45}
-.trm-rail .tr-vocab{padding:0 14px 12px}.trm-rail .tr-vocab li{background:var(--surface)}
+.trm-rail .tr-vocab{padding:0 14px 12px}
 .trm-rail .tr-savebar{position:sticky;bottom:0;margin:auto 0 0;padding:12px 14px 14px;background:var(--side);border-top:1px solid var(--border);display:grid;grid-template-columns:1fr auto;gap:8px}
 .trm-rail .tr-savebar>span{grid-column:1/-1;font-size:13px}.trm-rail .tr-sel{max-width:none;width:100%}
 .trm-rail .tr-savebar .btn{white-space:nowrap}
 /* hover preview and the word card */
-.trm-tip{position:absolute;z-index:6;max-width:280px;background:var(--text);color:var(--bg);border-radius:10px;padding:8px 11px;font-size:13.5px;line-height:1.4;pointer-events:none;box-shadow:var(--shadow-pop)}
-.trm-tip b{font-weight:700}.trm-tip em{opacity:.7;font-size:12px;margin-left:4px}.trm-tip span{display:block}.trm-tip .vi{opacity:.85}
-.trm-pop{position:absolute;z-index:7;width:min(400px,calc(100% - 24px));max-height:calc(100% - 24px);overflow:auto;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:18px;box-shadow:0 24px 60px -20px rgba(0,0,0,.5);padding:16px 18px;animation:pop .16s ease-out}
-.trm-pop .tw-pop{min-width:0}.trm-pop .form-head{margin-bottom:8px}.trm-pop .form-head h3{font-size:20px}
+.trm-tip{position:absolute;z-index:6;max-width:280px;background:var(--text);color:var(--bg);border-radius:10px;padding:8px 11px;font-size:13.5px;line-height:1.4;pointer-events:none;box-shadow:var(--shadow-pop);animation:fade .12s}
+.trm-tip b{font-weight:700}.trm-tip em{opacity:.7;font-size:12px;margin-left:4px;font-style:normal}.trm-tip span{display:block}.trm-tip .vi{opacity:.85}
+.trm-pop{position:absolute;z-index:7;width:min(400px,calc(100% - 24px));max-height:calc(100% - 24px);overflow:auto;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-pop);padding:16px 18px;animation:pop .16s ease-out}
+.trm-pop .tw-pop{min-width:0}.trm-pop .form-head{margin-bottom:6px}.trm-pop .form-head h3{font:750 21px/1.2 var(--f-ui);letter-spacing:-.01em}
 .trm-pop.sheet{left:0!important;right:0;bottom:0;top:auto!important;width:auto;max-height:78%;border-radius:20px 20px 0 0}
-.tw.on{background:#e8cd8c}
 .trm-live{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @media (max-width:1023px){
   .trm-read{display:block;height:auto}.trm-main,.trm-rail{overflow:visible}
@@ -1583,14 +1602,16 @@ html.trm-lock,html.trm-lock body{overflow:hidden}
   .trm-rail{border-left:0;border-top:1px solid var(--border)}
   .trm-main{padding:22px clamp(18px,4vw,40px) 26px}.trm-main>*{max-width:72ch}
 }
+@media (max-width:900px){.tr-hero{grid-template-columns:1fr;padding:28px 24px}.tr-hero::after{inset:auto 0 0 0;height:300px;-webkit-mask-image:linear-gradient(180deg,transparent,#000 40%);mask-image:linear-gradient(180deg,transparent,#000 40%)}.tr-deck{height:230px;order:-1}}
 @media (max-width:720px){
   .trm-wrap{padding:0}.trm{border-radius:0;max-height:none;border:0}
-  .trm-h{padding:10px 10px 10px 16px}.trm-ths{display:none}
-  .trm-stage{padding:16px 12px 100px}.trm-cards{gap:10px}.trm-cards .tr-pos{min-height:0}.trm-cards .tr-pos small{display:none}.trm-cards .tr-pos b{font-size:16px}
-  .trm-cards .tc{width:100%}.tr-cn{font-size:14px}
+  .trm-h{padding:10px 10px 10px 16px}.trm-ths,.trm-steps{display:none}
+  .trm-stage{padding:16px 12px 60px}.trm-cards{gap:10px}.trm-cards .tr-pos{min-height:0}.trm-cards .tr-pos small{display:none}.trm-cards .tr-pos b{font-size:14px}
+  .trm-cards .tc{width:100%}.tr-cn{font-size:13.5px}
   .trm-h .btn .lbl{display:none}
+  .tarot h1{font-size:28px}
 }
-@media (prefers-reduced-motion:reduce){.trm,.trm-back,.trm-pop{animation:none}.trm .tc-in{transition:none}.trm-sk{animation:none}}
+@media (prefers-reduced-motion:reduce){.trm,.trm-back,.trm-pop,.trm-tip,.trm-body>*,.trm-cards.deal .tc,.tr-mean:not([hidden]){animation:none!important}.tc-in,.tc,.tr-fan{transition:none!important}.trm-sk{animation:none}.tc:not(.up):hover{transform:none}}
 @media (max-width:820px){.tarot{padding:20px 16px}.tr-hero{grid-template-columns:1fr;gap:10px}.tr-deck{height:210px}.tr-fan{width:120px;height:196px}.tr-cards{gap:12px}.tc-ic{width:32px;height:32px}.tc-keys{display:none}.tr-sec{padding:16px}}
 @media (prefers-reduced-motion:reduce){.tc-in{transition:none}}
 /* ---------- My Collections: toolbar, popovers, grid and board views */
@@ -2475,20 +2496,21 @@ function tarotDraw(){
   Object.assign(TAR, {cards:pick.map(id => ({id, reversed:tarotRand(2) === 1})), shown:[false, false, false], status:'', ai:null, why:'', sel:new Set(), savedId:null});
   render(); setTimeout(() => { const n = $('.tr-cards'); if (n) n.scrollIntoView({block:'nearest', behavior:'smooth'}); }, 30);
 }
+const tarotOrHTML = rev => `<span class="tr-or ${rev ? 'rev' : ''}">${ic(rev ? 'rotate-ccw' : 'arrow-up')}${rev ? 'Reversed' : 'Upright'}</span>`;
 function tarotCardHTML(slot, i){
   const c = TAROT.byId[slot.id], pos = TAROT.positions[i], up = TAR.shown[i];
   const top = c.arcana === 'major' ? ROMAN(c.number) : cap(c.rank || '');
-  return `<div class="tr-slot">
-    <div class="tr-pos"><b>${pos.label}</b><small>${pos.hint}</small></div>
-    <button type="button" class="tc ${up ? 'up' : ''}" data-act="tarot-flip" data-i="${i}" aria-label="${up ? `${pos.label}: ${esc(c.name)}${slot.reversed ? ', reversed' : ''}` : `Reveal the ${pos.label.toLowerCase()} card`}" ${up ? 'aria-pressed="true"' : ''}>
+  return `<div class="tr-slot" data-pos="${pos.k}">
+    <div class="tr-pos"><b><i class="tr-dot" aria-hidden="true"></i>${pos.label}</b><small>${pos.hint}</small></div>
+    <button type="button" class="tc ${up ? 'up' : ''}" style="--k:${i}" data-act="tarot-flip" data-i="${i}" aria-label="${up ? `${pos.label}: ${esc(c.name)}${slot.reversed ? ', reversed' : ''}` : `Reveal the ${pos.label.toLowerCase()} card`}" ${up ? 'aria-pressed="true"' : ''}>
       <span class="tc-in">
-        <span class="tc-back" aria-hidden="true"><span class="tc-star">✦</span></span>
+        <span class="tc-back" aria-hidden="true"><span class="tc-mark"></span></span>
         <span class="tc-face ${slot.reversed ? 'rev' : ''}" aria-hidden="true"><span class="tc-art">
           <span class="tc-num">${esc(top)}</span>${ic(TAROT_IC[c.suit || 'major'], 'tc-ic')}<span class="tc-name">${esc(c.name)}</span>
           <span class="tc-keys">${c.keys.slice(0, 3).map(esc).join(' · ')}</span></span>${c.img && !IMG_BAD.has(c.img) ? `<img class="tc-img" src="${esc(c.img)}" alt="" decoding="async" data-fb>` : ''}</span>
       </span>
     </button>
-    <div class="tr-mean" ${up ? '' : 'hidden'}><b class="tr-cn">${esc(c.name)}</b><span class="tr-or ${slot.reversed ? 'rev' : ''}">${slot.reversed ? 'Reversed' : 'Upright'}</span></div>
+    <div class="tr-mean" ${up ? '' : 'hidden'}><b class="tr-cn">${esc(c.name)}</b>${tarotOrHTML(slot.reversed)}</div>
   </div>`;
 }
 function tarotFlip(i, btn){
@@ -2551,17 +2573,19 @@ function vTarot(){
   const hist = tarotReadings();
   return `<div class="tarot">
     <section class="tr-hero">
-      <div class="tr-deck" aria-hidden="true">${[0, 1, 2].map(i => `<span class="tc-back tr-fan" style="--i:${i}"><span class="tc-star">✦</span></span>`).join('')}</div>
-      <div class="tr-intro"><h1>Tarot Corner</h1>
-        <p>Draw three cards for your past, present and future. You get a short reading in English, an explanation in Vietnamese, and useful words from the reading to save to your library.</p>
-        <button class="btn tr-cta" id="tr-draw" data-act="tarot-draw">${ic('sparkles')} Draw 3 cards</button>
+      <div class="tr-intro">
+        <div class="tr-tags" aria-hidden="true">${TAROT.positions.map(p => `<span class="tr-tag" data-pos="${p.k}"><i class="tr-dot"></i>${p.label}</span>`).join('')}</div>
+        <h1>Tarot Corner</h1>
+        <p>Draw three cards for your past, present and future. Read a short reading in English with a Vietnamese explanation, and keep the useful words in your library.</p>
+        <button class="btn primary tr-cta" id="tr-draw" data-act="tarot-draw">${ic('sparkles')} Draw 3 cards</button>
         <p class="tr-note">${ic('info')} Tarot here is for fun and self-reflection, not a prediction. Please don’t make important decisions based on a reading.</p></div>
+      <div class="tr-deck" aria-hidden="true">${TAROT.positions.map((p, i) => `<span class="tc-back tr-fan" data-pos="${p.k}" style="--i:${i}"><span class="tc-mark"></span></span>`).join('')}</div>
     </section>
     ${tarotHistoryHTML(hist)}</div>${tarotCredit()}`;
 }
 const tarotCredit = () => `<p class="tr-credit">Card images: the 1909 Rider–Waite–Smith deck by Pamela Colman Smith (public domain), via <a href="https://tarostarot.com/tarot-card-data" target="_blank" rel="noopener">Taro’s Tarot</a>. Card meanings: Tarot card data by Taro’s Tarot, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.</p>`;
 function tarotHistoryHTML(hist){
-  if (!hist.length) return '';
+  if (!hist.length) return `<section class="tr-hist"><h2>${ic('history')} Saved readings</h2><p class="tr-empty">${ic('bookmark')} Readings you save will appear here, so you can come back to them and their words.</p></section>`;
   return `<section class="tr-hist"><h2>${ic('history')} Saved readings</h2><ul>${hist.slice(0, 30).map(r => `<li><a href="#tarot" data-act="tarot-open" data-id="${esc(r.id)}"><span>${fmtD(r.createdAt)}</span><b>${r.cards.map((c, i) => `${TAROT.positions[i].label}: ${esc((TAROT.byId[c.id] || {}).name || c.id)}${c.reversed ? ' ↺' : ''}`).join(' · ')}</b>${r.source === 'ai' ? '' : '<small>card meanings</small>'}</a><button class="icon-btn" data-act="tarot-del" data-id="${esc(r.id)}" aria-label="Delete this reading">${ICON.del}</button></li>`).join('')}</ul></section>`;
 }
 async function tarotWord(i, anchor){
@@ -2632,16 +2656,11 @@ const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
    It uses the same TAR state and functions as before; it sits under #modal-root so confirmations
    and the "New collection" form open on top of it. */
 const TRM = {open:false, stage:'cards', key:'', rail:'', ret:null, pop:-1, anchor:null, tipT:0, vi:true};
-const TRM_SKY = (() => {   // a faint pixel skyline, drawn once (same night palette as the sign-in page)
-  let seed = 4242; const r = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
-  const layer = (fill, hMin, hMax, wMin, wMax) => { let x = 0, d = ''; while (x < 1200) { const w = Math.round(wMin + r() * (wMax - wMin)), h = Math.round(hMin + r() * (hMax - hMin)); d += `<rect x="${x}" y="${92 - h}" width="${w + 1}" height="${h}"/>`; x += w; } return `<g fill="${fill}">${d}</g>`; };
-  return `<svg viewBox="0 0 1200 92" preserveAspectRatio="xMidYMax slice" aria-hidden="true">${layer('#1d1650', 34, 76, 18, 46)}${layer('#150f3a', 14, 48, 22, 60)}</svg>`;
-})();
 const trmUnsaved = () => !!(TAR.cards && TAR.shown.some(Boolean) && !TAR.savedId);
 function trmOpen(stage){
   if (!TAR.cards) return;
   if (!TRM.open) TRM.ret = document.activeElement;
-  Object.assign(TRM, {open:true, stage, key:'', rail:'', pop:-1, anchor:null});
+  Object.assign(TRM, {open:true, stage, key:'', rail:'', pop:-1, anchor:null, dealt:false});
   let el = $('#trm');
   if (!el) { el = document.createElement('div'); el.id = 'trm'; el.className = 'trm-wrap'; document.body.insertBefore(el, $('#modal-root')); }
   document.documentElement.classList.add('trm-lock');
@@ -2661,27 +2680,28 @@ async function trmClose(force){
 function trmHead(){
   const close = `<button type="button" class="trm-x" data-act="trm-close" aria-label="Close the reading">${ic('x')}</button>`;
   if (TRM.stage === 'cards') { const n = TAR.shown.filter(Boolean).length;
-    return `<div class="trm-t"><h2 id="trm-t">Your three cards</h2><p>${n === 3 ? 'All three cards are face up' : `Past, present and future · ${n} of 3 revealed`}</p></div>${close}`; }
-  const thumbs = TAR.cards.map((s, i) => { const c = TAROT.byId[s.id]; return `<button type="button" class="trm-th ${s.reversed ? 'rev' : ''}" data-act="trm-cards" title="${TAROT.positions[i].label}: ${esc(c.name)}${s.reversed ? ' (reversed)' : ''}" aria-label="Back to the cards: ${TAROT.positions[i].label}, ${esc(c.name)}">${c.img && !IMG_BAD.has(c.img) ? `<img src="${esc(c.img)}" alt="">` : ''}</button>`; }).join('');
+    return `<div class="trm-t"><h2 id="trm-t">Your three cards</h2>${trmSteps()}<p>${n === 3 ? 'All three cards are face up' : `${n} of 3 revealed`}</p></div>${close}`; }
+  const thumbs = TAR.cards.map((s, i) => { const c = TAROT.byId[s.id]; return `<button type="button" data-pos="${TAROT.positions[i].k}" class="trm-th ${s.reversed ? 'rev' : ''}" data-act="trm-cards" title="${TAROT.positions[i].label}: ${esc(c.name)}${s.reversed ? ' (reversed)' : ''}" aria-label="Back to the cards: ${TAROT.positions[i].label}, ${esc(c.name)}">${c.img && !IMG_BAD.has(c.img) ? `<img src="${esc(c.img)}" alt="">` : ''}</button>`; }).join('');
   const save = TAR.savedId ? `<span class="trm-saved" role="status">${ic('circle-check')} Reading saved</span>`
     : `<button class="btn trm-ghost" data-act="tarot-save" ${TAR.ai ? '' : 'disabled'}>${ic('bookmark')} <span class="lbl">Save reading</span></button>`;
   return `<button type="button" class="trm-back-btn" data-act="trm-cards">${ic('arrow-left')} <span>Cards</span></button>
-    <div class="trm-t"><h2 id="trm-t">Your reading</h2></div><div class="trm-ths">${thumbs}</div>${save}${close}`;
+    <div class="trm-t"><h2 id="trm-t">Your reading</h2>${trmSteps()}</div><div class="trm-ths">${thumbs}</div>${save}${close}`;
 }
+const trmSteps = () => { const r = TRM.stage === 'read'; return `<ol class="trm-steps" aria-label="Steps"><li class="${r ? 'done' : 'on'}" ${r ? '' : 'aria-current="step"'}><i>1</i>Reveal</li><li class="${r ? 'on' : ''}" ${r ? 'aria-current="step"' : ''}><i>2</i>Read</li></ol>`; };
 function trmFootHTML(){
   if (!TAR.shown.every(Boolean)) return `<button class="btn trm-ghost" data-act="tarot-reveal">${ic('eye')} Reveal all</button><p class="trm-status">Tap a card to turn it over.</p>`;
   const st = TAR.status === 'loading' ? `<p class="trm-status">${ic('loader-circle', 'spin')} Preparing your reading…</p>` : '';
-  return `<button class="btn trm-cta" data-act="trm-read">${ic('book-open-text')} Read the interpretation</button>${st}`;
+  return `<button class="btn primary trm-cta" data-act="trm-read">${ic('book-open-text')} Read the interpretation</button>${st}`;
 }
 function trmCardsHTML(){
   return `<div class="trm-stage"><p class="trm-lede">Take a breath, then turn the cards over one at a time.</p>
-    <div class="trm-cards">${TAR.cards.map(tarotCardHTML).join('')}</div>
+    <div class="trm-cards ${TRM.dealt ? '' : 'deal'}">${TAR.cards.map(tarotCardHTML).join('')}</div>
     <div class="trm-foot" id="trm-foot">${trmFootHTML()}</div></div>`;
 }
 const TRM_WHY = {nokey:'The AI reading isn’t switched on yet (it needs ANTHROPIC_API_KEY in Vercel), so here is what each card means on its own.', busy:'The AI reading is busy right now, so here is what each card means on its own. Try a new reading in a minute.', error:'The AI reading couldn’t be created this time, so here is what each card means on its own.', unavailable:'AI readings work when you’re signed in on the website, so here is what each card means on its own.', saved:'This reading was saved with the cards’ own meanings.'};
 function trmSecHead(i){
   const s = TAR.cards[i], c = TAROT.byId[s.id];
-  return `<div class="trs-h">${c.img && !IMG_BAD.has(c.img) ? `<img class="trs-th ${s.reversed ? 'rev' : ''}" src="${esc(c.img)}" alt="">` : ''}<div><span class="trs-pos">${TAROT.positions[i].label}</span><h4>${esc(c.name)}</h4><span class="tr-or ${s.reversed ? 'rev' : ''}">${s.reversed ? 'Reversed' : 'Upright'}</span></div></div>`;
+  return `<div class="trs-h" data-pos="${TAROT.positions[i].k}">${c.img && !IMG_BAD.has(c.img) ? `<img class="trs-th ${s.reversed ? 'rev' : ''}" src="${esc(c.img)}" alt="">` : ''}<div><span class="trs-pos"><i class="tr-dot" aria-hidden="true"></i>${TAROT.positions[i].label}</span><h4>${esc(c.name)}</h4>${tarotOrHTML(s.reversed)}</div></div>`;
 }
 function trmMainHTML(){
   const a = TAR.ai;
@@ -2727,7 +2747,6 @@ function trmPaint(){
   el.dataset.stage = TRM.stage;
   el.innerHTML = `<div class="trm-back" aria-hidden="true"></div>
     <div class="trm ${TRM.stage}" role="dialog" aria-modal="true" aria-labelledby="trm-t" tabindex="-1">
-      ${TRM.stage === 'cards' ? `<div class="trm-sky" aria-hidden="true">${TRM_SKY}</div>` : ''}
       <header class="trm-h">${trmHead()}</header>
       <div class="trm-body">${TRM.stage === 'cards' ? trmCardsHTML() : `<div class="trm-read"><article class="trm-main" aria-labelledby="trm-mh">${trmMainHTML()}</article><aside class="trm-rail" aria-label="Words from this reading" id="trm-rail">${TRM.rail = trmRailHTML()}</aside></div>`}</div>
       <div class="trm-tip" id="trm-tip" role="tooltip" hidden></div>
@@ -2735,6 +2754,7 @@ function trmPaint(){
       <div class="trm-live" id="trm-live" aria-live="polite"></div>
     </div>`;
   TRM.key = trmKey();
+  if (TRM.stage === 'cards') setTimeout(() => { TRM.dealt = true; }, 900);
   drawIcons();
   if (same) [...el.querySelectorAll('.trm-main,.trm-rail,.trm-body')].forEach((x, k) => { if (sc[k]) x.scrollTop = sc[k]; });
   if (keep) { const f = el.querySelector(keep); if (f) f.focus({preventScroll:true}); else if (el.contains(ae) || !document.contains(ae)) $('.trm', el).focus({preventScroll:true}); }
@@ -2751,7 +2771,7 @@ function trmFlipped(i){
   if (!TRM.open) return;
   const s = TAR.cards[i], c = TAROT.byId[s.id], live = $('#trm-live');
   if (live) live.textContent = `${TAROT.positions[i].label}: ${c.name}, ${s.reversed ? 'reversed' : 'upright'}.`;
-  const h = $('#trm .trm-t p'), n = TAR.shown.filter(Boolean).length; if (h) h.textContent = n === 3 ? 'All three cards are face up' : `Past, present and future · ${n} of 3 revealed`;
+  const h = $('#trm .trm-t p'), n = TAR.shown.filter(Boolean).length; if (h) h.textContent = n === 3 ? 'All three cards are face up' : `${n} of 3 revealed`;
   if (n === 3) { const f = $('#trm-foot'), had = document.activeElement && document.activeElement.classList.contains('tc'); if (f) { f.innerHTML = trmFootHTML(); drawIcons(); } if (had) { const b = $('#trm .trm-cta'); if (b) setTimeout(() => b.focus({preventScroll:true}), 400); } }
 }
 function trmStage(stage){ if (!TRM.open || TRM.stage === stage) return; TRM.stage = stage; trmPaint(); const f = stage === 'read' ? $('#trm-mh') : $('#trm .trm-cta') || $('#trm .tc'); if (f) f.focus({preventScroll:true}); }
@@ -6863,7 +6883,7 @@ const ACT = {
   'tarot-draw': () => { tarotDraw(); trmOpen('cards'); },
   'tarot-new': async () => {
     if (trmUnsaved() && !await confirmBox('Draw a new reading?', 'This reading isn’t saved yet, so it will be replaced. Save it first if you want to keep it.', 'Draw new cards')) return;
-    tarotDraw(); if (TRM.open) { TRM.stage = 'cards'; trmPaint(); const f = $('#trm .tc'); if (f) f.focus({preventScroll:true}); } else trmOpen('cards');
+    tarotDraw(); if (TRM.open) { TRM.stage = 'cards'; TRM.dealt = false; trmPaint(); const f = $('#trm .tc'); if (f) f.focus({preventScroll:true}); } else trmOpen('cards');
   },
   'tarot-flip': el => tarotFlip(Number(el.dataset.i), el),
   'tarot-reveal': () => { const rm = matchMedia('(prefers-reduced-motion: reduce)').matches; TAR.shown.map((u, i) => u ? -1 : i).filter(i => i >= 0).forEach((i, k) => setTimeout(() => tarotFlip(i, $(`#trm .tc[data-i="${i}"]`)), rm ? 0 : k * 220)); },
