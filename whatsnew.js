@@ -7,6 +7,14 @@
    Write for learners: what changed and where to find it. Only list things that are live. */
 (function (root) {
   const RELEASES = [
+    {id: '2026-11-24-2', title: 'Notifications, a new Settings and a fresh Tarot Corner', items: [
+      {kind: 'new', title: 'Notifications', body: 'A bell next to your avatar shows messages for your account. A dot means something is unread; open it and click a message to mark it as read.'},
+      {kind: 'improved', title: 'Settings in one window', body: 'Settings now opens over the page you’re on, with Account, Appearance, Preferences, Your data and Keyboard shortcuts in a sidebar. Each section says whether it saves automatically or when you click Save.'},
+      {kind: 'improved', title: 'A new look for Tarot Corner', preview: 'tarot', body: 'Cleaner cards and calmer colours, with Past, Present and Future each in their own colour from the draw through to the reading.'},
+      {kind: 'improved', title: 'Review in a window', body: 'Reviews open over the page you were on. Press Esc or Exit any time: your progress is saved and you can resume from the dashboard.'},
+      {kind: 'improved', title: 'Collections on every entry', preview: 'views', body: 'In My Collections each entry shows which collection it belongs to, or “Default” if it isn’t in one. On the Board, Learning and Mastered columns now have their own soft colours.'},
+      {kind: 'fixed', title: 'Scrollbars match your theme', body: 'In Light mode, scrollbars are no longer dark.'},
+    ]},
     {id: '2026-11-24', title: 'Tarot Corner, collection views and a friendlier start', items: [
       {kind: 'new', title: 'Tarot Corner', preview: 'tarot',
         body: 'Draw three cards for your past, present and future, turn them over one at a time, then read a short interpretation in English with a Vietnamese explanation. Highlighted words show their meaning, and you can save them to your library. Find it under Learn in the sidebar.'},
