@@ -1,5 +1,5 @@
 /* Thuverse interface translations for the Korean workspace, keyed by the English text exactly as shown.
-   Keys with {name} are patterns (the matching part is kept, or translated if it is itself a key).
+   Keys with {name} are patterns; the matching part is kept as it is (it is often the person’s own content).
    To add a string: add the English text and its translations to both languages. Product names stay as they are. */
 window.I18N = {
 "vi": {
