@@ -41,7 +41,9 @@
   --pen-soft:var(--red-soft); --leaf-soft:var(--green-soft); --sky-soft:var(--primary-soft); --hl-soft:var(--yellow-soft);
   --shadow-pop:0 18px 40px -18px rgba(18,18,22,.28);
 }
-[data-theme=dark]{
+/* native controls and scrollbars follow the app's theme, not the device's */
+:root{color-scheme:light}
+[data-theme=dark]{color-scheme:dark;
   --bg:#0E0E11; --side:#131317; --surface:#17171B; --surface-2:#1E1E23; --surface-3:#27272D;
   --border:#2A2A31; --border-2:#222228; --border-strong:#3A3A43;
   --text:#F3F3F5; --text-2:#B5B5BE; --muted:#80808A;
@@ -3198,7 +3200,7 @@ function meHTML(){
   const who = Web.uid ? Web.email : '';
   return `<div class="mp-acct"><span class="avatar mp-av" style="${avatarStyle(st)}" aria-hidden="true">${avatarInner(st)}</span>
       <div class="mp-who"><b dir="auto">${esc(nm || 'Your profile')}</b>${who ? `<small title="${esc(who)}">${esc(who)}</small>` : ''}<button type="button" class="mp-edit" role="menuitem" data-mp="profile">Edit profile</button></div></div>
-    <div class="sync mp-sync ${c}"><span class="sync-ic">${ic(icn)}</span><span>${esc(t)}</span></div>
+    ${c === 'ok' ? '' : `<div class="sync mp-sync ${c}"><span class="sync-ic">${ic(icn)}</span><span>${esc(t)}</span></div>`}
     <div class="mp-sep" role="separator"></div>
     ${meItem('prefs', 'settings', 'Settings')}${meItem('goals', 'target', 'Learning goals')}
     <button type="button" class="mp-i ${ME.sub ? 'act' : ''}" role="menuitem" data-mp="appearance" aria-haspopup="menu" aria-expanded="${ME.sub}" aria-controls="mesub">${ic('sun-moon')}<span>Appearance</span><small>${THEME_LBL[mode]}</small>${ic('chevron-right', 'mp-chev')}</button>
