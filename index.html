@@ -12,6 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..800;1,14..32,400..600&family=Gentium+Book+Plus:ital@0;1&display=swap" rel="stylesheet">
 <script src="content.js"></script>
 <script src="tarot.js"></script>
+<script src="whatsnew.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0/dist/umd/lucide.min.js" onerror="var x=document.createElement('script');x.src='https://unpkg.com/lucide@0/dist/umd/lucide.min.js';x.onload=function(){window.drawIcons&&drawIcons()};document.head.appendChild(x)"></script>
 <style>
 /* =========================================================
@@ -1028,6 +1029,108 @@ body.auth-open .app{visibility:hidden}
 .ob-goal input:checked+span{border-color:var(--primary);background:var(--primary-soft);color:var(--primary-ink)}
 .ob-goal input:checked+span .ic{color:var(--primary)}
 .ob-goal input:focus-visible+span{outline:2px solid var(--primary);outline-offset:2px}
+/* ---------- First-run tour (5 steps). One easing and one duration for every scene. */
+.modal.ob2m{max-width:880px;overflow:hidden}
+.ob2{--obe:cubic-bezier(.2,.75,.25,1);--obt:.7s;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);min-height:480px}
+.ob2-art{position:relative;background:var(--surface-2);background-image:radial-gradient(var(--border) 1px,transparent 1.2px);background-size:18px 18px;border-right:1px solid var(--border);overflow:hidden}
+.ob2-main{display:flex;flex-direction:column;padding:22px 26px 22px 30px;min-width:0;max-height:min(640px,calc(100dvh - 12vh));overflow:auto}
+.ob2-top{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.ob2-prog{display:flex;gap:5px;flex:1}.ob2-prog i{flex:1;height:4px;border-radius:4px;background:var(--border);transition:background .3s var(--obe)}
+.ob2-prog i.done{background:color-mix(in srgb,var(--primary) 45%,var(--border))}.ob2-prog i.on{background:var(--primary)}
+.ob2-count{font-size:12.5px;color:var(--muted);font-weight:600;white-space:nowrap}
+.ob2-body{flex:1;display:flex;flex-direction:column;gap:12px}
+.ob2-body h2{font:750 26px/1.2 var(--f-ui);letter-spacing:-.02em;margin:0;outline:none}
+.ob2-body>p{margin:0;font-size:15.5px;line-height:1.6;color:var(--text-2);max-width:46ch}
+.ob2-body .fld{margin:0}.ob2-body .ob-goals{margin-top:2px}
+.ob2-nav{display:flex;align-items:center;gap:10px;margin-top:22px;padding-top:16px;border-top:1px solid var(--border-2)}
+.ob2-nav .grow{flex:1}.ob2-nav .link{font-size:14px;white-space:nowrap}.ob2-nav .btn{white-space:nowrap}
+.ob2 .ob-ielts{text-align:left}
+/* scenes */
+.obv{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.obv [data-a]{animation:obIn var(--obt) var(--obe) both;animation-delay:var(--d,0s)}
+@keyframes obIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+.obv-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:0 10px 30px -18px rgba(20,16,60,.35)}
+/* 1 welcome: words in several languages settle around the mark */
+.obv1 .obv-ring{position:absolute;left:50%;top:50%;width:230px;height:230px;margin:-115px 0 0 -115px;border-radius:50%;border:1.5px dashed color-mix(in srgb,var(--primary) 30%,var(--border))}
+.obv1 .obv-ring.r2{width:330px;height:330px;margin:-165px 0 0 -165px;opacity:.6}
+.obv1 .obv-mark .mark,.obv1 .obv-mark svg{width:72px;height:72px}
+.obv-at{position:absolute;left:50%;top:50%;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y)))}
+.obv-w{display:inline-block;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:6px 12px;font-weight:650;font-size:14px;white-space:nowrap;box-shadow:0 6px 16px -10px rgba(20,16,60,.3)}
+.obv-w small{color:var(--muted);font-weight:500;margin-left:6px;font-size:11.5px}
+.obv-w.t{background:var(--primary-soft);border-color:transparent;color:var(--primary-ink)}
+/* 2 vocabulary: a word in a sentence becomes a saved card */
+.obv2{flex-direction:column;gap:14px;padding:24px}
+.obv2 .obv-sent{padding:16px 18px;font:500 16px/1.5 var(--f-serif);max-width:280px}
+.obv2 mark{background:linear-gradient(var(--yellow-soft),var(--yellow-soft)) no-repeat 0 100%/0% 100%;color:inherit;padding:0 2px;border-radius:3px;animation:obHi .6s var(--obe) .35s forwards}
+@keyframes obHi{to{background-size:100% 100%}}
+.obv2 .obv-wc{padding:14px 16px;width:250px}.obv-wc b{font-size:18px}.obv-wc .ipa{margin-left:8px}.obv-wc em{display:block;font-style:normal;color:var(--text-2);font-size:14px;margin-top:4px}
+.obv-wc .chip{margin-left:6px;vertical-align:2px}
+.obv-pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:650;color:var(--green);background:var(--green-soft);border-radius:99px;padding:5px 11px}.obv-pill .ic{width:14px;height:14px}
+.obv-arrow{width:2px;height:16px;background:var(--border-strong);border-radius:2px}
+/* 3 review: a flashcard turns over, reviews spread out */
+.obv3{flex-direction:column;gap:22px;padding:24px}
+.obv-fc{width:220px;height:136px;perspective:900px}
+.obv-fc-in{position:relative;width:100%;height:100%;transform-style:preserve-3d;animation:obFlip .8s var(--obe) 1s forwards}
+@keyframes obFlip{to{transform:rotateY(180deg)}}
+.obv-fc-f,.obv-fc-b{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:16px}
+.obv-fc-f b{font-size:22px}.obv-fc-f small{color:var(--muted);font-size:12px}
+.obv-fc-b{transform:rotateY(180deg);background:var(--primary-soft);border-color:transparent}.obv-fc-b b{color:var(--primary-ink);font-size:20px}.obv-fc-b small{color:var(--text-2);font-size:13px}
+.obv-sr{display:flex;align-items:center;width:250px}
+.obv-sr i{width:12px;height:12px;border-radius:50%;border:2px solid var(--border-strong);background:var(--surface);flex:none;animation:obDot .35s var(--obe) forwards;animation-delay:var(--d)}
+.obv-sr span{height:2px;background:var(--border);flex:var(--g);position:relative;overflow:hidden}
+.obv-sr span::after{content:"";position:absolute;inset:0;background:var(--primary);transform:scaleX(0);transform-origin:left;animation:obLine .45s var(--obe) forwards;animation-delay:var(--d)}
+@keyframes obDot{to{background:var(--primary);border-color:var(--primary)}}@keyframes obLine{to{transform:none}}
+.obv-cap{font-size:12.5px;color:var(--muted);margin-top:-12px}
+/* 4 explore: places to go */
+.obv4 .obv-tiles{display:grid;grid-template-columns:repeat(3,96px);gap:10px}
+.obv-tile{height:88px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-size:12.5px;font-weight:650;color:var(--text-2);text-align:center;padding:0 6px}
+.obv-tile .ic{width:22px;height:22px;color:var(--primary)}
+/* 5 space: one workspace per language, each filling up */
+.obv5{gap:14px;padding:20px}
+.obv-ws{width:150px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.obv-ws.on{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+.obv-ws b{font-size:14.5px}.obv-ws b span{margin-right:6px}
+.obv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.obv-grid i{aspect-ratio:1;border-radius:4px;background:var(--surface-3);animation:obFill .4s var(--obe) forwards;animation-delay:var(--d)}
+@keyframes obFill{to{background:color-mix(in srgb,var(--primary) var(--k),var(--surface-3))}}
+@media (max-width:760px){
+  .modal.ob2m{max-width:520px}
+  .ob2{grid-template-columns:1fr;min-height:0}
+  .ob2-art{height:200px;border-right:0;border-bottom:1px solid var(--border)}
+  .ob2-main{padding:18px 20px;max-height:none}
+  .obv{transform:scale(.6)}.ob2-body h2{font-size:22px}
+}
+@media (max-width:760px) and (max-height:700px){.ob2-art{height:160px}.obv{transform:scale(.5)}}
+@media (prefers-reduced-motion:reduce){
+  .obv [data-a],.obv2 mark,.obv-fc-in,.obv-sr i,.obv-sr span::after,.obv-grid i{animation-duration:1ms!important;animation-delay:0s!important}
+}
+/* ---------- What's new */
+.wn-btn{position:relative}
+.wn-btn .ic{width:19px;height:19px}
+.wn-btn.unread::before{content:"";position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--primary);box-shadow:0 0 0 2px var(--bg)}
+.wn-btn:hover::after,.wn-btn:focus-visible::after{content:attr(data-tip);position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font:600 12.5px/1 var(--f-ui);padding:7px 9px;border-radius:8px;white-space:nowrap;z-index:30;pointer-events:none;box-shadow:0 6px 18px -8px rgba(0,0,0,.4)}
+.wn-btn:hover{background:var(--surface-2);color:var(--text)}
+.modal.wn{max-width:680px;display:flex;flex-direction:column;max-height:calc(100vh - 12vh);max-height:calc(100dvh - 12vh);overflow:hidden}
+.wn{display:flex;flex-direction:column;min-height:0;flex:1}
+.wn-head{flex:none;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:24px 24px 14px;border-bottom:1px solid var(--border-2)}
+.wn-head h2{font:750 24px/1.2 var(--f-ui);letter-spacing:-.02em;margin:0}.wn-head p{margin:4px 0 0;color:var(--text-2);font-size:14.5px}
+.wn-body{overflow:auto;padding:6px 24px 24px}
+.wn-rel{padding:18px 0 6px;border-bottom:1px solid var(--border-2)}.wn-rel:last-child{border-bottom:0}
+.wn-rel>header{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:6px}
+.wn-rel time{font-size:13px;font-weight:650;color:var(--muted)}
+.wn-rel h3{flex-basis:100%;font:700 17px/1.3 var(--f-ui);margin:0}
+.wn-new{font-size:11.5px;font-weight:700;color:var(--primary-ink);background:var(--primary-soft);border-radius:99px;padding:2px 8px}[data-theme=dark] .wn-new{color:#cfc8ff}
+.wn-g{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--text-2);margin:14px 0 6px}.wn-g .ic{width:14px;height:14px}
+.wn-g.new .ic{color:var(--primary)}.wn-g.improved .ic{color:var(--blue)}.wn-g.fixed .ic{color:var(--green)}
+.wn-rel ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.wn-it{display:flex;gap:16px;align-items:flex-start;padding:8px 0}
+.wn-it>div:first-child{flex:1;min-width:0}.wn-it b{font-size:15px}.wn-it p{margin:3px 0 0;font-size:14px;line-height:1.55;color:var(--text-2)}
+.wn-pv{flex:none;width:132px;height:84px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:6px;overflow:hidden}
+.wn-pv img{width:30px;height:52px;object-fit:cover;border-radius:4px;border:1px solid #c9a45a88}
+.wn-pv.views{flex-direction:column;align-items:stretch;padding:12px 16px;gap:5px}.wn-pv.views i{height:8px;border-radius:3px;background:var(--surface-3)}.wn-pv.views i:first-child{background:color-mix(in srgb,var(--primary) 35%,var(--surface-3));width:70%}
+.wn-pv.ws span{font-size:12px;font-weight:650;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:4px 8px}
+.wn-pv.ob{flex-direction:column;gap:8px}.wn-pv.ob .mark,.wn-pv.ob svg{width:30px;height:30px}.wn-pv.ob span{display:flex;gap:3px}.wn-pv.ob span i{width:14px;height:3px;border-radius:3px;background:var(--border)}.wn-pv.ob span i:first-child,.wn-pv.ob span i:nth-child(2){background:var(--primary)}
+@media (max-width:560px){.wn-it{flex-direction:column;gap:8px}.wn-pv{width:100%;height:72px}.wn-head,.wn-body{padding-left:18px;padding-right:18px}}
 .ob-ielts{display:flex;flex-direction:column;gap:8px;text-align:left}
 .ob-ielts>b{display:inline-flex;align-items:center;gap:6px;font-size:14px}
 .ob-ielts>b .ic{width:15px;height:15px;color:var(--primary)}
@@ -3314,7 +3417,7 @@ function renderNav(){
   $('#nav').innerHTML = h;
   $('#pref-link').classList.toggle('on', S.view === 'preferences' && !S.search);
   const sk = streaks(dayCounts()), nm = (settings().name || '').trim();
-  $('#topstats').innerHTML = `<a class="tstat" href="#dashboard" title="Learning streak">${ic('zap','t-zap')}<b>${sk.cur}</b></a><a class="tstat" href="#review" title="Words due for review">${ic('repeat-2','t-due')}<b>${due}</b></a><button type="button" class="avatar me-btn ${SYNC[0]==='err'?'alert':''}" id="me-btn" data-act="me-menu" aria-haspopup="menu" aria-expanded="${ME.open}" aria-controls="mepop" title="${esc(nm ? nm + ' · Account menu' : 'Account menu')}${SYNC[0]==='err' ? ' · ' + SYNC[2] : ''}" style="${avatarStyle(settings())}">${avatarInner(settings())}</button>`;
+  $('#topstats').innerHTML = `<a class="tstat" href="#dashboard" title="Learning streak">${ic('zap','t-zap')}<b>${sk.cur}</b></a><a class="tstat" href="#review" title="Words due for review">${ic('repeat-2','t-due')}<b>${due}</b></a>${wnData() ? `<button type="button" class="icon-btn wn-btn ${wnUnread() ? 'unread' : ''}" id="wn-btn" data-act="whatsnew" data-tip="What’s new" aria-label="What’s new${wnUnread() ? ' (new updates)' : ''}">${ic('sparkle')}</button>` : ''}<button type="button" class="avatar me-btn ${SYNC[0]==='err'?'alert':''}" id="me-btn" data-act="me-menu" aria-haspopup="menu" aria-expanded="${ME.open}" aria-controls="mepop" title="${esc(nm ? nm + ' · Account menu' : 'Account menu')}${SYNC[0]==='err' ? ' · ' + SYNC[2] : ''}" style="${avatarStyle(settings())}">${avatarInner(settings())}</button>`;
 }
 const PILLIC = {new:'circle-dashed', learning:'clock', mastered:'circle-check'};
 const statusPill = r => `<button class="pill ${r.status||'new'}" data-act="cycle-status" data-id="${r.id}" title="Change status">${ic(PILLIC[r.status||'new'])} ${cap(r.status||'new')}</button>`;
@@ -3804,67 +3907,91 @@ document.addEventListener('input', e => {
   if (!v) box.querySelector('.avpick-prev').textContent = ch;
 });
 
-/* ---------- First-run onboarding (website accounts only, shown once) */
+/* ---------- First-run tour (website accounts only, shown once).
+   Shown only to an account with no saved data on the server at its first sign-in, after that data has loaded.
+   Finishing or dismissing it is recorded on the account's settings record (onboarding: 'done' | 'skipped'),
+   which is shared by every workspace and follows the account to every device. */
 const OB_LANGS = [['english','English','languages'],['ielts','IELTS preparation','graduation-cap'],['korean','Korean','languages'],['other','Another language','globe']];
+const OB_STEPS = 5;
+function obScene(n){
+  const at = (x, y, d, inner) => `<span class="obv-at" style="--x:${x}px;--y:${y}px"><span data-a style="--d:${d}s">${inner}</span></span>`;
+  if (n === 1) { const mark = $('.brand .mark') ? $('.brand .mark').outerHTML : ic('sparkles');
+    return `<div class="obv obv1"><span class="obv-ring" data-a></span><span class="obv-ring r2" data-a style="--d:.15s"></span><span class="obv-mark" data-a style="--d:.1s">${mark}</span>
+      ${at(-118, -92, .45, `<span class="obv-w" lang="en">hello</span>`)}${at(112, -70, .6, `<span class="obv-w" lang="vi">xin chào</span>`)}${at(-104, 96, .75, `<span class="obv-w" lang="ko">안녕하세요</span>`)}
+      ${at(118, 104, .9, `<span class="obv-w t">collocation</span>`)}${at(0, -150, 1.05, `<span class="obv-w t">idiom</span>`)}${at(4, 152, 1.2, `<span class="obv-w t">sentence</span>`)}</div>`; }
+  if (n === 2) return `<div class="obv obv2"><p class="obv-card obv-sent" data-a lang="en">Small habits can <mark>shape</mark> who we become.</p><span class="obv-arrow" data-a style="--d:.9s"></span>
+      <div class="obv-card obv-wc" data-a style="--d:1s" lang="en"><b>shape</b><span class="ipa">/ʃeɪp/</span><span class="chip">verb</span><em>to influence how something develops</em><em lang="vi">định hình</em></div>
+      <span class="obv-pill" data-a style="--d:1.7s">${ic('circle-check')} Saved to Vocabulary</span></div>`;
+  if (n === 3) { const gaps = [1, 2, 3.4], d0 = 1.9;
+    return `<div class="obv obv3"><div class="obv-fc" data-a><div class="obv-fc-in"><div class="obv-card obv-fc-f" lang="en"><b>resilient</b><small>What does it mean?</small></div><div class="obv-card obv-fc-b"><b lang="vi">kiên cường</b><small>able to recover quickly</small></div></div></div>
+      <div class="obv-sr" aria-hidden="true"><i style="--d:${d0}s"></i>${gaps.map((g, k) => `<span style="--g:${g};--d:${d0 + .2 + k * .45}s"></span><i style="--d:${d0 + .55 + k * .45}s"></i>`).join('')}</div>
+      <span class="obv-cap" data-a style="--d:${d0}s">Reviews spread out as you remember</span></div>`; }
+  if (n === 4) return `<div class="obv obv4"><div class="obv-tiles">${[['library','Library'],['newspaper','Reading list'],['notebook-pen','Journal'],['message-circle','Ask Lumi'],['graduation-cap','IELTS'],['sparkles','Tarot Corner']].map(([i, l], k) => `<div class="obv-card obv-tile" data-a style="--d:${.15 + k * .12}s">${ic(i)}<span>${l}</span></div>`).join('')}</div></div>`;
+  return `<div class="obv obv5">${[['🇬🇧', 'English', true, 'en'], ['🇰🇷', '한국어', false, 'ko']].map(([f, l, on, lg], w) => `<div class="obv-card obv-ws ${on ? 'on' : ''}" data-a style="--d:${w * .2}s"><b lang="${lg}"><span aria-hidden="true">${f}</span>${l}</b>
+      <div class="obv-grid">${Array.from({length:12}, (_, k) => `<i style="--d:${.6 + w * .3 + k * .07}s;--k:${[70, 35, 55, 20, 45, 80, 30, 60, 25, 50, 40, 65][(k + w * 5) % 12]}%"></i>`).join('')}</div></div>`).join('')}</div>`;
+}
 function onboardShow(){
   if (settings().onboarding || $('#ob-form')) return;
   const st0 = settings();
-  const ob = {step:1, name:st0.name || '', avatar:st0.avatar || '', goals:[], other:'', daily:Number(st0.dailyNew) || 10, tg:{}};
-  const mark = how => { const st = settings(); if (!st.onboarding) Store.put({...clone(st), onboarding:how, onboardedAt:Date.now()}); };
+  const ob = {step:1, name:st0.name || '', goals:[], other:'', daily:Number(st0.dailyNew) || 10, tg:{}};
+  const latest = () => (window.WHATS_NEW && WHATS_NEW.latest) || '';
+  const mark = how => { const st = settings(); if (!st.onboarding) Store.put({...clone(st), onboarding:how, onboardedAt:Date.now(), ...(latest() && !st.whatsNewSeen ? {whatsNewSeen:latest()} : {})}); };
   const saveProfile = () => {          // never replace an existing value with an empty one
-    const st = clone(settings()), up = {};
-    if (ob.name.trim() && ob.name.trim() !== st.name) up.name = ob.name.trim();
-    if (ob.avatar !== (st.avatar || '') && (ob.avatar || !st.avatar)) up.avatar = ob.avatar;
-    if (Object.keys(up).length) Store.put({...st, ...up});
+    const st = clone(settings());
+    if (ob.name.trim() && ob.name.trim() !== st.name) Store.put({...st, name:ob.name.trim()});
   };
-  const dots = n => `<div class="ob-dots" aria-label="Step ${n} of 3">${[1,2,3].map(k => `<i class="${k === n ? 'on' : k < n ? 'done' : ''}"></i>`).join('')}</div>`;
-  const skip = `<button type="button" class="link ob-skip" data-ob="skip">Skip setup. I’ll do it later</button>`;
+  const TXT = {
+    1:['Welcome to Thuverse', 'A personal space for learning languages. Save what you come across, review it at the right moment, and watch your progress grow, all in one place.'],
+    2:['Build your vocabulary', 'Save words, phrases, collocations, sentence structures, grammar notes and idioms, with their meaning, pronunciation and your own examples. Press Add, or N, from anywhere.'],
+    3:['Learn actively', 'Gather entries into collections of your own and review them as flashcards. Spaced repetition brings each one back just before you’d forget it, so a few minutes a day goes a long way.'],
+    4:['Explore and practise', 'Read the Library’s grammar and sentence-structure lessons, keep a reading list, write in your learning journal, and ask Lumi when you’re stuck. The English workspace also has the IELTS Workspace and Tarot Corner.'],
+    5:['Your learning space', 'Each language you learn gets its own workspace, with its own words, collections and progress. Switch between them at the top of the sidebar. Tell us a little about you to finish.'],
+  };
   const body = () => {
-    if (ob.step === 1) return `${dots(1)}<div class="ob-ic">${$('.brand .mark') ? $('.brand .mark').outerHTML : ic('sparkles')}</div>
-      <h2>Welcome to Thuverse</h2>
-      <p class="muted">Your personal space for learning languages. Collect words and phrases, review them at the right moment, and watch your progress grow. English and IELTS tools are built in, and you can use it for any language you study.</p>
-      <button type="button" class="btn primary block lg" data-ob="next">Get started ${ic('arrow-right')}</button>${skip}`;
-    if (ob.step === 2) return `${dots(2)}<h2>Set up your profile</h2><p class="muted">This is how Thuverse greets you. You can change it any time in Settings.</p>
-      <label class="fld ob-l"><span>Display name</span><input name="name" value="${esc(ob.name)}" placeholder="e.g. Thư" maxlength="40" autocomplete="nickname" autofocus></label>
-      <div class="fld ob-l"><span>Avatar</span>${avatarPickerHTML(ob.avatar, ob.name)}</div>
-      <div class="ob-nav"><button type="button" class="btn ghost" data-ob="back">${ic('arrow-left')} Back</button><button type="button" class="btn primary" data-ob="next">Continue ${ic('arrow-right')}</button></div>${skip}`;
-    const ie = ob.goals.includes('ielts');
-    return `${dots(3)}<h2>What are you learning?</h2><p class="muted">Pick everything that applies. This helps Thuverse focus on what matters to you.</p>
-      <div class="ob-goals" role="group" aria-label="Learning goals">${OB_LANGS.map(([k, l, icn]) => `<label class="ob-goal"><input type="checkbox" name="goal" value="${k}" ${ob.goals.includes(k) ? 'checked' : ''}><span>${ic(icn)} ${l}</span></label>`).join('')}</div>
+    const n = ob.step, [h, p] = TXT[n], ie = ob.goals.includes('ielts');
+    const extra = n < 5 ? '' : `<label class="fld ob-l"><span>Display name</span><input name="name" value="${esc(ob.name)}" placeholder="e.g. Thư" maxlength="40" autocomplete="nickname"></label>
+      <div class="fld ob-l"><span>What are you learning?</span><div class="ob-goals" role="group" aria-label="What are you learning?">${OB_LANGS.map(([k, l, icn]) => `<label class="ob-goal"><input type="checkbox" name="goal" value="${k}" ${ob.goals.includes(k) ? 'checked' : ''}><span>${ic(icn)} ${l}</span></label>`).join('')}</div></div>
       ${ob.goals.includes('other') ? `<label class="fld ob-l"><span>Which language?</span><input name="other" value="${esc(ob.other)}" placeholder="e.g. Japanese"></label>` : ''}
       ${ie ? `<div class="ob-ielts"><b>${ic('flag')} What’s your IELTS goal?</b><small class="muted">Set your target band scores to personalize your learning journey.</small>
         <div class="ob-grid">${TG_SKILLS.map(([k,l,icn]) => `<label class="ob-cell"><span>${ic(icn)} ${l}</span>${tgSelect(k, l, ob.tg[k] || '')}</label>`).join('')}</div>
         <div class="ob-ov" aria-live="polite"><span>${ic('target')} Overall band</span><span class="tg-ov" id="ob-ov">${tgOverallHTML(ob.tg)}</span></div></div>` : ''}
-      <label class="fld ob-l"><span>New words per day</span><select name="daily">${[5,10,15,20,30].map(n => `<option ${ob.daily === n ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
-      <div class="ob-nav"><button type="button" class="btn ghost" data-ob="back">${ic('arrow-left')} Back</button><button class="btn primary" id="ob-save">${ic('check')} ${ie ? 'Save My Target' : 'Start learning'}</button></div>${skip}`;
+      <label class="fld ob-l"><span>New words per day</span><select name="daily">${[5,10,15,20,30].map(k => `<option ${ob.daily === k ? 'selected' : ''}>${k}</option>`).join('')}</select></label>`;
+    return `<div class="ob2-art" aria-hidden="true">${obScene(n)}</div>
+      <div class="ob2-main">
+        <div class="ob2-top"><div class="ob2-prog" role="progressbar" aria-label="Tour progress" aria-valuemin="1" aria-valuemax="${OB_STEPS}" aria-valuenow="${n}" aria-valuetext="Step ${n} of ${OB_STEPS}">${Array.from({length:OB_STEPS}, (_, k) => `<i class="${k + 1 === n ? 'on' : k + 1 < n ? 'done' : ''}"></i>`).join('')}</div>
+          <span class="ob2-count">${n} of ${OB_STEPS}</span><button type="button" class="icon-btn" data-ob="close" aria-label="Close the tour">${ICON.x}</button></div>
+        <div class="ob2-body"><h2 id="ob-h" tabindex="-1">${h}</h2><p>${p}</p>${extra}</div>
+        <div class="ob2-nav">${n > 1 ? `<button type="button" class="btn ghost" data-ob="back">${ic('arrow-left')} Back</button>` : ''}
+          <span class="grow"></span><button type="button" class="link" data-ob="skip">${n < 5 ? 'Skip tour' : 'Skip for now'}</button>
+          <button type="submit" class="btn primary" id="ob-next">${n === 1 ? 'Get started' : n < 5 ? 'Continue' : 'Start learning'} ${ic(n < 5 ? 'arrow-right' : 'check')}</button></div>
+      </div>`;
   };
   const collect = f => {
     if (f.elements.name) ob.name = f.elements.name.value;
-    if (f.elements.avatar) ob.avatar = f.elements.avatar.value;
     if (f.querySelector('[name=goal]')) ob.goals = [...f.querySelectorAll('[name=goal]:checked')].map(x => x.value);
     if (f.elements.other) ob.other = f.elements.other.value;
     if (f.elements.daily) ob.daily = Number(f.elements.daily.value) || 10;
     if (f.querySelector('select[data-tg]')) ob.tg = tgFromForm(f);
   };
-  openModal(`<form class="ob" id="ob-form" novalidate></form>`, {size:'sm', onClose:() => { saveProfile(); mark('skipped'); }, onMount: el => {
+  const leave = how => { saveProfile(); mark(how); modalClose = null; closeModal(true); };
+  openModal(`<form class="ob2" id="ob-form" novalidate></form>`, {size:'ob2m', onClose:() => { saveProfile(); mark('skipped'); }, onMount: el => {
+    el.setAttribute('aria-labelledby', 'ob-h');
     const f = el.querySelector('#ob-form');
-    const paint = () => { f.innerHTML = body(); drawIcons(); const a = f.querySelector('[autofocus]'); if (a) setTimeout(() => a.focus(), 30); };
+    const paint = (focus = true) => { const art = !focus && f.querySelector('.ob2-art'); f.innerHTML = body(); if (art) f.querySelector('.ob2-art').replaceWith(art); drawIcons(); if (focus) setTimeout(() => { const h = $('#ob-h'); if (h) h.focus({preventScroll:true}); }, 60); };
     paint();
-    f.addEventListener('change', e => { if (e.target.name === 'goal') { collect(f); paint(); } });
+    f.addEventListener('change', e => { if (e.target.name === 'goal') { collect(f); paint(false); const g = f.querySelector(`[name=goal][value="${e.target.value}"]`); if (g) g.focus(); } });
     f.addEventListener('click', e => {
       const b = e.target.closest('[data-ob]'); if (!b) return;
       collect(f);
-      if (b.dataset.ob === 'next') { if (ob.step === 2) saveProfile(); ob.step++; paint(); }
-      else if (b.dataset.ob === 'back') { ob.step--; paint(); }
-      else if (b.dataset.ob === 'skip') { saveProfile(); mark('skipped'); modalClose = null; closeModal(true); toast('You can finish setting up any time in Settings'); }
+      if (b.dataset.ob === 'back') { ob.step = Math.max(1, ob.step - 1); paint(); }
+      else if (b.dataset.ob === 'skip' || b.dataset.ob === 'close') { leave('skipped'); toast('You can finish setting up any time in Settings'); }
     });
     f.addEventListener('submit', e => {
       e.preventDefault(); collect(f);
-      if (ob.step === 2) { saveProfile(); ob.step = 3; paint(); return; }
-      if (ob.step !== 3) return;
+      if (ob.step < OB_STEPS) { ob.step++; paint(); return; }
       saveProfile();
       const st = clone(settings());
-      const up = {onboarding:'done', onboardedAt:Date.now(), dailyNew:ob.daily, learning:{goals:ob.goals, other:ob.goals.includes('other') ? ob.other.trim() : ''}};
+      const up = {onboarding:'done', onboardedAt:Date.now(), dailyNew:ob.daily, learning:{goals:ob.goals, other:ob.goals.includes('other') ? ob.other.trim() : ''}, ...(latest() && !st.whatsNewSeen ? {whatsNewSeen:latest()} : {})};
       if (ob.goals.includes('ielts') && TG_SKILLS.some(([k]) => ob.tg[k])) {
         const prev = st.ieltsTargets || {}, merged = {};
         TG_SKILLS.forEach(([k]) => merged[k] = prev[k] || ob.tg[k] || '');           // never overwrite targets that already exist
@@ -3872,8 +3999,33 @@ function onboardShow(){
       }
       Store.put({...st, ...up});
       modalClose = null; closeModal(true);
-      toast(up.ieltsTargets ? 'Profile and IELTS target saved' : 'You’re all set');
+      toast(up.ieltsTargets ? 'Profile and IELTS target saved. Press Add to save your first word.' : 'You’re all set. Press Add to save your first word.');
+      const a = $('.newwrap .btn'); if (a) a.focus({preventScroll:true});
     });
+  }});
+}
+
+/* ---------- What's new: release notes from whatsnew.js; the newest one seen is kept on the account (settings.whatsNewSeen). */
+const WN_KINDS = [['new', 'New features', 'sparkle'], ['improved', 'Improvements', 'trending-up'], ['fixed', 'Fixes', 'wrench']];
+const wnData = () => (window.WHATS_NEW && Array.isArray(WHATS_NEW.releases)) ? WHATS_NEW : null;
+const wnUnread = () => { const d = wnData(); if (!d || !d.latest || Store.mode !== 'cloud') return false; const st = settings(); if (Web.fresh && !st.onboarding) return false; return (st.whatsNewSeen || '') < d.latest; };
+const wnDate = id => { const t = new Date(id.slice(0, 10) + 'T00:00:00'); return isNaN(t) ? id : t.toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'}); };
+function wnPreview(k){
+  if (k === 'tarot' && window.TAROT) return `<div class="wn-pv" aria-hidden="true">${['the-fool', 'the-star', 'the-sun'].map(id => TAROT.byId[id]).filter(Boolean).map(c => `<img src="${esc(c.img)}" alt="">`).join('') || ic('sparkles')}</div>`;
+  if (k === 'views') return `<div class="wn-pv views" aria-hidden="true"><i></i><i></i><i></i><i style="width:60%"></i></div>`;
+  if (k === 'workspaces') return `<div class="wn-pv ws" aria-hidden="true"><span>🇬🇧 English</span><span lang="ko">🇰🇷 한국어</span></div>`;
+  if (k === 'onboarding') return `<div class="wn-pv ob" aria-hidden="true">${$('.brand .mark') ? $('.brand .mark').outerHTML : ''}<span><i></i><i></i><i></i><i></i><i></i></span></div>`;
+  return '';
+}
+function wnOpen(){
+  const d = wnData(); if (!d) return;
+  const seen = settings().whatsNewSeen || '', ret = $('#wn-btn');
+  const html = `<div class="wn"><div class="wn-head"><div><h2 id="wn-h">What’s new</h2><p>Recent changes to Thuverse, newest first.</p></div><button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>
+    <div class="wn-body">${d.releases.map(r => `<section class="wn-rel" aria-labelledby="wn-${esc(r.id)}"><header><time datetime="${esc(r.id.slice(0, 10))}">${esc(wnDate(r.id))}</time>${r.id > seen ? '<span class="wn-new">New</span>' : ''}<h3 id="wn-${esc(r.id)}">${esc(r.title)}</h3></header>
+      ${WN_KINDS.map(([k, l, i]) => { const its = (r.items || []).filter(x => x.kind === k); return its.length ? `<h4 class="wn-g ${k}">${ic(i)} ${l}</h4><ul>${its.map(x => `<li class="wn-it"><div><b>${esc(x.title)}</b><p>${esc(x.body)}</p></div>${x.preview ? wnPreview(x.preview) : ''}</li>`).join('')}</ul>` : ''; }).join('')}</section>`).join('')}</div></div>`;
+  openModal(html, {size:'wn', onClose:() => { if (ret && document.contains(ret)) ret.focus(); else { const b = $('#wn-btn'); if (b) b.focus(); } }, onMount: el => {
+    el.setAttribute('aria-labelledby', 'wn-h');
+    const st = settings(); if ((st.whatsNewSeen || '') < d.latest) Store.put({...clone(st), whatsNewSeen:d.latest});
   }});
 }
 
@@ -6603,6 +6755,7 @@ function loadStarter(){
 const ACT = {
   menu: () => setDrawer(!$('#side').classList.contains('open')),
   'side-toggle': () => { if (isDrawerMode()) setDrawer(false); else setSideCollapsed(!document.querySelector('.app').classList.contains('side-collapsed'), true); },
+  whatsnew: () => wnOpen(),
   'me-menu': (el, e) => ME.open ? meClose(false) : meOpen(e && e.detail === 0),
   'set-theme': el => { setTheme(el.dataset.v); toast(`Appearance: ${THEME_LBL[el.dataset.v]}`); },
   new: el => {
