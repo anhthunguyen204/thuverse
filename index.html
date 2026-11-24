@@ -67,7 +67,8 @@ svg.lucide{flex:none}
 
 /* ---------- app frame */
 .app{display:grid;grid-template-columns:264px minmax(0,1fr);min-height:100vh}
-.side{background:var(--side);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;display:flex;flex-direction:column;padding:18px 14px 14px;overflow-y:auto}
+.side{background:var(--side);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;display:flex;flex-direction:column;padding:18px 14px 14px;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none}
+.side::-webkit-scrollbar{display:none}
 .brand{display:flex;gap:10px;align-items:center;padding:4px 8px 22px}
 .mark{width:36px;height:36px;flex:none}
 .mark svg{display:block}
@@ -1378,21 +1379,60 @@ body.auth-open .app{visibility:hidden}
 .uc-desc{color:var(--text-2);margin:4px 0 0}
 @media (max-width:820px){.tarot{padding:20px 16px}.tr-hero{grid-template-columns:1fr;gap:10px}.tr-deck{height:210px}.tr-fan{width:120px;height:196px}.tr-cards{gap:12px}.tc-ic{width:32px;height:32px}.tc-keys{display:none}.tr-sec{padding:16px}}
 @media (prefers-reduced-motion:reduce){.tc-in{transition:none}}
+/* ---------- My Collections: toolbar, popovers, grid and board views */
+.ktool{display:flex;align-items:center;gap:10px;margin:4px 0 10px;flex-wrap:wrap}
+.ktool .ktool-q{flex:1 1 220px;min-width:180px;width:auto}
+.kcard .ctype,.kb-body .ctype,.uc-types .ctype{font-size:11px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--surface-2);border-radius:6px;padding:2px 7px;line-height:1.5}
+.ktool-r{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.kt-btn{gap:6px;position:relative}.kt-btn.on{border-color:var(--primary);color:var(--primary);background:var(--primary-soft)}
+.kt-btn .kt-l{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kt-chev{width:14px;height:14px;opacity:.7}
+.kt-badge{min-width:18px;height:18px;border-radius:9px;background:var(--primary);color:var(--on-primary);font-size:11.5px;display:inline-grid;place-items:center;padding:0 5px}
+.kview button{gap:5px}
+.kfilters{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 12px}.kfilters .chip .ic{width:13px;height:13px}.kfilters .link{font-size:13.5px;margin-left:4px}
+.kpop{width:250px;overflow-y:auto}.kpop .mp-i{text-decoration:none}.kpop .mp-i[disabled]{opacity:.45;cursor:default}
+.kp-h{margin:8px 10px 2px!important;font-weight:600;color:var(--text-2)!important}
+.kcount{font-size:13.5px;margin-top:10px}
+.kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.kcard{display:flex;flex-direction:column;gap:4px;padding:14px;border:1px solid var(--border);border-radius:14px;background:var(--surface);cursor:pointer;min-width:0;text-align:left}
+.kcard:hover,.kcard:focus-visible{border-color:var(--border-strong);outline:none;box-shadow:0 6px 18px -12px rgba(30,20,80,.35)}
+.kc-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}
+.kc-term{font-size:17px;overflow-wrap:anywhere}.kcard .ipa{font-size:13.5px}
+.kc-mean{margin:2px 0 0;font-size:14px;color:var(--text-2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.kc-ex{margin:4px 0 0;font-size:13px;color:var(--muted);font-style:italic;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.kboard{display:grid;grid-template-columns:repeat(3,minmax(250px,1fr));gap:12px;overflow-x:auto;padding-bottom:6px;align-items:start;scroll-snap-type:x proximity}
+.kb-col{background:var(--surface-2);border:1px solid var(--border-2);border-radius:16px;padding:10px;min-height:200px;scroll-snap-align:start;transition:background .15s,border-color .15s}
+.kb-col header{display:flex;align-items:center;gap:8px;padding:2px 4px 10px}.kb-col header b{font-size:14.5px}.kb-col header small{color:var(--muted);margin-left:auto}
+.kb-dot{display:grid;place-items:center;width:22px;height:22px;border-radius:7px}.kb-dot .ic{width:14px;height:14px}
+.kb-dot.new{background:var(--surface);color:var(--muted)}.kb-dot.learning{background:var(--amber-soft);color:var(--amber)}.kb-dot.mastered{background:var(--green-soft);color:var(--green)}
+.kb-list{display:flex;flex-direction:column;gap:8px;max-height:min(70vh,900px);overflow-y:auto}
+.kb-card{display:flex;gap:6px;align-items:flex-start;padding:10px 10px 10px 6px;border:1px solid var(--border);border-radius:12px;background:var(--surface);cursor:grab;user-select:none;-webkit-user-select:none;text-align:left}
+.kb-card:focus-visible{outline:2px solid var(--primary);outline-offset:1px}
+.kb-grip{color:var(--muted);touch-action:none;padding:2px;cursor:grab}.kb-grip .ic{width:16px;height:16px}
+.kb-body{min-width:0;display:flex;flex-direction:column;gap:3px}.kb-body b{font-size:15px;overflow-wrap:anywhere}.kb-body small{font-size:13px;color:var(--text-2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.kb-body .ctype{align-self:flex-start}
+.kb-empty{display:flex;align-items:center;justify-content:center;gap:6px;margin:0;padding:22px 8px;border:1.5px dashed var(--border);border-radius:12px;color:var(--muted);font-size:13.5px}.kb-empty .ic{width:15px;height:15px}
+.kb-col.kb-over{background:var(--primary-soft);border-color:var(--primary)}
+.kb-from{opacity:.35}
+.kb-ghost{position:fixed;left:0;top:0;z-index:300;pointer-events:none;box-shadow:0 16px 36px -10px rgba(20,10,60,.45);cursor:grabbing}
+body.kb-dragging,body.kb-dragging *{cursor:grabbing!important;user-select:none}
+@media (max-width:1100px){.kv-l{display:none}}
+@media (max-width:760px){.ktool-r{width:100%}.ktool-r .btn.primary{margin-left:auto}.kt-btn .kt-l{max-width:110px}}
 </style>
 </head>
 <body>
 <div class="app">
   <aside class="side" id="side" aria-label="Main navigation">
-    <div class="brand"><div class="mark" aria-hidden="true"><svg viewBox="0 0 36 36" width="36" height="36"><rect width="36" height="36" rx="10" class="mk-bg"/><rect x="9" y="9.5" width="18" height="4.4" rx="2.2" class="mk-t"/><rect x="15.8" y="9.5" width="4.4" height="17.5" rx="2.2" class="mk-t"/><circle cx="27.2" cy="25.2" r="2.6" class="mk-dot"/></svg></div><div><div class="brand-name">Thuverse</div><div class="brand-sub" id="brand-sub">Your language universe</div></div><button class="icon-btn side-toggle" id="side-toggle" data-act="side-toggle" aria-controls="side" aria-expanded="true" aria-label="Collapse sidebar" data-tip="Collapse sidebar"><i data-lucide="panel-left-close" class="ic st-collapse" aria-hidden="true"></i><i data-lucide="panel-left-open" class="ic st-expand" aria-hidden="true"></i><i data-lucide="x" class="ic st-close" aria-hidden="true"></i></button></div>
+    <div class="brand"><div class="mark" aria-hidden="true"><svg viewBox="0 0 36 36" width="36" height="36"><rect width="36" height="36" rx="10" class="mk-bg"/><rect x="9" y="9.5" width="18" height="4.4" rx="2.2" class="mk-t"/><rect x="15.8" y="9.5" width="4.4" height="17.5" rx="2.2" class="mk-t"/><circle cx="27.2" cy="25.2" r="2.6" class="mk-dot"/></svg></div><div><div class="brand-name">Thuverse</div></div><button class="icon-btn side-toggle" id="side-toggle" data-act="side-toggle" aria-controls="side" aria-expanded="true" aria-label="Collapse sidebar" data-tip="Collapse sidebar"><i data-lucide="panel-left-close" class="ic st-collapse" aria-hidden="true"></i><i data-lucide="panel-left-open" class="ic st-expand" aria-hidden="true"></i><i data-lucide="x" class="ic st-close" aria-hidden="true"></i></button></div>
     <div class="ws-slot" id="ws-slot"></div>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
-      <a href="#preferences" class="nav-item" id="pref-link" data-tip="Preferences"><i data-lucide="settings" class="ic" aria-hidden="true"></i><span>Preferences</span></a>
+      <a href="#preferences" class="nav-item" id="pref-link" data-tip="Settings"><i data-lucide="settings" class="ic" aria-hidden="true"></i><span>Settings</span></a>
     </div>
   </aside>
   <div class="scrim" data-act="menu" aria-hidden="true"></div>
   <div class="mepop" id="mepop" role="menu" aria-label="Account" tabindex="-1" hidden></div>
   <div class="mepop wspop" id="wspop" role="menu" aria-label="Language workspace" tabindex="-1" hidden></div>
+  <div class="mepop kpop" id="kpop" role="menu" aria-label="Filters" tabindex="-1" hidden></div>
   <div class="mepop mesub" id="mesub" role="menu" aria-label="Appearance" tabindex="-1" hidden></div>
   <main class="main">
     <header class="top">
@@ -2187,24 +2227,20 @@ function ucolGridHTML(){
       return `<a class="uc-card" href="#mycol-${esc(c.id)}"><span class="uc-ic">${ic('folder')}</span><b dir="auto">${esc(c.name)}</b><small>${plural(its.length, 'entry', 'entries')}</small>
         ${types.length ? `<span class="uc-types">${types.slice(0, 4).map(t => `<span class="ctype">${CONTENT_TYPES[t].label}</span>`).join('')}${types.length > 4 ? `<span class="ctype">+${types.length - 4}</span>` : ''}</span>` : ''}</a>`; }).join('')}</div>`
     : `<p class="muted uc-empty">Group entries your own way, for example <i>Environment</i> or <i>IELTS Writing</i>. A collection can mix words, collocations, sentences and more.</p>`}
-  </section>
-  <h2 class="si uc-bytype">${ic('layers')} All entries by type</h2>`;
+  </section>`;
 }
 function vUcol(){
   const c = ucolById(S.ucId);
   if (!c) return `<div class="empty">${ic('folder-x')}<h3>This collection no longer exists</h3><p>It may have been deleted on another device.</p><a class="btn" href="#collections">Back to My Collections</a></div>`;
-  const its = itemsIn(c.id), types = [...new Set(its.map(typeOf))], tf = types.includes(S.ucType) ? S.ucType : '', q = (S.ucQ || '').trim().toLowerCase();
-  const list = its.filter(r => (!tf || typeOf(r) === tf) && (!q || [r.term, r.vi, r.def, r.examples, r.notes].join(' ').toLowerCase().includes(q))).sort((a, b) => b.createdAt - a.createdAt);
+  const its = itemsIn(c.id), types = [...new Set(its.map(typeOf))], tf = types.includes(S.ucType) ? S.ucType : '';
+  if (!tf) S.ucType = '';
+  const list = kApplyFilters(its, {type:tf});
   return `<nav class="crumb"><a href="#collections">My Collections</a> ${ic('chevron-right')} <span>Collection</span></nav>
   <div class="uc-head"><h1 class="page" dir="auto">${esc(c.name)}</h1>
-    <div class="uc-acts"><button class="btn primary" data-act="new" data-type="item" data-ucol="${esc(c.id)}">${ic('plus')} Add entry</button><button class="btn ghost" data-act="uc-rename" data-id="${esc(c.id)}">${ic('pencil')} Rename</button><button class="btn ghost" data-act="uc-del" data-id="${esc(c.id)}">${ic('trash-2')} Delete</button></div></div>
+    <div class="uc-acts"><button class="btn ghost" data-act="uc-rename" data-id="${esc(c.id)}">${ic('pencil')} Edit</button><button class="btn ghost" data-act="uc-del" data-id="${esc(c.id)}">${ic('trash-2')} Delete</button></div></div>
   ${c.desc ? `<p class="uc-desc" dir="auto">${esc(c.desc)}</p>` : ''}<p class="lede">${plural(its.length, 'entry', 'entries')}${types.length ? ' · ' + types.map(t => CONTENT_TYPES[t].label.toLowerCase() + 's').join(', ') : ''}</p>
-  ${its.length ? `<div class="toolbar">
-    <label class="sbox">${ic('search')}<input class="fsearch" id="ucq" type="search" placeholder="Filter this collection" value="${esc(S.ucQ || '')}" data-input="ucQ" aria-label="Filter this collection"></label>
-    ${types.length > 1 ? `<div class="seg" role="group" aria-label="Content type"><button class="${!tf?'on':''}" data-act="uc-type" data-v="">All</button>${types.map(t => `<button class="${tf===t?'on':''}" data-act="uc-type" data-v="${t}">${ic(CONTENT_TYPES[t].icon)} ${CONTENT_TYPES[t].label}</button>`).join('')}</div>` : ''}
-  </div>
-  ${list.length ? `<div class="entries">${list.map(r => entryRow(r, true)).join('')}</div>` : `<div class="empty">${ic('search-x')}<h3>No entries match</h3><button class="btn" data-act="uc-clear">Clear filters</button></div>`}`
-  : `<div class="empty">${ic('folder-open')}<h3>This collection is empty</h3><p>Add entries here, or choose “Add to collection” when you save a word anywhere in Thuverse.</p><button class="btn primary" data-act="new" data-type="item" data-ucol="${esc(c.id)}">${ic('plus')} Add entry</button></div>`}`;
+  ${its.length ? `${kToolbarHTML({ucol:c.id})}${kEntriesHTML(list, {empty:`<div class="empty">${ic('search-x')}<h3>No entries match</h3><button class="btn" data-act="k-clear">Reset filters</button></div>`})}`
+  : `<div class="empty">${ic('folder-open')}<h3>This collection is empty</h3><p>Add entries here, or choose “Add to collection” when you save a word anywhere in Thuverse.</p><button class="btn primary" data-act="new" data-type="item" data-ucol="${esc(c.id)}">${ic('plus')} Add entry</button></div>`}`
 }
 
 /* ---------- Tarot Corner (English workspace): a 3-card draw, an AI reading for English practice, vocabulary to save.
@@ -2384,6 +2420,164 @@ document.addEventListener('change', e => {
   const t = e.target;
   if (t.dataset && t.dataset.tsel !== undefined) { const i = Number(t.dataset.tsel); t.checked ? TAR.sel.add(i) : TAR.sel.delete(i); render(); }
   if (t.id === 'tr-ucol' && t.value === '__new') { t.value = ''; ucolNameForm(null, c => { TAR.lastCol = c.id; render(); setTimeout(() => { const s = $('#tr-ucol'); if (s) s.value = c.id; }, 0); }); }
+});
+
+const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
+/* ---------- My Collections: one filtered list, three views (list, grid, board) — like database views.
+   Views only change how the same entries are shown; status changes on the board are ordinary entry updates. */
+const K_VIEWS = [['list','List','list'],['grid','Grid','layout-grid'],['board','Board','square-kanban']];
+const kStats = () => (S.kStatuses || []).filter(s => STATUSES.includes(s));
+function kApplyFilters(its, {q = S.kQ, type = ''} = {}){
+  const st = kStats(), qq = String(q || '').trim().toLowerCase();
+  const list = its.filter(r => {
+    if (type && typeOf(r) !== type) return false;
+    if (st.length && !st.includes(r.status || 'new')) return false;
+    if (S.kTag && !(r.tags || []).includes(S.kTag)) return false;
+    if (S.kLink === 'linked' && !(r.ielts || []).length) return false;
+    if (S.kLink === 'difficult' && !r.difficult) return false;
+    if (SK[S.kLink] && !(r.ielts || []).includes(S.kLink)) return false;
+    if (qq) { const hay = [r.term, r.vi, r.def, r.examples, r.context, r.notes, r.roman, (r.tags || []).join(' ')].join(' ').toLowerCase(); if (!hay.includes(qq)) return false; }
+    return true;
+  });
+  const sorters = {new:(a, b) => b.createdAt - a.createdAt, old:(a, b) => a.createdAt - b.createdAt, az:(a, b) => termKey(a.term).localeCompare(termKey(b.term)), due:(a, b) => ((a.srs || {}).due || 0) - ((b.srs || {}).due || 0)};
+  return list.sort(sorters[S.kSort] || sorters.new);
+}
+function kToolbarHTML({addCol = 'vocabulary', addLabel = 'Add entry', ucol = ''} = {}){
+  const st = kStats(), more = (S.kLink !== 'any' ? 1 : 0) + (S.kTag ? 1 : 0) + (S.kSort !== 'new' ? 1 : 0) + (S.view === 'ucol' && S.ucType ? 1 : 0);
+  const stLabel = st.length ? st.map(cap).join(', ') : 'Status';
+  return `<div class="ktool">
+    <label class="sbox ktool-q">${ic('search')}<input class="fsearch" id="kq" type="search" placeholder="Search words, meanings, examples…" value="${esc(S.kQ)}" data-input="kQ" aria-label="Search entries"></label>
+    <div class="ktool-r">
+      <button type="button" class="btn kt-btn ${st.length ? 'on' : ''}" data-act="k-pop" data-v="status" aria-haspopup="true" aria-expanded="${KPOP.open === 'status'}">${ic(st.length ? 'list-checks' : 'list-filter')} <span class="kt-l">${esc(stLabel)}</span>${ic('chevron-down', 'kt-chev')}</button>
+      <div class="seg kview" role="radiogroup" aria-label="View">${K_VIEWS.map(([v, l, i]) => `<button type="button" role="radio" aria-checked="${S.kView === v}" class="${S.kView === v ? 'on' : ''}" data-act="k-view" data-v="${v}" title="${l} view">${ic(i)}<span class="kv-l"> ${l}</span></button>`).join('')}</div>
+      <button type="button" class="btn kt-btn ${more ? 'on' : ''}" data-act="k-pop" data-v="more" aria-haspopup="true" aria-expanded="${KPOP.open === 'more'}">${ic('sliders-horizontal')} <span class="kt-l">More</span>${more ? `<b class="kt-badge">${more}</b>` : ''}</button>
+      <button class="btn primary" data-act="new" data-type="item" data-col="${addCol}"${ucol ? ` data-ucol="${esc(ucol)}"` : ''}>${ic('plus')} <span class="kt-l">${esc(addLabel)}</span></button>
+    </div>
+  </div>
+  ${st.length || more ? `<div class="kfilters">${st.map(s => `<button class="chip on" data-act="k-st" data-v="${s}" title="Remove filter">${ic(PILLIC[s])} ${cap(s)} ${ic('x')}</button>`).join('')}${S.kTag ? `<button class="chip on" data-act="k-tag" data-v="${esc(S.kTag)}">${ic('tag')} ${esc(S.kTag)} ${ic('x')}</button>` : ''}${S.kLink !== 'any' ? `<button class="chip on" data-act="k-set" data-k="kLink" data-v="any">${ic('list-filter')} ${esc(S.kLink === 'linked' ? 'Linked to IELTS' : S.kLink === 'difficult' ? 'Marked difficult' : (SK[S.kLink] || {}).label || '')} ${ic('x')}</button>` : ''}${S.view === 'ucol' && S.ucType ? `<button class="chip on" data-act="k-set" data-k="ucType" data-v="">${ic(CONTENT_TYPES[S.ucType].icon)} ${CONTENT_TYPES[S.ucType].label} ${ic('x')}</button>` : ''}<button class="link" data-act="k-clear">Reset filters</button></div>` : ''}`;
+}
+function kEntriesHTML(list, {showType = true, empty = ''} = {}){
+  if (!list.length) return empty;
+  const lim = S.kLimit || 150, more = n => n > lim ? `<div class="more"><button class="btn" data-act="k-more">Show ${Math.min(150, n - lim)} more</button></div>` : '';
+  const count = `<p class="muted kcount">${plural(list.length, 'entry', 'entries')}</p>`;
+  if (S.kView === 'grid') return `<div class="kgrid">${list.slice(0, lim).map(r => kCardHTML(r, showType)).join('')}</div>${more(list.length)}${count}`;
+  if (S.kView === 'board') return `<div class="kboard" role="list">${STATUSES.map(st => { const col = list.filter(r => (r.status || 'new') === st);
+    return `<section class="kb-col" data-st="${st}" role="listitem" aria-label="${cap(st)}"><header>${statusPillOf(st)}<b>${cap(st)}</b><small>${col.length}</small></header>
+      <div class="kb-list">${col.slice(0, lim).map(r => `<div class="kb-card" data-act="open-item" data-id="${r.id}" data-st="${st}" role="button" tabindex="0" aria-label="${esc(r.term)}, ${st}. Use left and right arrow keys to move it.">
+        <span class="kb-grip" aria-hidden="true">${ic('grip-vertical')}</span><div class="kb-body"><b dir="auto">${esc(r.term)}</b>${showType ? `<span class="ctype">${CONTENT_TYPES[typeOf(r)].label}</span>` : ''}<small dir="auto">${esc(r.vi || r.def || '')}</small></div></div>`).join('')
+        || `<p class="kb-empty">${ic('inbox')} Drag entries here</p>`}${col.length > lim ? `<button class="btn sm ghost" data-act="k-more">Show more</button>` : ''}</div></section>`; }).join('')}</div>${count}`;
+  return `<div class="dict">${list.slice(0, lim).map(r => entryRow(r, showType)).join('')}</div>${more(list.length)}${count}`;
+}
+const statusPillOf = st => `<span class="kb-dot ${st}">${ic(PILLIC[st])}</span>`;
+function kCardHTML(r, showType){
+  const ex = lines(r.examples)[0];
+  return `<div class="kcard" data-act="open-item" data-id="${r.id}" role="button" tabindex="0">
+    <div class="kc-top">${showType ? `<span class="ctype">${CONTENT_TYPES[typeOf(r)].label}</span>` : '<span></span>'}${statusPill(r)}</div>
+    <b class="kc-term" dir="auto">${esc(r.term)}</b>${phonOf(r) ? `<span class="ipa">${esc(phonOf(r))}</span>` : ''}
+    <p class="kc-mean" dir="auto">${r.vi ? `<span class="vi">${esc(r.vi)}</span>` : ''}${r.vi && r.def ? ' — ' : ''}${esc(r.def || '')}</p>
+    ${ex && r.col !== 'mistakes' ? `<p class="kc-ex">${hl(ex, r.term)}</p>` : ''}
+  </div>`;
+}
+/* popovers for Status and More */
+const KPOP = {open:''};
+function kPopHTML(kind){
+  if (kind === 'status') { const st = kStats();
+    return `<p class="mp-note" style="margin:6px 10px 4px">Show entries that are</p>${STATUSES.map(s => `<button type="button" class="mp-i ${st.includes(s) ? 'on' : ''}" role="menuitemcheckbox" aria-checked="${st.includes(s)}" data-kp="st" data-v="${s}">${ic(st.includes(s) ? 'square-check' : 'square')}<span>${cap(s)}</span><small>${kApplyFilters(kBase(), {q:S.kQ}).filter(r => (r.status || 'new') === s).length || ''}</small></button>`).join('')}
+      <div class="mp-sep"></div><button type="button" class="mp-i" data-kp="st-reset" ${st.length ? '' : 'disabled'}>${ic('rotate-ccw')}<span>Show all statuses</span></button>`; }
+  const sec = (t, body) => `<p class="mp-note kp-h">${t}</p>${body}`;
+  const opt = (k, v, l, on, icon) => `<button type="button" class="mp-i ${on ? 'on' : ''}" role="menuitemradio" aria-checked="${on}" data-kp="set" data-k="${k}" data-v="${esc(v)}">${ic(icon || (on ? 'circle-dot' : 'circle'))}<span>${l}</span></button>`;
+  let h = '';
+  if (S.view === 'knowledge') h += sec('All entries by type', [['all', 'All entries', 'layers', items().length], ...Object.entries(COLS).filter(([c]) => wsCols().includes(c)).map(([c, o]) => [c, o.label, COLIC[c], items(c).length])]
+    .map(([c, l, i, n]) => `<a class="mp-i ${S.kCol === c ? 'on' : ''}" role="menuitemradio" aria-checked="${S.kCol === c}" href="#collections${c === 'all' ? '' : '-' + c}" data-kp="nav">${ic(i)}<span>${esc(l)}</span><small>${n}</small></a>`).join(''));
+  if (S.view === 'ucol') { const its = itemsIn(S.ucId), types = [...new Set(its.map(typeOf))];
+    if (types.length > 1) h += sec('Content type', opt('ucType', '', 'All types', !S.ucType) + types.map(t => opt('ucType', t, CONTENT_TYPES[t].label, S.ucType === t)).join('')); }
+  if (!isKo()) h += sec('Source', [['any', 'Any source'], ['linked', 'Linked to IELTS'], ['difficult', 'Marked difficult'], ...Object.entries(SK).map(([k, o]) => [k, o.label])].map(([v, l]) => opt('kLink', v, l, S.kLink === v)).join(''));
+  h += sec('Sort', [['new', 'Newest first'], ['old', 'Oldest first'], ['az', 'A–Z'], ['due', 'Review soonest']].map(([v, l]) => opt('kSort', v, l, S.kSort === v)).join(''));
+  const tc = {}; kBase().forEach(r => (r.tags || []).forEach(t => tc[t] = (tc[t] || 0) + 1));
+  const tags = Object.entries(tc).sort((a, b) => b[1] - a[1]).slice(0, 12);
+  if (tags.length) h += sec('Tag', opt('kTag', '', 'Any tag', !S.kTag) + tags.map(([t]) => opt('kTag', t, '#' + esc(t), S.kTag === t)).join(''));
+  return h + `<div class="mp-sep"></div><button type="button" class="mp-i" data-kp="reset">${ic('rotate-ccw')}<span>Reset filters</span></button>`;
+}
+const kBase = () => S.view === 'ucol' ? itemsIn(S.ucId) : items(S.kCol);
+function kPop(kind){
+  const pop = $('#kpop');
+  if (!kind || KPOP.open === kind && pop && !pop.hidden && kPop.toggle) { KPOP.open = ''; if (pop) pop.hidden = true; $$('[data-act=k-pop]').forEach(b => b.setAttribute('aria-expanded', 'false')); return; }
+  KPOP.open = kind; kPopPaint();
+  const first = $('#kpop .mp-i.on') || $('#kpop .mp-i'); if (first) first.focus({preventScroll:true});
+}
+function kPopPaint(){
+  const pop = $('#kpop'), btn = $(`[data-act=k-pop][data-v="${KPOP.open}"]`);
+  if (!KPOP.open || !btn || !btn.getClientRects().length) { KPOP.open = ''; pop.hidden = true; return; }
+  pop.innerHTML = kPopHTML(KPOP.open); pop.hidden = false; drawIcons();
+  $$('[data-act=k-pop]').forEach(b => b.setAttribute('aria-expanded', String(b.dataset.v === KPOP.open)));
+  const r = btn.getBoundingClientRect(), vw = document.documentElement.clientWidth, w = pop.offsetWidth;
+  pop.style.left = Math.max(8, Math.min(r.right - w, vw - w - 8)) + 'px';
+  pop.style.maxHeight = Math.max(200, innerHeight - r.bottom - 16) + 'px';
+  pop.style.top = (r.bottom + 6) + 'px';
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('#kpop [data-kp]'); if (!b) return;
+  const k = b.dataset.kp;
+  if (k === 'st') { const v = b.dataset.v, cur = kStats(); S.kStatuses = cur.includes(v) ? cur.filter(x => x !== v) : [...cur, v]; S.kLimit = 150; render(); return; }
+  if (k === 'st-reset') { S.kStatuses = []; render(); return; }
+  if (k === 'set') { S[b.dataset.k] = b.dataset.v; S.kLimit = 150; KPOP.open = ''; $('#kpop').hidden = true; render(); return; }
+  if (k === 'reset') { Object.assign(S, {kStatuses:[], kTag:'', kLink:'any', kSort:'new', ucType:'', kLimit:150}); KPOP.open = ''; $('#kpop').hidden = true; render(); return; }
+  if (k === 'nav') { KPOP.open = ''; $('#kpop').hidden = true; }
+});
+document.addEventListener('pointerdown', e => { if (KPOP.open && !e.target.closest('#kpop,[data-act=k-pop]')) { KPOP.open = ''; $('#kpop').hidden = true; $$('[data-act=k-pop]').forEach(b => b.setAttribute('aria-expanded', 'false')); } }, true);
+addEventListener('keydown', e => {
+  if (!KPOP.open) return;
+  if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); const k = KPOP.open; KPOP.open = ''; $('#kpop').hidden = true; const b = $(`[data-act=k-pop][data-v="${k}"]`); if (b) { b.setAttribute('aria-expanded', 'false'); b.focus(); } return; }
+  const list = [...$('#kpop').querySelectorAll('.mp-i:not([disabled])')], i = list.indexOf(document.activeElement);
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); const d = e.key === 'ArrowDown' ? 1 : -1; list[(i + d + list.length) % list.length].focus(); }
+}, true);
+addEventListener('resize', () => { if (KPOP.open) kPopPaint(); });
+
+/* board: drag a card to another column (mouse anywhere on the card; touch on the grip), or arrow keys */
+function kSetStatus(id, st){
+  const r = Store.get(id); if (!r || !STATUSES.includes(st) || (r.status || 'new') === st) return;
+  const n = clone(r); n.status = st; setStatusSrs(n, st, false); Store.put(n);
+  toast(`“${r.term}” moved to ${cap(st)}`);
+}
+let KD = null, KD_CLICK_BLOCK = 0;
+document.addEventListener('pointerdown', e => {
+  const c = e.target.closest('.kb-card'); if (!c || e.button) return;
+  if (e.pointerType !== 'mouse' && !e.target.closest('.kb-grip')) return;     // touch: drag by the grip, so the board still scrolls
+  KD = {id:c.dataset.id, from:c.dataset.st, el:c, x:e.clientX, y:e.clientY, started:false};
+});
+document.addEventListener('pointermove', e => {
+  if (!KD) return;
+  if (!KD.started) {
+    if (Math.hypot(e.clientX - KD.x, e.clientY - KD.y) < 6) return;
+    KD.started = true; const r = KD.el.getBoundingClientRect();
+    KD.dx = e.clientX - r.left; KD.dy = e.clientY - r.top;
+    KD.ghost = KD.el.cloneNode(true); KD.ghost.className = 'kb-card kb-ghost'; KD.ghost.style.width = r.width + 'px'; document.body.appendChild(KD.ghost);
+    KD.el.classList.add('kb-from'); document.body.classList.add('kb-dragging');
+  }
+  e.preventDefault();
+  KD.ghost.style.transform = `translate(${e.clientX - KD.dx}px, ${e.clientY - KD.dy}px) rotate(2deg)`;
+  const under = document.elementFromPoint(e.clientX, e.clientY), col = under && under.closest('.kb-col');
+  $$('.kb-col').forEach(x => x.classList.toggle('kb-over', x === col && col.dataset.st !== KD.from));
+  const board = $('.kboard'); if (board) { const br = board.getBoundingClientRect(); if (e.clientX > br.right - 40) board.scrollLeft += 12; else if (e.clientX < br.left + 40) board.scrollLeft -= 12; }
+}, {passive:false});
+function kDragEnd(e, cancel){
+  if (!KD) return;
+  const d = KD; KD = null;
+  if (!d.started) return;
+  KD_CLICK_BLOCK = Date.now();
+  d.ghost.remove(); d.el.classList.remove('kb-from'); document.body.classList.remove('kb-dragging');
+  const col = $('.kb-col.kb-over'); $$('.kb-col').forEach(x => x.classList.remove('kb-over'));
+  if (!cancel && col) kSetStatus(d.id, col.dataset.st);
+}
+document.addEventListener('pointerup', e => kDragEnd(e, false));
+document.addEventListener('pointercancel', e => kDragEnd(e, true));
+document.addEventListener('click', e => { if (Date.now() - KD_CLICK_BLOCK < 300 && e.target.closest('.kb-card')) { e.stopPropagation(); e.preventDefault(); } }, true);
+document.addEventListener('keydown', e => {
+  const c = e.target.closest && e.target.closest('.kb-card'); if (!c || !['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+  e.preventDefault(); const i = STATUSES.indexOf(c.dataset.st) + (e.key === 'ArrowRight' ? 1 : -1);
+  if (i < 0 || i >= STATUSES.length) return;
+  const id = c.dataset.id; kSetStatus(id, STATUSES[i]);
+  setTimeout(() => { const n = $(`.kb-card[data-id="${id}"]`); if (n) n.focus(); }, 60);
 });
 
 /* ---------- language workspace switching */
@@ -2622,7 +2816,7 @@ function meHTML(){
       <div class="mp-who"><b dir="auto">${esc(nm || 'Your profile')}</b>${who ? `<small title="${esc(who)}">${esc(who)}</small>` : ''}<button type="button" class="mp-edit" role="menuitem" data-mp="profile">Edit profile</button></div></div>
     <div class="sync mp-sync ${c}"><span class="sync-ic">${ic(icn)}</span><span>${esc(t)}</span></div>
     <div class="mp-sep" role="separator"></div>
-    ${meItem('prefs', 'settings', 'Preferences')}${meItem('goals', 'target', 'Learning goals')}
+    ${meItem('prefs', 'settings', 'Settings')}${meItem('goals', 'target', 'Learning goals')}
     <button type="button" class="mp-i ${ME.sub ? 'act' : ''}" role="menuitem" data-mp="appearance" aria-haspopup="menu" aria-expanded="${ME.sub}" aria-controls="mesub">${ic('sun-moon')}<span>Appearance</span><small>${THEME_LBL[mode]}</small>${ic('chevron-right', 'mp-chev')}</button>
     ${Web.uid ? `<div class="mp-sep" role="separator"></div>${meItem('signout', 'log-out', 'Sign out')}` : ''}`;
 }
@@ -2762,7 +2956,7 @@ function applyRating(r, g){
    State & routing
    ========================================================= */
 const S = {
-  view:'dashboard', glQ:'', glLevel:'all', glStatus:'all', structId:'', kCol:'all', kQ:'', kStatus:'all', kTag:'', kSort:'new', kLink:'any', kLimit:150,
+  view:'dashboard', glQ:'', glLevel:'all', glStatus:'all', structId:'', kCol:'all', kQ:'', kStatuses:[], kView:['list','grid','board'].includes(lsGet('thuverse.kView')) ? lsGet('thuverse.kView') : 'list', kTag:'', kSort:'new', kLink:'any', kLimit:150,
   skill:'writing2', skillTab:null, topic:'',
   rv:{reverse:false, queue:null, idx:0, flipped:false, tally:[0,0,0,0], label:''},
   jSel:null, search:'', libCat:'', colId:null, cFilter:'all', cQ:'', lessonId:null, lq:null, rFilter:'active', rSrc:'', srcQ:'', srcCat:'', srcLang:'', artId:null, ui:{}, summary:null,
@@ -2802,12 +2996,13 @@ function render(){
   renderNav();
   const v = S.search ? vSearch() : ({dashboard:vDashboard, library:vLibrary, collection:vCollection, lesson:vLesson, structure:vStructure, reading:vReading, sources:vSources, topik:vTopik, ucol:vUcol, tarot:vTarot, article:vArticle, study:vStudy, knowledge:vKnowledge, ielts:vIelts, review:vReview, journal:vJournal, preferences:vPrefs}[S.view] || vDashboard)();
   $('#view').innerHTML = v;
-  const nm = settings().name; $('#brand-sub').textContent = nm ? nm + '’s language universe' : 'Your language universe';
+  const nm = settings().name;
   if (id) { const n = document.getElementById(id); if (n) { n.focus(); try { if (ss !== null) n.setSelectionRange(ss, se); } catch {} } }
   else if (S.view === 'study' && !S.search && !$('#modal-root').firstElementChild) { const f = $('#typein:not([disabled])') || $('#s-focus'); if (f) f.focus({preventScroll:true}); }
   mountCharts();
   drawIcons();
   if (ME.open) meRender();
+  if (KPOP.open) kPopPaint();
   bdMount(); bdVisibility();
 }
 
@@ -3346,7 +3541,7 @@ function onboardShow(){
       <h2>Welcome to Thuverse</h2>
       <p class="muted">Your personal space for learning languages. Collect words and phrases, review them at the right moment, and watch your progress grow. English and IELTS tools are built in, and you can use it for any language you study.</p>
       <button type="button" class="btn primary block lg" data-ob="next">Get started ${ic('arrow-right')}</button>${skip}`;
-    if (ob.step === 2) return `${dots(2)}<h2>Set up your profile</h2><p class="muted">This is how Thuverse greets you. You can change it any time in Preferences.</p>
+    if (ob.step === 2) return `${dots(2)}<h2>Set up your profile</h2><p class="muted">This is how Thuverse greets you. You can change it any time in Settings.</p>
       <label class="fld ob-l"><span>Display name</span><input name="name" value="${esc(ob.name)}" placeholder="e.g. Thư" maxlength="40" autocomplete="nickname" autofocus></label>
       <div class="fld ob-l"><span>Avatar</span>${avatarPickerHTML(ob.avatar, ob.name)}</div>
       <div class="ob-nav"><button type="button" class="btn ghost" data-ob="back">${ic('arrow-left')} Back</button><button type="button" class="btn primary" data-ob="next">Continue ${ic('arrow-right')}</button></div>${skip}`;
@@ -3378,7 +3573,7 @@ function onboardShow(){
       collect(f);
       if (b.dataset.ob === 'next') { if (ob.step === 2) saveProfile(); ob.step++; paint(); }
       else if (b.dataset.ob === 'back') { ob.step--; paint(); }
-      else if (b.dataset.ob === 'skip') { saveProfile(); mark('skipped'); modalClose = null; closeModal(true); toast('You can finish setting up any time in Preferences'); }
+      else if (b.dataset.ob === 'skip') { saveProfile(); mark('skipped'); modalClose = null; closeModal(true); toast('You can finish setting up any time in Settings'); }
     });
     f.addEventListener('submit', e => {
       e.preventDefault(); collect(f);
@@ -3830,7 +4025,7 @@ const bdLangOf = t => BD_VI_RX.test(t) || /\b(tra|nghia|them|vao|cach|giup|minh|
 
 /* ---------- what Lumi knows about the app (only real features) */
 const BD_PAGES = {topik:['TOPIK Workspace','graduation-cap'], dashboard:['Dashboard','layout-dashboard'], library:['Library','library'], review:['Review','repeat-2'], collections:['My Collections','bookmark'], reading:['Reading list','newspaper'],
-  sources:['Sources','globe'], ielts:['IELTS Workspace','graduation-cap'], journal:['Learning Journal','notebook-pen'], preferences:['Preferences','settings']};
+  sources:['Sources','globe'], ielts:['IELTS Workspace','graduation-cap'], journal:['Learning Journal','notebook-pen'], preferences:['Settings','settings']};
 const bdPageOk = h => { const [v, sub] = String(h || '').split(/-(.*)/s); if (!BD_PAGES[v] || !wsAllowed(v, sub)) return false; if (!sub) return true;
   return (v === 'library' && CATS.some(c => c.id === sub)) || (v === 'collections' && !!COLS[sub]) || (v === 'ielts' && !!SK[sub]); };
 const bdPageLabel = h => { const [v, sub] = String(h).split(/-(.*)/s); if (v === 'library' && sub) return 'Library · ' + CATS.find(c => c.id === sub).name; if (v === 'collections' && sub) return 'My Collections · ' + COLS[sub].label; if (v === 'ielts' && sub) return SK[sub].label; return BD_PAGES[v][0]; };
@@ -3848,8 +4043,8 @@ const BD_HELP = [
     vi:['Mở **My Collections** và nhấn **New collection**. Đặt tên, ví dụ *Environment* hoặc *IELTS Writing*.','Một bộ sưu tập chứa được mọi loại mục: từ, collocation, phrasal verb, câu, linking phrase. Một mục có thể nằm trong nhiều bộ sưu tập.','Khi thêm một mục, chọn ở **Add to collection** cuối form. Bạn cũng có thể lưu mà không chọn bộ sưu tập.','Các mục cũng được liệt kê theo loại nội dung (Vocabulary, Collocations & Phrasal Verbs…), do app tự xác định.'],
     go:['collections']},
   {id:'review', k:['flashcard','review','revise','spaced','practice words','ôn tập','ôn từ','thẻ'], v:['review','study'],
-    en:['Open **Review**, or press **R** anywhere.','Choose a set and start. Press **Space** to flip a card.','Rate each card **1–4**: forgot, hard, remembered, easy. Words you miss come back the same day; words you know wait weeks.','Change the style (Mixed, Flashcards, Type the answer) in **Preferences → Review style**.'],
-    vi:['Mở **Review**, hoặc nhấn **R** ở bất cứ đâu.','Chọn một bộ rồi bắt đầu. Nhấn **Space** để lật thẻ.','Đánh giá mỗi thẻ từ **1–4**: quên, khó, nhớ, dễ. Từ bạn quên sẽ quay lại trong ngày; từ bạn thuộc sẽ đợi vài tuần.','Đổi kiểu ôn (Mixed, Flashcards, Type the answer) trong **Preferences → Review style**.'],
+    en:['Open **Review**, or press **R** anywhere.','Choose a set and start. Press **Space** to flip a card.','Rate each card **1–4**: forgot, hard, remembered, easy. Words you miss come back the same day; words you know wait weeks.','Change the style (Mixed, Flashcards, Type the answer) in **Settings → Review style**.'],
+    vi:['Mở **Review**, hoặc nhấn **R** ở bất cứ đâu.','Chọn một bộ rồi bắt đầu. Nhấn **Space** để lật thẻ.','Đánh giá mỗi thẻ từ **1–4**: quên, khó, nhớ, dễ. Từ bạn quên sẽ quay lại trong ngày; từ bạn thuộc sẽ đợi vài tuần.','Đổi kiểu ôn (Mixed, Flashcards, Type the answer) trong **Settings → Review style**.'],
     go:['review','preferences']},
   {id:'progress', k:['progress','track','streak','statistic','stats','goal','tiến độ','theo dõi','chuỗi','mục tiêu'], v:['dashboard'],
     en:['The **Dashboard** shows your streak, today’s goal, your vocabulary progress and your learning overview with IELTS targets.','Each entry has a status: New, Learning or Mastered. Reviewing moves words along as you remember them.','Write down what you learned each day in the **Learning Journal**.'],
@@ -3882,8 +4077,8 @@ const BD_HELP = [
     en:['Use the search box at the top, or press **/**. It searches your words, notes and journal.'],
     vi:['Dùng ô tìm kiếm ở đầu trang, hoặc nhấn **/**. Nó tìm trong từ, ghi chú và nhật ký của bạn.'], go:[]},
   {id:'settings', k:['setting','preference','dark mode','light mode','theme','appearance','profile','avatar','display name','cài đặt','giao diện','chế độ tối','hồ sơ'], v:['preferences'],
-    en:['Click your **avatar** at the top right. From its menu you can edit your profile, switch Light, Dark or System under **Appearance**, or sign out.','**Preferences** has your name, avatar, goals, review style, pronunciation and your data.'],
-    vi:['Nhấn vào **ảnh đại diện** ở góc trên bên phải. Từ menu đó bạn có thể sửa hồ sơ, đổi Light, Dark hoặc System trong **Appearance**, hoặc đăng xuất.','**Preferences** chứa tên, ảnh đại diện, mục tiêu, kiểu ôn tập, cách phát âm và dữ liệu của bạn.'],
+    en:['Click your **avatar** at the top right. From its menu you can edit your profile, switch Light, Dark or System under **Appearance**, or sign out.','**Settings** has your name, avatar, goals, review style, pronunciation and your data.'],
+    vi:['Nhấn vào **ảnh đại diện** ở góc trên bên phải. Từ menu đó bạn có thể sửa hồ sơ, đổi Light, Dark hoặc System trong **Appearance**, hoặc đăng xuất.','**Settings** chứa tên, ảnh đại diện, mục tiêu, kiểu ôn tập, cách phát âm và dữ liệu của bạn.'],
     go:['preferences']},
   {id:'linking', k:['linking','linking phrase','connector','từ nối'], v:[],
     en:['**Linking phrases** connect ideas, grouped by what they do: cause and effect, contrast, addition, examples, sequencing and conclusions.','Find shared lists in **Library → Linking phrases** and yours in **My Collections → Linking Phrases**.'],
@@ -4454,50 +4649,18 @@ function sentenceAround(text, sel){
 
 /* ---------- My Knowledge */
 function vKnowledge(){
-  const col = S.kCol, its = items(col), q = S.kQ.trim().toLowerCase();
-  let list = its.filter(r => {
-    if (S.kStatus !== 'all' && (r.status||'new') !== S.kStatus) return false;
-    if (S.kTag && !(r.tags||[]).includes(S.kTag) && r.category !== S.kTag) return false;
-    if (S.kLink === 'linked' && !(r.ielts||[]).length) return false;
-    if (S.kLink === 'difficult' && !r.difficult) return false;
-    if (SK[S.kLink] && !(r.ielts||[]).includes(S.kLink)) return false;
-    if (q) { const hay = [r.term,r.vi,r.def,r.examples,r.context,r.notes,r.category,(r.tags||[]).join(' ')].join(' ').toLowerCase(); if (!hay.includes(q)) return false; }
-    return true;
-  });
-  const sorters = {new:(a,b)=>b.createdAt-a.createdAt, old:(a,b)=>a.createdAt-b.createdAt, az:(a,b)=>termKey(a.term).localeCompare(termKey(b.term)), due:(a,b)=>((a.srs||{}).due||0)-((b.srs||{}).due||0)};
-  list.sort(sorters[S.kSort] || sorters.new);
-  const tagCount = {}; its.forEach(r => (r.tags||[]).forEach(t => tagCount[t] = (tagCount[t]||0)+1));   // topics became collections
-  const tags = Object.entries(tagCount).sort((a,b)=>b[1]-a[1]).slice(0,16);
+  const col = S.kCol, its = items(col), list = kApplyFilters(its);
   const title = col === 'all' ? 'My Collections' : COLS[col].label;
   const lede = col === 'all' ? 'Your own collections, and everything you’ve saved by type: words, phrases, sentences, notes and corrections. Only you can see it.' :
     ({vocabulary:'Words you want to own: meaning, pronunciation, and how they are really used.', structures:'Sentence patterns you can reuse in writing and speaking.', grammar:'Rules worth remembering, with examples that make them stick.', idioms:'Idioms and natural expressions, and when they sound right.', collocations:'Words that go together, and phrasal verbs.', mistakes:'What you got wrong, and the correct version. Reviewing these is one of the fastest ways to improve.'})[col];
-  const shown = list.slice(0, S.kLimit);
+  const addCol = col === 'all' ? 'vocabulary' : col, addLabel = col === 'all' ? 'Add entry' : ({grammar:'Add grammar note', structures:'Add structure'})[col] || 'Add ' + COLS[col].one;
   return `
   <h1 class="page">${title}</h1><p class="lede">${lede}</p>
   ${col === 'all' ? ucolGridHTML() : ''}
-  <div class="tabs" role="tablist">
-    <a class="tab ${col==='all'?'on':''}" href="#collections">${ic('layers')} All<small>${items().length}</small></a>
-    ${Object.entries(COLS).filter(([c]) => wsCols().includes(c)).map(([c,o]) => `<a class="tab ${col===c?'on':''}" href="#collections-${c}">${ic(COLIC[c])} ${o.label}<small>${items(c).length}</small></a>`).join('')}
-  </div>
-  <div class="toolbar">
-    <label class="sbox">${ic('search')}<input class="fsearch" id="kq" type="search" placeholder="Filter by word, meaning, example, tag…" value="${esc(S.kQ)}" data-input="kQ" aria-label="Filter entries"></label>
-    <div class="seg" role="group" aria-label="Status">${['all',...STATUSES].map(s => `<button class="${S.kStatus===s?'on':''}" data-act="k-status" data-v="${s}">${ic(s==='all'?'list':PILLIC[s])} ${cap(s)}</button>`).join('')}</div>
-    ${isKo() ? '' : `<span class="sel">${ic('list-filter')}<select data-change="kLink" aria-label="IELTS link">
-      <option value="any">Any source</option><option value="linked" ${S.kLink==='linked'?'selected':''}>Linked to IELTS</option><option value="difficult" ${S.kLink==='difficult'?'selected':''}>Marked difficult</option>
-      ${Object.entries(SK).map(([k,o]) => `<option value="${k}" ${S.kLink===k?'selected':''}>${o.label}</option>`).join('')}
-    </select></span>`}
-    <span class="sel">${ic('arrow-up-down')}<select data-change="kSort" aria-label="Sort">
-      ${[['new','Newest first'],['old','Oldest first'],['az','A–Z'],['due','Review soonest']].map(([v,l]) => `<option value="${v}" ${S.kSort===v?'selected':''}>${l}</option>`).join('')}
-    </select></span>
-    <button class="btn primary" data-act="new" data-type="item" data-col="${col==='all'?'vocabulary':col}">${ic('plus')} ${col==='all'?'Add entry':({grammar:'Add custom grammar note', structures:'Add custom structure'})[col] || 'Add ' + COLS[col].one}</button>
-  </div>
+  ${kToolbarHTML({addCol, addLabel})}
   ${['grammar','structures'].includes(col) ? savedTopicsHTML(col === 'grammar' ? 'g' : 's') : ''}
-  ${tags.length ? `<div class="tagcloud">${tags.map(([t,n]) => `<button class="chip tag ${S.kTag===t?'on':''}" data-act="k-tag" data-v="${esc(t)}">${ic('tag')} ${esc(t)} <span class="muted">${n}</span></button>`).join('')}</div>` : ''}
-  ${list.length ? `<div class="dict">${shown.map(r => entryRow(r, col==='all')).join('')}</div>
-    ${list.length > shown.length ? `<div class="more"><button class="btn" data-act="k-more">Show ${Math.min(150, list.length - shown.length)} more</button></div>` : ''}
-    <p class="muted" style="font-size:13.5px;margin-top:10px">${plural(list.length,'entry','entries')} shown</p>`
-  : its.length ? `<div class="empty">${ic('search-x')}<h3>No entries match these filters</h3><p>Try a different word or clear the filters.</p><button class="btn" data-act="k-clear">Clear filters</button></div>`
-  : `<div class="empty">${ic(col==='all'?'book-a':COLIC[col])}<h3>No ${col==='all'?'entries':COLS[col].label.toLowerCase()} yet</h3><p>Save the first one — it takes about thirty seconds.</p><button class="btn primary" data-act="new" data-type="item" data-col="${col==='all'?'vocabulary':col}">${ic('plus')} ${col==='all'?'Add entry':({grammar:'Add custom grammar note', structures:'Add custom structure'})[col] || 'Add ' + COLS[col].one}</button></div>`}`;
+  ${kEntriesHTML(list, {showType:col === 'all', empty: its.length ? `<div class="empty">${ic('search-x')}<h3>No entries match these filters</h3><p>Try a different word or reset the filters.</p><button class="btn" data-act="k-clear">Reset filters</button></div>`
+    : `<div class="empty">${ic(col==='all'?'book-a':COLIC[col])}<h3>No ${col==='all'?'entries':COLS[col].label.toLowerCase()} yet</h3><p>Save the first one — it takes about thirty seconds.</p><button class="btn primary" data-act="new" data-type="item" data-col="${addCol}">${ic('plus')} ${addLabel}</button></div>`})}`;
 }
 
 /* ---------- IELTS Workspace */
@@ -4905,7 +5068,7 @@ function vPrefs(){
   const st = settings(), its = items(), samples = all().filter(r => r.sample).length;
   const where = {cloud: Web.uid ? `Your library is saved to your Thuverse account (${esc(Web.email)}) and syncs to every device where you sign in.` : 'Your library is saved to your Claude account, so it follows you to any device where you open this page.', syncing:'Connecting to your account…', starting:'Connecting to your account…', local:'Your account’s storage isn’t available here, so your library is saved in this browser only. Export a backup regularly.', error:'Your account can’t be reached right now. Changes are kept in this browser and will sync when it reconnects.'}[Store.mode];
   return `
-  <h1 class="page">Preferences</h1><p class="lede">Your profile, goals, how the app looks and sounds, and your data.</p>
+  <h1 class="page">Settings</h1><p class="lede">Your profile, goals, how the app looks and sounds, and your data.</p>
   <div class="prefs">
     <section class="panel"><h2 class="sec si">${ic('user')} Profile and goals</h2>
       <form class="stack" id="pref-form">
@@ -5416,7 +5579,7 @@ function lkVerifyHTML(word){
   return `<div class="lk-verify"><span>${ic('shield-check')} Check it yourself</span>${VERIFY(word).map(([n, u]) => `<a href="${u}" target="_blank" rel="noopener">${esc(n)} ${ic('external-link')}</a>`).join('')}</div>`;
 }
 function lkIntroHTML(){
-  return `<div class="lk-intro">${ic('file-search')}<h4>Look a word up before you save it</h4><p>Results come from free, openly licensed dictionaries: the Free Dictionary API and Wiktionary, plus Datamuse for collocations. If you add your own free key in Preferences, Merriam-Webster’s Learner’s Dictionary is included too. Every field shows where it came from, and anything not found is left empty for you.</p></div>`;
+  return `<div class="lk-intro">${ic('file-search')}<h4>Look a word up before you save it</h4><p>Results come from free, openly licensed dictionaries: the Free Dictionary API and Wiktionary, plus Datamuse for collocations. If you add your own free key in Settings, Merriam-Webster’s Learner’s Dictionary is included too. Every field shows where it came from, and anything not found is left empty for you.</p></div>`;
 }
 function lkDupHTML(word){
   const k = termKey(word); if (!k) return '';
@@ -5457,7 +5620,7 @@ function lkResultsHTML(o){
     ${list.map(([s, i]) => `<button type="button" class="lk-sense ${i === m.choice ? 'on' : ''}" data-lk="sense" data-i="${i}"><span class="lk-radio">${i === m.choice ? ic('circle-check') : ic('circle')}</span><span><em>${esc(s.pos)}</em> ${esc(s.def)}${s.ex[0] ? `<small>“${esc(s.ex[0])}”</small>` : ''}</span></button>`).join('')}</div>`).join('');
   const chips = (k, title, icon) => m[k] ? `<div class="lk-sec"><h5>${ic(icon)} ${title} <small>${esc(srcName(m[k].src))}</small></h5><div class="lk-chips">${m[k].value.map(x => `<span>${esc(x)}</span>`).join('')}</div></div>` : '';
   const srcRow = (k) => { const s = S2[k];
-    const st = {ok:['circle-check','ok','Answered'], notfound:['circle-minus','no','No entry for this word'], unreadable:['triangle-alert','warn','Answered, but the response couldn’t be read'], error:['triangle-alert','warn', s.message || 'Request failed'], off:['key-round','off','Add your free key in Preferences to include it']}[s.status] || ['circle-minus','no','—'];
+    const st = {ok:['circle-check','ok','Answered'], notfound:['circle-minus','no','No entry for this word'], unreadable:['triangle-alert','warn','Answered, but the response couldn’t be read'], error:['triangle-alert','warn', s.message || 'Request failed'], off:['key-round','off','Add your free key in Settings to include it']}[s.status] || ['circle-minus','no','—'];
     return `<li class="${st[1]}">${ic(st[0])}<span>${esc(SRC[k].name)} <small>${esc(SRC[k].note)}</small></span><small>${esc(st[2])}${s.suggest && s.suggest.length ? ` · did you mean: ${s.suggest.map(esc).join(', ')}` : ''}</small></li>`; };
   return `<div class="lk-top"><h4>${esc(o.word)}</h4><span class="muted">${answered} of ${asked} sources answered</span></div>
     ${!m.senses.length && !answered ? `<div class="lk-note">${ic('search-x')}<div><b>No dictionary entry found</b><span>Check the spelling, or try the base form (e.g. “mitigate”, not “mitigated”).</span></div></div>` : ''}
@@ -5614,7 +5777,7 @@ function avSensesHTML(o){
 function avSourcesHTML(o){
   const word = o ? o.word : '';
   const row = k => { const s = o.src[k];
-    const st = {ok:['circle-check','ok','Answered'], pending:['loader-circle','off','Waiting…'], notfound:['circle-minus','no','No entry for this word'], unreadable:['triangle-alert','warn','Answered, but the response couldn’t be read'], error:['triangle-alert','warn', s.message || 'Request failed'], off:['key-round','off', LK.mcp === LK_WEB ? 'Not set up on the server' : 'Add your free key in Preferences to include it']}[s.status] || ['circle-minus','no','—'];
+    const st = {ok:['circle-check','ok','Answered'], pending:['loader-circle','off','Waiting…'], notfound:['circle-minus','no','No entry for this word'], unreadable:['triangle-alert','warn','Answered, but the response couldn’t be read'], error:['triangle-alert','warn', s.message || 'Request failed'], off:['key-round','off', LK.mcp === LK_WEB ? 'Not set up on the server' : 'Add your free key in Settings to include it']}[s.status] || ['circle-minus','no','—'];
     const url = k === 'free' ? ((s.links && s.links[0]) || SRC.free.home) : (s.url || SRC[k].home);
     return `<li class="${st[1]}">${ic(st[0])}<span><a href="${esc(url)}" target="_blank" rel="noopener">${esc(SRC[k].name)}</a> <small>${esc(SRC[k].note)}</small></span><small>${esc(st[2])}${s.suggest && s.suggest.length ? ` · did you mean: ${s.suggest.map(esc).join(', ')}` : ''}</small></li>`; };
   return (o ? `<ul class="lk-srcs">${['free','wiki','dm','mw'].map(row).join('')}</ul>` : `<p class="muted" style="margin:0;font-size:13.5px">Free Dictionary API and Wiktionary (CC BY-SA), plus Datamuse for collocations${LK.mcp === LK_WEB ? (Web.cfg && Web.cfg.mw ? ' and Merriam-Webster Learner’s' : '') : ' (and Merriam-Webster Learner’s with your key)'}.</p>`) + lkVerifyHTML(word);
@@ -6236,14 +6399,17 @@ const ACT = {
   's-giveup': el => sessionAct('giveup', el), 's-override': el => sessionAct('override', el),
   's-exit': () => { toast('Session saved — resume it from the dashboard'); go('dashboard'); },
   's-finish': () => { const s0 = Store.get('session'); if (s0) { S.summary = {...s0.tally, label:s0.label}; Store.del('session'); } },
-  'k-status': el => { S.kStatus = el.dataset.v; render(); },
+  'k-pop': el => { const v = el.dataset.v; if (KPOP.open === v) { KPOP.open = ''; $('#kpop').hidden = true; el.setAttribute('aria-expanded', 'false'); } else kPop(v); },
+  'k-view': el => { S.kView = el.dataset.v; lsSet('thuverse.kView', S.kView); render(); },
+  'k-st': el => { S.kStatuses = kStats().filter(x => x !== el.dataset.v); render(); },
+  'k-set': el => { S[el.dataset.k] = el.dataset.v; render(); },
   'k-tag': el => { S.kTag = S.kTag === el.dataset.v ? '' : el.dataset.v; render(); },
   'k-more': () => { S.kLimit += 150; render(); },
   'gl-level': el => { S.glLevel = el.dataset.v; render(); },
   'gl-clear': () => { S.glQ = ''; S.glLevel = 'all'; S.glStatus = 'all'; render(); },
   'tp-mark': el => topicUpdate(el.dataset.k, el.dataset.id, r => { const v = el.dataset.v; r.mark = v; r.markedAt = Date.now(); if (v === 'learning') { if (r.status !== 'done') r.status = 'started'; } else { if (r.status !== 'done') r.completedAt = Date.now(); r.status = 'done'; } }),
   'tp-save': el => { let on; topicUpdate(el.dataset.k, el.dataset.id, r => { r.saved = on = !r.saved; r.savedAt = Date.now(); }); toast(on ? 'Saved to My Collections' : 'Removed from My Collections'); },
-  'k-clear': () => { Object.assign(S, {kQ:'', kStatus:'all', kTag:'', kLink:'any'}); render(); },
+  'k-clear': () => { Object.assign(S, {kQ:'', kStatuses:[], kTag:'', kLink:'any', kSort:'new', ucType:'', kLimit:150}); render(); },
   'sk-tab': el => { S.skillTab = el.dataset.v; S.topic = ''; render(); },
   topic: el => { S.topic = el.dataset.v; render(); },
   'edit-note': el => noteForm(Store.get(el.dataset.id)),
@@ -6342,7 +6508,7 @@ document.addEventListener('submit', e => {
   if (e.target.id !== 'pref-form') return;
   e.preventDefault(); const v = Object.fromEntries(new FormData(e.target));
   Store.put({...clone(settings()), name:v.name.trim(), avatar:String(v.avatar || ''), target:Number(v.target), examDate:v.examDate, accent:v.accent, dailyNew:Number(v.dailyNew)||10, reviewStyle:v.reviewStyle||'mix'});
-  toast('Preferences saved');
+  toast('Settings saved');
 });
 $('#gsearch').addEventListener('input', e => srQuery(e.target.value));
 $('#gsearch').addEventListener('focus', e => { if (e.target.value.trim() && SR.res && !S.search) srShow(true); });

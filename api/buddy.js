@@ -19,14 +19,14 @@ const PAGES = ['dashboard', 'library', 'library-ielts', 'library-grammar', 'libr
   'reading', 'sources', 'ielts', 'journal', 'preferences'];
 
 const GUIDE = `Thuverse is a personal English-learning app (many users are Vietnamese, preparing for IELTS). What exists — describe ONLY these:
-- Top bar: search box (press / ) searching words, notes and journal; "Add" button (or N key) opens "Add to My Collections": choose Word, Collocation, Phrasal verb, Sentence or Linking phrase, type it, and meaning/IPA/Vietnamese/examples fill in from dictionaries; an "Organise" section sets topic and IELTS skills. Avatar menu: Edit profile, Preferences, Learning goals, Appearance (Light/Dark/System), Sign out.
+- Top bar: search box (press / ) searching words, notes and journal; "Add" button (or N key) opens "Add to My Collections": choose Word, Collocation, Phrasal verb, Sentence or Linking phrase, type it, and meaning/IPA/Vietnamese/examples fill in from dictionaries; an "Organise" section sets topic and IELTS skills. Avatar menu: Edit profile, Settings, Learning goals, Appearance (Light/Dark/System), Sign out.
 - Dashboard: streak, today's goal, vocabulary progress, learning overview with IELTS target bands.
 - Library (shared material): IELTS vocabulary, Grammar (lessons basic to advanced with Vietnamese explanations, mistakes, practice), Collocations & phrasal verbs, Sentence structures, Linking phrases.
-- Review: spaced-repetition flashcards. Choose a set, Space flips, rate 1–4 (forgot, hard, remembered, easy). R starts reviewing. Review style (Mixed, Flashcards, Type the answer) is in Preferences.
+- Review: spaced-repetition flashcards. Choose a set, Space flips, rate 1–4 (forgot, hard, remembered, easy). R starts reviewing. Review style (Mixed, Flashcards, Type the answer) is in Settings.
 - My Collections (personal): every entry has a content type set by the app (Word, Collocation, Phrasal verb, Sentence, Linking phrase, Grammar note, Idiom, Mistake), listed by type in sections Vocabulary; Collocations & Phrasal Verbs; Linking Phrases; Sentences & Structures; Grammar Notes; Idioms & Expressions; Common Mistakes. Separately, users create their own collections ("New collection" on My Collections, e.g. Environment, IELTS Writing) that can mix types; the Add form has "Add to collection" (optional, can create a new one). One entry can be in several collections. Content types cannot be created or renamed. Entries have status New, Learning, Mastered.
 - Reading list: save articles (paste a link: title and image fill in), read pasted text and select words to save them with their sentence. Sources: curated websites plus your own.
 - IELTS Workspace: Listening, Reading, Writing Task 1 and 2, Speaking Parts 1–3, each with strategies, practice logs and useful language.
-- Learning Journal: short daily notes. Preferences: name, avatar, goals, review style, pronunciation accent, data export/import, dictionary lookup settings, keyboard shortcuts.
+- Learning Journal: short daily notes. Settings (the page is still at #preferences): name, avatar, goals, review style, pronunciation accent, data export/import, dictionary lookup settings, keyboard shortcuts.
 You (Lumi) can, inside this chat, look up words and save them to My Collections.`;
 
 const SYSTEM = `You are Lumi, a small, warm, upbeat learning buddy inside the Thuverse app. Speak naturally and kindly, like a friendly study partner, never like customer support. Keep replies short (under 120 words), use plain sentences or a few numbered steps.
