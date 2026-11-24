@@ -7,6 +7,10 @@
    Write for learners: what changed and where to find it. Only list things that are live. */
 (function (root) {
   const RELEASES = [
+    {id: '2026-11-24-3', title: 'Language and account controls', items: [
+      {kind: 'new', title: 'Interface language for the Korean workspace', body: 'In the Korean workspace, choose English, Tiếng Việt or 한국어 for menus, buttons and messages from your avatar menu or Settings. Your words and notes stay as you wrote them.'},
+      {kind: 'new', title: 'Delete your account', body: 'Under Settings, Account, the Danger zone lets you permanently delete your account and everything in it, after confirming it’s you.'},
+    ]},
     {id: '2026-11-24-2', title: 'Notifications, a new Settings and a fresh Tarot Corner', items: [
       {kind: 'new', title: 'Notifications', body: 'A bell next to your avatar shows messages for your account. A dot means something is unread; open it and click a message to mark it as read.'},
       {kind: 'improved', title: 'Settings in one window', body: 'Settings now opens over the page you’re on, with Account, Appearance, Preferences, Your data and Keyboard shortcuts in a sidebar. Each section says whether it saves automatically or when you click Save.'},

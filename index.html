@@ -13,6 +13,7 @@
 <script src="content.js"></script>
 <script src="tarot.js"></script>
 <script src="whatsnew.js"></script>
+<script src="i18n.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0/dist/umd/lucide.min.js" onerror="var x=document.createElement('script');x.src='https://unpkg.com/lucide@0/dist/umd/lucide.min.js';x.onload=function(){window.drawIcons&&drawIcons()};document.head.appendChild(x)"></script>
 <style>
 /* =========================================================
@@ -3417,7 +3418,7 @@ function vDashboardKo(){
   </div>
   <aside class="d3-rail">
     <section class="rcard streakcard"><div class="sc-top"><div><h3>${plural(sk.cur,'day')} streak</h3><p>Best: ${plural(sk.best,'day')}</p></div><span class="bolt">${ic('zap')}</span></div>
-      <div class="sc-days">${week.map(d => `<span class="sc-d ${d.on?'on':''} ${d.today?'today':''} ${d.future?'future':''}" title="${fmtD(d.t)}${d.on?' · studied':''}"><i>${d.on ? ic('check') : ''}</i><b>${new Date(d.t).toLocaleDateString('en', {weekday:'narrow'})}</b></span>`).join('')}</div></section>
+      <div class="sc-days">${week.map(d => `<span class="sc-d ${d.on?'on':''} ${d.today?'today':''} ${d.future?'future':''}" title="${fmtD(d.t)}${d.on?' · studied':''}"><i>${d.on ? ic('check') : ''}</i><b>${wdNarrow(d.t)}</b></span>`).join('')}</div></section>
     <section class="rcard"><h3>My learning overview</h3>
       <ul class="ovl">
         <li><a href="#topik"><span class="oi">${ic('target')}</span><span>TOPIK goal<small>TOPIK ${tp.test}${tp.examDate ? ' · ' + fmtD(tp.examDate) : ''}</small></span><b>Lv ${tp.target}</b></a></li>
@@ -3435,20 +3436,22 @@ function vDashboardKo(){
 
 /* ---------- account menu (avatar popover) */
 let SYNC = ['wait', 'loader', 'Loading your library…'];
-const ME = {open:false, sub:false};
+const ME = {open:false, sub:false, subk:'appearance'};
 const meItem = (k, icon, label) => `<button type="button" class="mp-i" role="menuitem" data-mp="${k}">${ic(icon)}<span>${label}</span></button>`;
 function meHTML(){
   const st = settings(), nm = (st.name || '').trim(), [c, icn, t] = SYNC, mode = themeMode();
   const who = Web.uid ? Web.email : '';
   return `<div class="mp-acct"><span class="avatar mp-av" style="${avatarStyle(st)}" aria-hidden="true">${avatarInner(st)}</span>
-      <div class="mp-who"><b dir="auto">${esc(nm || 'Your profile')}</b>${who ? `<small title="${esc(who)}">${esc(who)}</small>` : ''}<button type="button" class="mp-edit" role="menuitem" data-mp="profile">Edit profile</button></div></div>
+      <div class="mp-who">${nm ? `<b dir="auto">${esc(nm)}</b>` : '<b>Your profile</b>'}${who ? `<small title="${esc(who)}">${esc(who)}</small>` : ''}<button type="button" class="mp-edit" role="menuitem" data-mp="profile">Edit profile</button></div></div>
     ${c === 'ok' ? '' : `<div class="sync mp-sync ${c}"><span class="sync-ic">${ic(icn)}</span><span>${esc(t)}</span></div>`}
     <div class="mp-sep" role="separator"></div>
     ${meItem('prefs', 'settings', 'Settings')}${meItem('goals', 'target', 'Learning goals')}
-    <button type="button" class="mp-i ${ME.sub ? 'act' : ''}" role="menuitem" data-mp="appearance" aria-haspopup="menu" aria-expanded="${ME.sub}" aria-controls="mesub">${ic('sun-moon')}<span>Appearance</span><small>${THEME_LBL[mode]}</small>${ic('chevron-right', 'mp-chev')}</button>
+    <button type="button" class="mp-i ${ME.sub && ME.subk !== 'lang' ? 'act' : ''}" role="menuitem" data-mp="appearance" aria-haspopup="menu" aria-expanded="${ME.sub && ME.subk !== 'lang'}" aria-controls="mesub">${ic('sun-moon')}<span>Appearance</span><small>${THEME_LBL[mode]}</small>${ic('chevron-right', 'mp-chev')}</button>
+    ${isKo() ? `<button type="button" class="mp-i ${ME.sub && ME.subk === 'lang' ? 'act' : ''}" role="menuitem" data-mp="language" aria-haspopup="menu" aria-expanded="${ME.sub && ME.subk === 'lang'}" aria-controls="mesub">${ic('languages')}<span>Language</span><small translate="no">${UI_LANGS.find(x => x[0] === uiLangSaved())[1]}</small>${ic('chevron-right', 'mp-chev')}</button>` : ''}
     ${Web.uid ? `<div class="mp-sep" role="separator"></div>${meItem('signout', 'log-out', 'Sign out')}` : ''}`;
 }
 function meSubHTML(){
+  if (ME.subk === 'lang') { const cur = uiLangSaved(); return UI_LANGS.map(([v, l]) => `<button type="button" class="mp-i ${cur === v ? 'on' : ''}" role="menuitemradio" aria-checked="${cur === v}" data-lang-v="${v}"><span translate="no" lang="${v}">${l}</span>${cur === v ? ic('check', 'mp-chk') : ''}</button>`).join(''); }
   const m = themeMode();
   return [['light','sun','Light'],['dark','moon','Dark'],['system','monitor','System']].map(([v, i, l]) =>
     `<button type="button" class="mp-i ${m === v ? 'on' : ''}" role="menuitemradio" aria-checked="${m === v}" data-theme-v="${v}">${ic(i)}<span>${l}</span>${m === v ? ic('check', 'mp-chk') : ''}</button>`).join('')
@@ -3463,7 +3466,7 @@ function mePlace(){
   top = Math.max(M, Math.min(top, vh - ph - M));
   pop.style.left = left + 'px'; pop.style.top = top + 'px';
   if (sub.hidden) return;
-  const it = $('[data-mp=appearance]', pop).getBoundingClientRect(), sw = sub.offsetWidth, sh = sub.offsetHeight;
+  const it = ($(`[data-mp=${ME.subk === 'lang' ? 'language' : 'appearance'}]`, pop) || $('[data-mp=appearance]', pop)).getBoundingClientRect(), sw = sub.offsetWidth, sh = sub.offsetHeight;
   let sl = left - sw - 6, st = it.top - 7;                                // beside the menu, on the side with room
   if (sl < M) { sl = left + pw + 6; if (sl + sw > vw - M) { sl = Math.max(M, Math.min(it.right - sw, vw - sw - M)); st = it.bottom + 4; sub.classList.add('stacked'); } }
   st = Math.max(M, Math.min(st, vh - sh - M));
@@ -3491,19 +3494,21 @@ addEventListener('resize', () => { if (ME.open) mePlace(); });
 addEventListener('keydown', e => {
   if (!ME.open) return;
   const pop = $('#mepop'), sub = $('#mesub'), inSub = sub.contains(document.activeElement), k = e.key;
-  if (k === 'Escape') { e.preventDefault(); e.stopPropagation(); if (ME.sub) meSub(false, '[data-mp=appearance]'); else meClose(true); return; }
+  const subItem = `[data-mp=${ME.subk === 'lang' ? 'language' : 'appearance'}]`;
+  if (k === 'Escape') { e.preventDefault(); e.stopPropagation(); if (ME.sub) meSub(false, subItem); else meClose(true); return; }
   if (k === 'Tab') { meClose(false); return; }
   const list = [...(inSub ? sub : pop).querySelectorAll('[role^=menuitem]')], i = list.indexOf(document.activeElement), n = list.length;
   if (k === 'ArrowDown' || k === 'ArrowUp') { e.preventDefault(); const d = k === 'ArrowDown' ? 1 : -1; list[i < 0 ? (d > 0 ? 0 : n - 1) : (i + d + n) % n].focus(); }
   else if (k === 'Home' || k === 'End') { e.preventDefault(); list[k === 'Home' ? 0 : n - 1].focus(); }
-  else if (k === 'ArrowRight' && document.activeElement && document.activeElement.dataset.mp === 'appearance') { e.preventDefault(); meSub(true, '#mesub [aria-checked=true]'); }
-  else if (k === 'ArrowLeft' && inSub) { e.preventDefault(); meSub(false, '[data-mp=appearance]'); }
+  else if (k === 'ArrowRight' && document.activeElement && (document.activeElement.dataset.mp === 'appearance' || document.activeElement.dataset.mp === 'language')) { e.preventDefault(); ME.subk = document.activeElement.dataset.mp === 'language' ? 'lang' : 'appearance'; meSub(true, '#mesub [aria-checked=true]'); }
+  else if (k === 'ArrowLeft' && inSub) { e.preventDefault(); meSub(false, subItem); }
 }, true);
 document.addEventListener('click', e => {
-  const t = e.target.closest('#mepop [data-mp], #mesub [data-theme-v]'); if (!t) return;
+  const t = e.target.closest('#mepop [data-mp], #mesub [data-theme-v], #mesub [data-lang-v]'); if (!t) return;
   if (t.dataset.themeV) { setTheme(t.dataset.themeV); meSub(false, '[data-mp=appearance]'); return; }
+  if (t.dataset.langV) { setUiLang(t.dataset.langV); meSub(false, '[data-mp=language]'); return; }
   const k = t.dataset.mp;
-  if (k === 'appearance') { meSub(!ME.sub, ME.sub ? '[data-mp=appearance]' : '#mesub [aria-checked=true]'); return; }
+  if (k === 'appearance' || k === 'language') { const want = k === 'language' ? 'lang' : 'appearance', open = !(ME.sub && ME.subk === want); ME.subk = want; meSub(open, open ? '#mesub [aria-checked=true]' : `[data-mp=${k}]`); return; }
   meClose(false);
   const after = fn => setTimeout(fn, 80);
   if (k === 'prefs') setOpen('account');
@@ -3638,6 +3643,8 @@ function render(){
   if (S.view === 'knowledge' && !S.search) { const t = $('.ktabs'), on = t && $('.tab.on', t); if (on && t.scrollWidth > t.clientWidth) t.scrollLeft = Math.max(0, on.offsetLeft - t.offsetLeft - 24); }
   if (ME.open) meRender();
   if (SET.open) setPaint(false);
+  if (I18N.ever) i18nApply(document.body);
+  document.documentElement.setAttribute('lang', uiLang());
   if (NT.open) ntRender();
   if (KPOP.open) kPopPaint();
   bdMount(); bdVisibility();
@@ -4033,7 +4040,7 @@ function vDashboard(){
   <aside class="d3-rail">
     <section class="rcard streakcard">
       <div class="sc-top"><div><h3>${plural(sk.cur,'day')} streak</h3><p>Best: ${plural(sk.best,'day')}</p></div><span class="bolt">${ic('zap')}</span></div>
-      <div class="sc-days">${week.map(d => `<span class="sc-d ${d.on?'on':''} ${d.today?'today':''} ${d.future?'future':''}" title="${fmtD(d.t)}${d.on?' · studied':''}"><i>${d.on ? ic('check') : ''}</i><b>${new Date(d.t).toLocaleDateString('en-GB',{weekday:'narrow'})}</b></span>`).join('')}</div>
+      <div class="sc-days">${week.map(d => `<span class="sc-d ${d.on?'on':''} ${d.today?'today':''} ${d.future?'future':''}" title="${fmtD(d.t)}${d.on?' · studied':''}"><i>${d.on ? ic('check') : ''}</i><b>${wdNarrow(d.t)}</b></span>`).join('')}</div>
     </section>
     <section class="rcard">
       <h3>My learning overview</h3>
@@ -5851,9 +5858,108 @@ function journalDoc(j){
 }
 
 /* ---------- Preferences */
+/* ---------- Interface language for the Korean workspace: English, Tiếng Việt, 한국어.
+   One dictionary (i18n.js → window.I18N[lang], keyed by the English text; "{n}"-style keys are patterns).
+   Interface text and labels whose whole text matches a key are swapped as the page renders, including
+   dialogs, popovers and toasts added later. What people write or save is never touched: anything inside
+   [translate=no], [dir=auto] or an element with a non-English lang is skipped.
+   Saved on the account's settings record (uiLang), so it follows the person and not the device. */
+/* one-letter weekday labels in the interface language (the streak chart) */
+const wdNarrow = t => new Date(t).toLocaleDateString(({vi:'vi-VN', ko:'ko-KR'})[uiLang()] || 'en-GB', {weekday:'narrow'});
+const UI_LANGS = [['en', 'English'], ['vi', 'Tiếng Việt'], ['ko', '한국어']];
+const uiLangSaved = () => { const l = settings().uiLang; return l === 'vi' || l === 'ko' ? l : 'en'; };
+const uiLang = () => isKo() ? uiLangSaved() : 'en';
+const I18N_ATTRS = ['placeholder', 'aria-label', 'title', 'data-tip'];
+const I18N = {lang:'en', map:null, pat:[], orig:new WeakMap(), attr:new WeakMap(), ever:false, miss:null};
+function i18nPrep(l){
+  if (I18N.map && I18N.lang === l) return;
+  I18N.lang = l; I18N.map = new Map(); I18N.pat = [];
+  const d = (window.I18N && window.I18N[l]) || {};
+  for (const [k, v] of Object.entries(d)) {
+    if (/\{\w+\}/.test(k)) { const names = []; const rx = new RegExp('^' + k.replace(/[.*+?^$()|[\]\\]/g, '\\$&').replace(/\\?\{(\w+)\\?\}/g, (m, n) => { names.push(n); return '(.+?)'; }) + '$'); I18N.pat.push([rx, names, v]); }
+    else I18N.map.set(k, v);
+  }
+}
+function i18nStr(t){
+  const k = t.trim(); if (!k || !/[A-Za-z]/.test(k)) return null;
+  let v = I18N.map.get(k);
+  if (v == null) for (const [rx, names, out] of I18N.pat) { const m = k.match(rx); if (m) { v = out.replace(/\{(\w+)\}/g, (_, n) => { const i = names.indexOf(n); return i < 0 ? '' : m[i + 1].trim(); }); break; } }
+  if (v == null) { const dt = i18nDate(k); if (dt) return t.replace(k, dt); }
+  if (v == null) { if (I18N.miss) I18N.miss.add(k); return null; }
+  return t.replace(k, v);
+}
+/* dates as the app writes them ("24 Nov 2026", "Tuesday, 24 November 2026") in the interface language */
+const I18N_MON = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+function i18nDate(k){
+  const m = k.match(/^(?:(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday), )?(\d{1,2}) ([A-Z][a-z]{2})[a-z]* (\d{4})( · .+)?$/); if (!m) return null;
+  const mi = I18N_MON.indexOf(m[3].toLowerCase()); if (mi < 0) return null;
+  const l = I18N.lang, d = Number(m[2]), y = m[4], loc = l === 'ko' ? 'ko-KR' : 'vi-VN';
+  const wd = m[1] ? new Date(Number(y), mi, d).toLocaleDateString(loc, {weekday:'long'}) : '';
+  const base = l === 'ko' ? `${y}년 ${mi + 1}월 ${d}일${wd ? ' ' + wd : ''}` : `${wd ? wd + ', ' : ''}${d} thg ${mi + 1}, ${y}`;
+  const rest = m[5] ? ' · ' + (i18nStr(m[5].slice(3)) || m[5].slice(3)) : '';
+  return base + rest;
+}
+/* everything people have written or saved, so it is never mistaken for interface text */
+const I18N_USER = {set:new Set(), at:0, n:-1};
+function i18nUserText(){
+  const recs = all(), now = Date.now();
+  if (I18N_USER.n === recs.length && now - I18N_USER.at < 1500) return I18N_USER.set;
+  const set = new Set(), add = v => { if (typeof v === 'string') { const t = v.trim(); if (t && t.length < 400) { set.add(t); if (t.includes('\n')) t.split('\n').forEach(x => { x = x.trim(); if (x) set.add(x); }); } } else if (Array.isArray(v)) v.forEach(add); };
+  for (const r of recs) for (const k in r) if (k !== 'id' && k !== 'kind' && k !== 'uiLang' && k !== 'theme') add(r[k]);
+  set.add((settings().name || '').trim());
+  I18N_USER.set = set; I18N_USER.at = now; I18N_USER.n = recs.length; return set;
+}
+const i18nSkip = el => { if (!el) return true; if (el.closest('script,style,textarea,[translate="no"],[dir="auto"],[contenteditable="true"]')) return true; const lg = el.closest('[lang]'); return !!(lg && lg !== document.documentElement && !/^en/i.test(lg.getAttribute('lang'))); };
+function i18nApply(root){
+  const l = uiLang();
+  if (l === 'en' && !I18N.ever) return;
+  if (l !== 'en') I18N.ever = true;
+  i18nPrep(l);
+  if (!root || !root.nodeType) return;
+  if (root.nodeType === 3) { i18nText(root, l); return; }
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n;
+  while ((n = w.nextNode())) i18nText(n, l);
+  const els = root.nodeType === 1 ? [root, ...root.querySelectorAll('[placeholder],[aria-label],[title],[data-tip]')] : [...root.querySelectorAll('[placeholder],[aria-label],[title],[data-tip]')];
+  for (const el of els) {
+    if (!el.getAttribute || i18nSkip(el)) continue;
+    let o = I18N.attr.get(el);
+    for (const a of I18N_ATTRS) {
+      if (!el.hasAttribute(a)) continue;
+      const cur = el.getAttribute(a), prev = o && o[a];
+      const src = prev && (cur === prev.tr) ? prev.src : cur;           // keep the English source across switches
+      const tr = l === 'en' ? null : i18nStr(src);
+      const out = tr == null ? src : tr;
+      if (cur !== out) el.setAttribute(a, out);
+      if (!o) { o = {}; I18N.attr.set(el, o); } o[a] = {src, tr:out};
+    }
+  }
+}
+/* where saved records are shown: here, text that matches something the person saved is left alone */
+const I18N_REC = '.hw,.vi,.gloss,.ex,.fix,.kc-term,.kc-mean,.kc-ex,.kb-body,.def,.notes-txt,.sterm,.svi,.sdef,.sex,.sopt,.jlist,.jgrid,.wlist,.reader,.rtext,.ahero,.uc-card,.uc-head,.cbadge,.sr-opt,.sr-list,.tp-notes,.crumb,.rcard,.arow,.mp-who,.dh,.tr-term,.trs-en,.trs-vi';
+function i18nText(n, l){
+  const p = n.parentElement; if (!p || i18nSkip(p)) return;
+  if (l !== 'en' && p.closest(I18N_REC) && i18nUserText().has((I18N.orig.get(n) || {src:n.nodeValue}).src.trim())) return;
+  const prev = I18N.orig.get(n), cur = n.nodeValue;
+  const src = prev && cur === prev.tr ? prev.src : cur;
+  const tr = l === 'en' ? null : i18nStr(src), out = tr == null ? src : tr;
+  if (cur !== out) n.nodeValue = out;
+  if (out !== src || prev) I18N.orig.set(n, {src, tr:out});
+}
+new MutationObserver(ms => {
+  if (uiLang() === 'en' && !I18N.ever) return;
+  for (const m of ms) for (const n of m.addedNodes) if (n.nodeType === 1 || n.nodeType === 3) i18nApply(n);
+}).observe(document.documentElement, {childList:true, subtree:true});
+function setUiLang(l){
+  if (!UI_LANGS.some(x => x[0] === l)) return;
+  const st = settings(); if ((st.uiLang || 'en') === l) return;
+  Store.put({...clone(st), uiLang:l});
+  render(); i18nApply(document.body);
+  toast(l === 'ko' ? '인터페이스 언어: 한국어' : l === 'vi' ? 'Ngôn ngữ giao diện: Tiếng Việt' : 'Interface language: English');
+}
 /* ---------- Settings, shown in a modal with a category sidebar (see setOpen).
    Each category reuses the controls the Settings page had; saving still goes to the account's settings record. */
-const SET_CATS = [['account', 'Account', 'user'], ['appearance', 'Appearance', 'sun-moon'], ['prefs', 'Preferences', 'sliders-horizontal'], ['data', 'Your data', 'database'], ['keys', 'Keyboard shortcuts', 'keyboard']];
+const setCats = () => SET_CATS.filter(c => c[0] !== 'language' || isKo());
+const SET_CATS = [['account', 'Account', 'user'], ['appearance', 'Appearance', 'sun-moon'], ['language', 'Language', 'languages'], ['prefs', 'Preferences', 'sliders-horizontal'], ['data', 'Your data', 'database'], ['keys', 'Keyboard shortcuts', 'keyboard']];
 const SAVE_NOTE = t => `<p class="set-note">${ic(t === 'auto' ? 'circle-check' : 'info')} ${t === 'auto' ? 'Changes are saved automatically.' : 'Changes apply when you click Save.'}</p>`;
 function setSection(cat){
   const st = settings(), its = items(), samples = all().filter(r => r.sample).length;
@@ -5871,6 +5977,12 @@ function setSection(cat){
     ${Web.uid && !isClaude() ? `<section class="panel danger-zone" id="danger-zone"><h2 class="sec si">${ic('shield-alert')} Danger zone</h2>
       <div class="dz-row"><p>Delete your Thuverse account and everything saved in it, in every language workspace. This can’t be undone.</p>
         <button class="btn danger" data-act="del-account">${ic('user-x')} Delete account</button></div></section>` : ''}`;
+  if (cat === 'language') return `
+    <section class="set-sec"><h4 class="set-h">Interface language</h4>
+      <div class="seg" role="radiogroup" aria-label="Interface language">${UI_LANGS.map(([v, l]) => `<button role="radio" aria-checked="${uiLangSaved() === v}" class="${uiLangSaved() === v ? 'on' : ''}" data-act="set-uilang" data-v="${v}"><span translate="no" lang="${v}">${l}</span></button>`).join('')}</div>
+      <p class="muted" style="margin:12px 0 0;font-size:13.5px">Changes the menus, buttons and messages in the Korean workspace. Your words, notes and the language you are learning stay the same.</p>
+      ${SAVE_NOTE('auto')}
+    </section>`;
   if (cat === 'appearance') return `
     <section class="set-sec"><h4 class="set-h">Theme</h4>
       <div class="seg theme-seg" role="radiogroup" aria-label="Appearance">${['light','dark','system'].map(v => `<button role="radio" aria-checked="${themeMode()===v}" class="${themeMode()===v?'on':''}" data-act="set-theme" data-v="${v}">${ic({light:'sun', dark:'moon', system:'monitor'}[v])} ${THEME_LBL[v]}</button>`).join('')}</div>
@@ -5926,7 +6038,7 @@ ${Web.cfg ? `<p style="margin:0;color:var(--text-2)">When you add vocabulary, Th
 }
 const SET = {open:false, cat:'account', dirty:false, ret:null, body:''};
 function setOpen(cat){
-  if (cat && SET_CATS.some(c => c[0] === cat)) SET.cat = cat;
+  if (cat && setCats().some(c => c[0] === cat)) SET.cat = cat;
   if (S.study) return;
   if (!SET.open) SET.ret = document.activeElement;
   SET.open = true; SET.dirty = false; SET.body = '';
@@ -5949,8 +6061,9 @@ function setOpen(cat){
 function setPaint(force){
   if (!SET.open) return;
   const nav = $('#stm-nav'), body = $('#stm-body'), h = $('#stm-ch'); if (!body) return;
-  nav.innerHTML = SET_CATS.map(([k, l, i]) => `<button type="button" class="stm-cat ${SET.cat === k ? 'on' : ''}" data-act="set-cat" data-v="${k}" ${SET.cat === k ? 'aria-current="page"' : ''}>${ic(i)}<span>${l}</span></button>`).join('');
-  h.textContent = SET_CATS.find(c => c[0] === SET.cat)[1];
+  if (SET.cat === 'language' && !isKo()) SET.cat = 'account';
+  nav.innerHTML = setCats().map(([k, l, i]) => `<button type="button" class="stm-cat ${SET.cat === k ? 'on' : ''}" data-act="set-cat" data-v="${k}" ${SET.cat === k ? 'aria-current="page"' : ''}>${ic(i)}<span>${l}</span></button>`).join('');
+  h.textContent = setCats().find(c => c[0] === SET.cat)[1];
   const ae = document.activeElement, typing = ae && body.contains(ae) && /^(INPUT|SELECT|TEXTAREA)$/.test(ae.tagName);
   if (!force && (typing || SET.dirty)) { drawIcons(); return; }   // don't throw away what someone is typing
   const html = setSection(SET.cat);
@@ -7204,6 +7317,7 @@ const ACT = {
   'sign-out': () => { if (SET.open) setClose(true); webSignOut(); },
   'del-account': () => delAccountOpen(),
   'set-cat': el => setCat(el.dataset.v),
+  'set-uilang': el => setUiLang(el.dataset.v),
   'set-close': () => setClose(),
   'nt-toggle': () => NT.open ? ntClose(true) : ntOpen(),
   'nt-read': el => notifRead(el.dataset.id),
