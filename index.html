@@ -1500,6 +1500,66 @@ body.auth-open .app{visibility:hidden}
 .tw-new{display:grid;gap:6px}.tw-new input{border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:8px 10px;font:14px var(--f-ui);color:var(--text)}
 .tw-save .btn{align-self:flex-end}
 .uc-desc{color:var(--text-2);margin:4px 0 0}
+/* ---------- Settings modal */
+html.stm-lock,html.stm-lock body{overflow:hidden}
+.stm-wrap{position:fixed;inset:0;z-index:93;display:grid;place-items:center;padding:max(14px,4vh) max(14px,3vw)}
+.stm-back{position:absolute;inset:0;background:rgba(18,18,22,.45);backdrop-filter:blur(2px);animation:fade .18s}
+.stm{position:relative;width:min(980px,100%);height:min(720px,100%);display:grid;grid-template-columns:232px minmax(0,1fr);background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:0 30px 80px -30px rgba(0,0,0,.45);overflow:hidden;animation:pop .2s ease-out;outline:none}
+.stm-side{background:var(--side);border-right:1px solid var(--border);padding:22px 12px;display:flex;flex-direction:column;gap:14px;min-height:0}
+.stm-side h2{font:750 20px/1.2 var(--f-ui);letter-spacing:-.01em;margin:0 10px}
+.stm-nav{display:flex;flex-direction:column;gap:2px}
+.stm-cat{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;font-size:14.5px;font-weight:550;color:var(--text-2)}
+.stm-cat .ic{width:17px;height:17px;flex:none}
+.stm-cat:hover{background:var(--surface-2);color:var(--text)}
+.stm-cat.on{background:var(--primary-soft);color:var(--primary-ink);font-weight:650}[data-theme=dark] .stm-cat.on{color:#cfc8ff}
+.stm-cat:focus-visible{outline:2px solid var(--primary);outline-offset:1px}
+.stm-main{display:flex;flex-direction:column;min-width:0;min-height:0}
+.stm-mh{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 16px 12px 28px;border-bottom:1px solid var(--border-2)}
+.stm-mh h3{font:700 18px/1.3 var(--f-ui);margin:0;outline:none}
+.stm-body{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:6px 28px 28px}
+.stm-body>*{max-width:620px}
+.set-sec{padding:20px 0;border-bottom:1px solid var(--border-2)}.set-sec:last-child{border-bottom:0}
+.set-h{font-size:13.5px;font-weight:700;color:var(--text-2);margin:0 0 14px}
+.stm-body .stack{display:flex;flex-direction:column;gap:14px}
+.stm-body .panel{border:0;background:none;box-shadow:none;padding:20px 0;border-radius:0;border-bottom:1px solid var(--border-2);margin:0}
+.stm-body .panel h2.sec{font-size:13.5px;font-weight:700;color:var(--text-2);margin:0 0 14px}.stm-body .panel h2.sec .ic{display:none}
+.set-actions{display:flex;gap:10px;align-items:center}
+.set-note{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);margin:2px 0 0}.set-note .ic{width:14px;height:14px;flex:none}
+.stm-body .seg+ .set-note{margin-top:12px}
+@media (max-width:760px){
+  .stm-wrap{padding:0}
+  .stm{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);height:100%;border-radius:0;border:0}
+  .stm-side{border-right:0;border-bottom:1px solid var(--border);padding:12px 12px 8px;gap:8px}
+  .stm-side h2{font-size:17px;margin:0 4px}
+  .stm-nav{flex-direction:row;overflow-x:auto;scrollbar-width:none;gap:4px}.stm-nav::-webkit-scrollbar{display:none}
+  .stm-cat{flex:none;padding:7px 11px;border-radius:99px;font-size:14px}
+  .stm-mh{position:absolute;top:6px;right:6px;border:0;padding:0}.stm-mh h3{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .stm-body{padding:4px 18px 28px}
+  .stm-body .grid2{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){.stm,.stm-back{animation:none}}
+/* ---------- Notifications */
+.nt-btn{position:relative}.nt-btn .ic{width:19px;height:19px}
+.nt-btn.unread::before{content:"";position:absolute;top:6px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--primary);box-shadow:0 0 0 2px var(--bg)}
+.nt-btn:hover{background:var(--surface-2);color:var(--text)}
+.nt-btn:hover::after,.nt-btn:focus-visible::after{content:attr(data-tip);position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font:600 12.5px/1 var(--f-ui);padding:7px 9px;border-radius:8px;white-space:nowrap;z-index:30;pointer-events:none}
+.nt-btn[aria-expanded=true]::after{display:none}
+.ntpop{position:fixed;z-index:90;width:340px;max-width:calc(100vw - 16px);max-height:min(460px,calc(100vh - 90px));overflow:auto;background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-pop);padding:6px;outline:0}
+.ntpop[hidden]{display:none}
+.nt-head{display:flex;align-items:center;justify-content:space-between;padding:10px 10px 8px}
+.nt-head h3{margin:0;font-size:15px;font-weight:700}
+.nt-count{font-size:12px;font-weight:700;color:var(--primary-ink);background:var(--primary-soft);border-radius:99px;padding:2px 8px}[data-theme=dark] .nt-count{color:#cfc8ff}
+.nt-list{list-style:none;margin:0;padding:0}
+.nt-item{all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;gap:12px;align-items:flex-start;padding:10px;border-radius:12px;position:relative}
+.nt-item:hover{background:var(--surface-2)}.nt-item:focus-visible{outline:2px solid var(--primary);outline-offset:-2px}
+.nt-ic{width:34px;height:34px;flex:none;border-radius:10px;display:grid;place-items:center;background:var(--surface-2);color:var(--text-2)}.nt-ic .ic{width:17px;height:17px}
+.nt-item.unread .nt-ic{background:var(--primary-soft);color:var(--primary)}
+.nt-txt{display:flex;flex-direction:column;gap:3px;min-width:0;padding-right:12px}
+.nt-txt b{font-size:14px}.nt-txt span{font-size:13.5px;line-height:1.5;color:var(--text-2)}.nt-txt small{font-size:12px;color:var(--muted)}
+.nt-item:not(.unread) .nt-txt b{font-weight:600;color:var(--text-2)}
+.nt-dot{position:absolute;top:16px;right:12px;width:8px;height:8px;border-radius:50%;background:var(--primary)}
+.nt-state{display:flex;align-items:center;gap:8px;padding:14px 12px 18px;margin:0;color:var(--muted);font-size:14px}.nt-state .ic{width:16px;height:16px}
+.nt-empty{flex-direction:column;text-align:center;gap:4px;padding:18px 16px 22px}.nt-empty .ic{width:22px;height:22px;margin-bottom:4px}.nt-empty b{color:var(--text);font-size:14px}.nt-empty span{font-size:13px}
 /* ---------- Tarot reading modal (draw → reveal → interpretation) */
 html.trm-lock,html.trm-lock body{overflow:hidden}
 .trm-wrap{position:fixed;inset:0;z-index:95;display:grid;place-items:center;padding:max(14px,2.5vh) max(14px,2.5vw)}
@@ -2018,7 +2078,7 @@ async function linkFinish(r){
     LOGIN.err = !g;
     LOGIN.msg = g ? `Google is connected. You can now sign in with ${(g.identity_data && g.identity_data.email) || 'your Google account'} as well as your email and password.` : 'Google didn’t finish connecting. Nothing was changed; try again.';
   }
-  go('preferences');
+  setOpen('account');
   setTimeout(() => { const n = $('#login-methods'); if (n) n.scrollIntoView({block:'center'}); }, 120);
 }
 /* where email links send people back to: the production site in production, the current site elsewhere */
@@ -3299,8 +3359,8 @@ document.addEventListener('click', e => {
   if (k === 'appearance') { meSub(!ME.sub, ME.sub ? '[data-mp=appearance]' : '#mesub [aria-checked=true]'); return; }
   meClose(false);
   const after = fn => setTimeout(fn, 80);
-  if (k === 'prefs') go('preferences');
-  else if (k === 'profile') { go('preferences'); after(() => { const f = $('#pref-form'); if (f) { f.closest('section').scrollIntoView({block:'start'}); f.elements.name.focus({preventScroll:true}); } }); }
+  if (k === 'prefs') setOpen('account');
+  else if (k === 'profile') { setOpen('account'); after(() => { const f = $('#prof-form'); if (f) f.elements.name.focus({preventScroll:true}); }); }
   else if (k === 'goals') { go('dashboard'); after(() => { const g = $('.tgoal'); if (g) { g.scrollIntoView({block:'center'}); const b = $('button, a', g); if (b) b.focus({preventScroll:true}); } }); }
   else if (k === 'signout') webSignOut();
 });
@@ -3396,9 +3456,11 @@ function route(){
   else if (v === 'article') { S.view = 'article'; S.artId = sub; openArticle(sub); }
   else if (v === 'mycol') { S.view = 'ucol'; if (S.ucId !== sub) { S.ucId = sub; S.ucType = ''; S.ucQ = ''; } }
   else if (v === 'study') { if (!S.view || S.view === 'study') S.view = 'dashboard'; history.replaceState(null, '', '#' + (S.view === 'knowledge' ? 'collections' : S.view)); if (Store.get('session')) { S.ui = {}; S.summary = null; studyOpen(); } else render(); return; }
-  else if (['dashboard','review','journal','preferences','reading','sources','topik','tarot'].includes(v)) S.view = v;
+  else if (v === 'preferences') { if (!S.view || S.view === 'preferences') S.view = 'dashboard'; history.replaceState(null, '', '#' + (S.view === 'knowledge' ? 'collections' : S.view)); render(); setOpen(sub || 'account'); return; }
+  else if (['dashboard','review','journal','reading','sources','topik','tarot'].includes(v)) S.view = v;
   else S.view = 'dashboard';
   if (S.study) studyClose();                 // navigating elsewhere closes the review (progress is already saved)
+  if (SET.open) setClose(true);
   S.summary = null;
   if (S.search) { S.search = ''; $('#gsearch').value = ''; }
   setDrawer(false);
@@ -3419,7 +3481,7 @@ function render(){
   let ss = null, se = null; try { ss = a.selectionStart; se = a.selectionEnd; } catch {}
   renderNav();
   if (S.study) studyPaint();
-  const v = S.search ? vSearch() : ({dashboard:vDashboard, library:vLibrary, collection:vCollection, lesson:vLesson, structure:vStructure, reading:vReading, sources:vSources, topik:vTopik, ucol:vUcol, tarot:vTarot, article:vArticle, study:vStudy, knowledge:vKnowledge, ielts:vIelts, review:vReview, journal:vJournal, preferences:vPrefs}[S.view] || vDashboard)();
+  const v = S.search ? vSearch() : ({dashboard:vDashboard, library:vLibrary, collection:vCollection, lesson:vLesson, structure:vStructure, reading:vReading, sources:vSources, topik:vTopik, ucol:vUcol, tarot:vTarot, article:vArticle, study:vStudy, knowledge:vKnowledge, ielts:vIelts, review:vReview, journal:vJournal}[S.view] || vDashboard)();
   $('#view').innerHTML = v;
   const nm = settings().name;
   if (id) { const n = document.getElementById(id); if (n) { n.focus(); try { if (ss !== null) n.setSelectionRange(ss, se); } catch {} } }
@@ -3428,6 +3490,8 @@ function render(){
   drawIcons();
   if (S.view === 'knowledge' && !S.search) { const t = $('.ktabs'), on = t && $('.tab.on', t); if (on && t.scrollWidth > t.clientWidth) t.scrollLeft = Math.max(0, on.offsetLeft - t.offsetLeft - 24); }
   if (ME.open) meRender();
+  if (SET.open) setPaint(false);
+  if (NT.open) ntRender();
   if (KPOP.open) kPopPaint();
   bdMount(); bdVisibility();
 }
@@ -3455,9 +3519,9 @@ function renderNav(){
     });
   });
   $('#nav').innerHTML = h;
-  $('#pref-link').classList.toggle('on', S.view === 'preferences' && !S.search);
+  $('#pref-link').classList.toggle('on', SET.open);
   const sk = streaks(dayCounts()), nm = (settings().name || '').trim();
-  $('#topstats').innerHTML = `<a class="tstat" href="#dashboard" title="Learning streak">${ic('zap','t-zap')}<b>${sk.cur}</b></a><a class="tstat" href="#review" title="Words due for review">${ic('repeat-2','t-due')}<b>${due}</b></a>${wnData() ? `<button type="button" class="icon-btn wn-btn ${wnUnread() ? 'unread' : ''}" id="wn-btn" data-act="whatsnew" data-tip="What’s new" aria-label="What’s new${wnUnread() ? ' (new updates)' : ''}">${ic('sparkle')}</button>` : ''}<button type="button" class="avatar me-btn ${SYNC[0]==='err'?'alert':''}" id="me-btn" data-act="me-menu" aria-haspopup="menu" aria-expanded="${ME.open}" aria-controls="mepop" title="${esc(nm ? nm + ' · Account menu' : 'Account menu')}${SYNC[0]==='err' ? ' · ' + SYNC[2] : ''}" style="${avatarStyle(settings())}">${avatarInner(settings())}</button>`;
+  $('#topstats').innerHTML = `<a class="tstat" href="#dashboard" title="Learning streak">${ic('zap','t-zap')}<b>${sk.cur}</b></a><a class="tstat" href="#review" title="Words due for review">${ic('repeat-2','t-due')}<b>${due}</b></a>${wnData() ? `<button type="button" class="icon-btn wn-btn ${wnUnread() ? 'unread' : ''}" id="wn-btn" data-act="whatsnew" data-tip="What’s new" aria-label="What’s new${wnUnread() ? ' (new updates)' : ''}">${ic('sparkle')}</button>` : ''}${Store.mode ? (() => { const n = ntUnread(); return `<button type="button" class="icon-btn nt-btn ${n ? 'unread' : ''}" id="nt-btn" data-act="nt-toggle" data-tip="Notifications" aria-haspopup="dialog" aria-expanded="${NT.open}" aria-label="Notifications${n ? `, ${n} unread` : ''}">${ic('bell')}</button>`; })() : ''}<button type="button" class="avatar me-btn ${SYNC[0]==='err'?'alert':''}" id="me-btn" data-act="me-menu" aria-haspopup="menu" aria-expanded="${ME.open}" aria-controls="mepop" title="${esc(nm ? nm + ' · Account menu' : 'Account menu')}${SYNC[0]==='err' ? ' · ' + SYNC[2] : ''}" style="${avatarStyle(settings())}">${avatarInner(settings())}</button>`;
 }
 const PILLIC = {new:'circle-dashed', learning:'clock', mastered:'circle-check'};
 const statusPill = r => `<button class="pill ${r.status||'new'}" data-act="cycle-status" data-id="${r.id}" title="Change status">${ic(PILLIC[r.status||'new'])} ${cap(r.status||'new')}</button>`;
@@ -3972,6 +4036,7 @@ function obScene(n){
 }
 function onboardShow(){
   if (settings().onboarding || $('#ob-form')) return;
+  notifAdd('welcome', 'welcome');                 // brand-new accounts only; never duplicated (fixed id)
   const st0 = settings();
   const ob = {step:1, name:st0.name || '', goals:[], other:'', daily:Number(st0.dailyNew) || 10, tg:{}};
   const latest = () => (window.WHATS_NEW && WHATS_NEW.latest) || '';
@@ -4045,6 +4110,62 @@ function onboardShow(){
   }});
 }
 
+/* ---------- Notifications. Kept on the account's settings record (settings.notifications =
+   [{id, type, at, read}]), which is already synced, limited to its owner by row-level security and shared by
+   every workspace. Text lives here, by type, so stored items stay small and new types are one entry.
+   An id is never added twice, so retries and other devices can't duplicate a notification. */
+const NOTIF_TYPES = {
+  welcome:{icon:'hand-heart', title:'Welcome to Thuverse!', body:'Your personal language-learning space is ready. Start building your vocabulary and make progress at your own pace.'},
+};
+const NT = {open:false};
+const notifs = () => (settings().notifications || []).filter(n => n && NOTIF_TYPES[n.type]).sort((a, b) => (b.at || 0) - (a.at || 0));
+const ntReady = () => Store.mode === 'cloud' || Store.mode === 'local';
+const ntUnread = () => ntReady() ? notifs().filter(n => !n.read).length : 0;
+function notifAdd(id, type){
+  const st = settings(), list = Array.isArray(st.notifications) ? st.notifications : [];
+  if (!NOTIF_TYPES[type] || list.some(n => n && n.id === id)) return false;
+  Store.put({...clone(st), notifications:[{id, type, at:Date.now(), read:0}, ...list].slice(0, 50)}); return true;
+}
+function notifRead(id){
+  const st = settings(), list = Array.isArray(st.notifications) ? st.notifications : [];
+  if (!list.some(n => n && n.id === id && !n.read)) return;
+  Store.put({...clone(st), notifications:list.map(n => n && n.id === id ? {...n, read:Date.now()} : n)});
+}
+const ntWhen = t => { const m = Math.round((Date.now() - t) / 60000); return m < 1 ? 'Just now' : m < 60 ? `${m} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : new Date(t).toLocaleDateString('en-GB', {day:'numeric', month:'short'}); };
+function ntHTML(){
+  const n = ntUnread(), list = notifs();
+  const head = `<div class="nt-head"><h3 id="nt-h">Notifications</h3>${n ? `<span class="nt-count">${n} new</span>` : ''}</div>`;
+  if (!ntReady()) return head + `<p class="nt-state" role="status">${ic('loader-circle', 'spin')} Loading…</p>`;
+  if (!list.length) return head + `<div class="nt-state nt-empty">${ic('bell')}<b>No notifications yet</b><span>We’ll let you know here when there’s something new.</span></div>`;
+  return head + `<ul class="nt-list">${list.map(x => { const t = NOTIF_TYPES[x.type];
+    return `<li><button type="button" class="nt-item ${x.read ? '' : 'unread'}" data-act="nt-read" data-id="${esc(x.id)}" aria-label="${esc(t.title)}${x.read ? '' : ', unread'}"><span class="nt-ic">${ic(t.icon)}</span>
+      <span class="nt-txt"><b>${esc(t.title)}</b><span>${esc(t.body)}</span><small>${ntWhen(x.at || Date.now())}${x.read ? '' : ' · Unread'}</small></span>${x.read ? '' : '<i class="nt-dot" aria-hidden="true"></i>'}</button></li>`; }).join('')}</ul>`;
+}
+function ntRender(){
+  let pop = $('#ntpop');
+  if (!NT.open) { if (pop) pop.hidden = true; return; }
+  if (!pop) { pop = document.createElement('div'); pop.id = 'ntpop'; pop.className = 'ntpop'; pop.setAttribute('role', 'dialog'); pop.setAttribute('aria-labelledby', 'nt-h'); pop.tabIndex = -1; document.body.appendChild(pop); }
+  const ae = document.activeElement, keep = ae && pop.contains(ae) && ae.dataset.id ? `[data-id="${ae.dataset.id}"]` : '';
+  pop.innerHTML = ntHTML(); pop.hidden = false; drawIcons(); ntPlace();
+  if (keep) { const f = pop.querySelector(keep); if (f) f.focus({preventScroll:true}); }
+  const b = $('#nt-btn'); if (b) b.setAttribute('aria-expanded', 'true');
+}
+function ntPlace(){
+  const btn = $('#nt-btn'), pop = $('#ntpop'); if (!pop) return;
+  if (!btn || !btn.getClientRects().length) return ntClose(false);
+  const r = btn.getBoundingClientRect(), vw = document.documentElement.clientWidth, M = 8, pw = pop.offsetWidth;
+  pop.style.left = Math.max(M, Math.min(r.right - pw, vw - pw - M)) + 'px'; pop.style.top = (r.bottom + 8) + 'px';
+}
+function ntOpen(){ meClose(false); NT.open = true; ntRender(); const f = $('#ntpop .nt-item') || $('#ntpop'); f.focus({preventScroll:true}); }
+function ntClose(restore){ NT.open = false; ntRender(); const b = $('#nt-btn'); if (b) { b.setAttribute('aria-expanded', 'false'); if (restore) b.focus(); } }
+document.addEventListener('pointerdown', e => { if (NT.open && !e.target.closest('#ntpop,#nt-btn')) ntClose(false); }, true);
+addEventListener('resize', () => { if (NT.open) ntPlace(); });
+document.addEventListener('keydown', e => {
+  if (!NT.open) return;
+  if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); ntClose(true); return; }
+  if (e.key === 'Tab' && !$('#ntpop').contains(document.activeElement)) ntClose(false);
+  if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && $('#ntpop').contains(document.activeElement)) { const bs = $$('#ntpop .nt-item'); if (!bs.length) return; e.preventDefault(); const i = bs.indexOf(document.activeElement); bs[Math.max(0, Math.min(bs.length - 1, i + (e.key === 'ArrowDown' ? 1 : -1)))].focus(); }
+}, true);
 /* ---------- What's new: release notes from whatsnew.js; the newest one seen is kept on the account (settings.whatsNewSeen). */
 const WN_KINDS = [['new', 'New features', 'sparkle'], ['improved', 'Improvements', 'trending-up'], ['fixed', 'Fixes', 'wrench']];
 const wnData = () => (window.WHATS_NEW && Array.isArray(WHATS_NEW.releases)) ? WHATS_NEW : null;
@@ -5583,17 +5704,33 @@ function journalDoc(j){
 }
 
 /* ---------- Preferences */
-function vPrefs(){
+/* ---------- Settings, shown in a modal with a category sidebar (see setOpen).
+   Each category reuses the controls the Settings page had; saving still goes to the account's settings record. */
+const SET_CATS = [['account', 'Account', 'user'], ['appearance', 'Appearance', 'sun-moon'], ['prefs', 'Preferences', 'sliders-horizontal'], ['data', 'Your data', 'database'], ['keys', 'Keyboard shortcuts', 'keyboard']];
+const SAVE_NOTE = t => `<p class="set-note">${ic(t === 'auto' ? 'circle-check' : 'info')} ${t === 'auto' ? 'Changes are saved automatically.' : 'Changes apply when you click Save.'}</p>`;
+function setSection(cat){
   const st = settings(), its = items(), samples = all().filter(r => r.sample).length;
   const where = {cloud: Web.uid ? `Your library is saved to your Thuverse account (${esc(Web.email)}) and syncs to every device where you sign in.` : 'Your library is saved to your Claude account, so it follows you to any device where you open this page.', syncing:'Connecting to your account…', starting:'Connecting to your account…', local:'Your account’s storage isn’t available here, so your library is saved in this browser only. Export a backup regularly.', error:'Your account can’t be reached right now. Changes are kept in this browser and will sync when it reconnects.'}[Store.mode];
-  return `
-  <h1 class="page">Settings</h1><p class="lede">Your profile, goals, how the app looks and sounds, and your data.</p>
-  <div class="prefs">
-    <section class="panel"><h2 class="sec si">${ic('user')} Profile and goals</h2>
-      <form class="stack" id="pref-form">
+  if (cat === 'account') return `
+    <section class="set-sec"><h4 class="set-h">Profile</h4>
+      <form class="stack" id="prof-form">
         <label class="fld"><span>Display name</span><input name="name" value="${esc(st.name||'')}" placeholder="How should Thuverse greet you?" maxlength="40" autocomplete="nickname"></label>
         <div class="fld"><span>Avatar</span>${avatarPickerHTML(st.avatar || '', st.name || '')}</div>
-        ${isKo() ? `<input type="hidden" name="target" value="${esc(st.target||7)}"><input type="hidden" name="examDate" value="${esc(st.examDate||'')}">` : `<div class="grid2">
+        <div class="set-actions"><button class="btn primary">${ic('check')} Save profile</button></div>${SAVE_NOTE('save')}
+      </form>
+    </section>
+    ${loginMethodsHTML()}
+    ${Web.uid ? `<section class="set-sec"><h4 class="set-h">Account actions</h4><p class="muted" style="margin:0 0 12px">Signed in as <b>${esc(Web.email)}</b>.</p><button class="btn" data-act="sign-out">${ic('log-out')} Sign out</button></section>` : ''}`;
+  if (cat === 'appearance') return `
+    <section class="set-sec"><h4 class="set-h">Theme</h4>
+      <div class="seg theme-seg" role="radiogroup" aria-label="Appearance">${['light','dark','system'].map(v => `<button role="radio" aria-checked="${themeMode()===v}" class="${themeMode()===v?'on':''}" data-act="set-theme" data-v="${v}">${ic({light:'sun', dark:'moon', system:'monitor'}[v])} ${THEME_LBL[v]}</button>`).join('')}</div>
+      ${themeMode() === 'system' ? `<p class="muted" style="margin:10px 0 0;font-size:13.5px">Follows your device, currently ${document.documentElement.dataset.theme}.</p>` : ''}
+      <p class="set-note">${ic('circle-check')} Changes are saved automatically${Web.uid || (isClaude() && Store.mode === 'cloud') ? ' to your account and follow you to every device' : ' in this browser'}.</p>
+    </section>`;
+  if (cat === 'prefs') return `
+    <section class="set-sec"><h4 class="set-h">Study</h4>
+      <form class="stack" id="pref-form">
+        ${isKo() ? '' : `<div class="grid2">
           <label class="fld"><span>IELTS target band</span><select name="target">${[5,5.5,6,6.5,7,7.5,8,8.5,9].map(b => `<option ${Number(st.target)===b?'selected':''}>${b}</option>`).join('')}</select></label>
           <label class="fld"><span>IELTS exam date <em>optional</em></span><input type="date" name="examDate" value="${esc(st.examDate||'')}"></label>
         </div>`}
@@ -5601,30 +5738,11 @@ function vPrefs(){
           <label class="fld"><span>New words per day</span><select name="dailyNew">${[5,10,15,20,30].map(n => `<option ${Number(st.dailyNew||10)===n?'selected':''}>${n}</option>`).join('')}</select></label>
           <label class="fld"><span>Review style</span><select name="reviewStyle">${[['mix','Mixed (recommended)'],['flip','Flashcards'],['type','Type the answer']].map(([v,l]) => `<option value="${v}" ${(st.reviewStyle||'mix')===v?'selected':''}>${l}</option>`).join('')}</select></label>
         </div>
-        ${isKo() ? `<input type="hidden" name="accent" value="${esc(st.accent||'en-GB')}">` : `<label class="fld"><span>English pronunciation for the listen button</span><select name="accent"><option value="en-GB" ${st.accent!=='en-US'?'selected':''}>British English</option><option value="en-US" ${st.accent==='en-US'?'selected':''}>American English</option></select></label>`}
-        <div><button class="btn primary">${ic('check')} Save preferences</button></div>
+        ${isKo() ? '' : `<label class="fld"><span>English pronunciation for the listen button</span><select name="accent"><option value="en-GB" ${st.accent!=='en-US'?'selected':''}>British English</option><option value="en-US" ${st.accent==='en-US'?'selected':''}>American English</option></select></label>`}
+        <div class="set-actions"><button class="btn primary">${ic('check')} Save preferences</button></div>${SAVE_NOTE('save')}
       </form>
     </section>
-    ${loginMethodsHTML()}
-    <section class="panel"><h2 class="sec si">${ic('sun-moon')} Appearance</h2>
-      <div class="seg theme-seg" role="radiogroup" aria-label="Appearance">${['light','dark','system'].map(v => `<button role="radio" aria-checked="${themeMode()===v}" class="${themeMode()===v?'on':''}" data-act="set-theme" data-v="${v}">${ic({light:'sun', dark:'moon', system:'monitor'}[v])} ${THEME_LBL[v]}</button>`).join('')}</div>
-      <p class="muted" style="margin:10px 0 0;font-size:13.5px">${themeMode() === 'system' ? `Follows your device, currently ${document.documentElement.dataset.theme}. ` : ''}${Web.uid || (isClaude() && Store.mode === 'cloud') ? 'Saved to your account, so it follows you to every device.' : 'Saved in this browser.'}</p>
-    </section>
-    <section class="panel"><h2 class="sec si">${ic('database')} Your data</h2>
-      <div class="stack">
-        <p style="margin:0;color:var(--ink-2)">${where}</p>
-        <p style="margin:0" class="muted">${plural(its.length,'entry','entries')}, ${plural(all().filter(r=>r.kind==='note').length,'IELTS note')}, ${plural(journals().length,'journal entry','journal entries')}.</p>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn" data-act="export">${ic('copy')} Copy backup (JSON)</button>
-          <button class="btn" data-act="import-open">${ic('upload')} Import backup</button>
-          ${Web.uid ? `<button class="btn" data-act="sign-out">${ic('log-out')} Sign out</button>` : ''}
-          ${samples ? `<button class="btn" data-act="remove-samples">${ic('eraser')} Remove ${samples} example entries</button>` : `<button class="btn" data-act="starter">${ic('sparkles')} Load example entries</button>`}
-        </div>
-        <div id="io-area"></div>
-        <div style="border-top:1px solid var(--rule-2);padding-top:12px"><button class="btn danger" data-act="wipe">${ic('trash-2')} Delete all my data</button></div>
-      </div>
-    </section>
-    <section class="panel"><h2 class="sec si">${ic('file-search')} Dictionary lookup</h2>
+    <section class="set-sec"><h4 class="set-h">Dictionary lookup</h4>
       <form class="stack" id="dict-form">
 ${Web.cfg ? `<p style="margin:0;color:var(--text-2)">When you add vocabulary, Thuverse looks the word up in free, openly licensed dictionaries (Free Dictionary API, Wiktionary, Datamuse) through its own server. The words you look up are sent to those services.</p>
         <p class="muted" style="margin:0;font-size:13.5px">Merriam-Webster Learner’s: <b>${Web.cfg.mw ? 'on' : 'off'}</b>. ${Web.cfg.mw ? 'Its key is kept on the server.' : 'To add it, put a free Learner’s key in the MW_API_KEY setting of your Vercel project.'}</p>
@@ -5634,16 +5752,97 @@ ${Web.cfg ? `<p style="margin:0;color:var(--text-2)">When you add vocabulary, Th
         <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary">${ic('check')} Save key</button><button type="button" class="btn" data-act="lk-test">${ic('flask-conical')} Test lookup</button></div>`}
         <div id="lk-test"></div>
       </form>
-    </section>
-    <section class="panel"><h2 class="sec si">${ic('keyboard')} Keyboard shortcuts</h2>
-      <div class="detail" style="padding:0"><dl class="facts">
+    </section>`;
+  if (cat === 'data') return `
+    <section class="set-sec"><h4 class="set-h">Backup and data</h4>
+      <div class="stack">
+        <p style="margin:0;color:var(--ink-2)">${where}</p>
+        <p style="margin:0" class="muted">${plural(its.length,'entry','entries')}, ${plural(all().filter(r=>r.kind==='note').length,'IELTS note')}, ${plural(journals().length,'journal entry','journal entries')}.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" data-act="export">${ic('copy')} Copy backup (JSON)</button>
+          <button class="btn" data-act="import-open">${ic('upload')} Import backup</button>
+          ${samples ? `<button class="btn" data-act="remove-samples">${ic('eraser')} Remove ${samples} example entries</button>` : `<button class="btn" data-act="starter">${ic('sparkles')} Load example entries</button>`}
+        </div>
+        <div id="io-area"></div>
+        <div style="border-top:1px solid var(--rule-2);padding-top:12px"><button class="btn danger" data-act="wipe">${ic('trash-2')} Delete all my data</button></div>
+      </div>
+    </section>`;
+  return `<section class="set-sec"><div class="detail" style="padding:0"><dl class="facts">
         <dt>/</dt><dd>Search everything</dd><dt>N</dt><dd>Add a new vocabulary entry</dd><dt>R</dt><dd>Start reviewing what is due</dd>
         <dt>Space</dt><dd>Flip a flashcard</dd><dt>1 – 4</dt><dd>Rate a card: forgot, hard, remembered, easy</dd><dt>Esc</dt><dd>Close a dialog or end a review</dd>
       </dl></div>
       <p class="muted" style="font-size:14px;margin:14px 0 0">In notes and answers, wrap words in **double asterisks** to make them bold.</p>
-    </section>
-  </div>`;
+    </section>`;
 }
+const SET = {open:false, cat:'account', dirty:false, ret:null, body:''};
+function setOpen(cat){
+  if (cat && SET_CATS.some(c => c[0] === cat)) SET.cat = cat;
+  if (S.study) return;
+  if (!SET.open) SET.ret = document.activeElement;
+  SET.open = true; SET.dirty = false; SET.body = '';
+  meClose(false);
+  let el = $('#stm');
+  if (!el) {
+    el = document.createElement('div'); el.id = 'stm'; el.className = 'stm-wrap';
+    el.innerHTML = `<div class="stm-back" aria-hidden="true"></div>
+      <div class="stm" role="dialog" aria-modal="true" aria-labelledby="stm-t" tabindex="-1">
+        <aside class="stm-side"><h2 id="stm-t">Settings</h2><nav class="stm-nav" aria-label="Settings sections" id="stm-nav"></nav></aside>
+        <section class="stm-main" aria-labelledby="stm-ch"><header class="stm-mh"><h3 id="stm-ch" tabindex="-1"></h3><button type="button" class="icon-btn" data-act="set-close" aria-label="Close settings">${ICON.x}</button></header>
+          <div class="stm-body" id="stm-body"></div></section>
+      </div>`;
+    document.body.insertBefore(el, $('#modal-root'));
+  }
+  document.documentElement.classList.add('stm-lock');
+  setPaint(true); render();
+  setTimeout(() => { const b = $(`#stm-nav [data-v="${SET.cat}"]`); if (b) b.focus({preventScroll:true}); }, 30);
+}
+function setPaint(force){
+  if (!SET.open) return;
+  const nav = $('#stm-nav'), body = $('#stm-body'), h = $('#stm-ch'); if (!body) return;
+  nav.innerHTML = SET_CATS.map(([k, l, i]) => `<button type="button" class="stm-cat ${SET.cat === k ? 'on' : ''}" data-act="set-cat" data-v="${k}" ${SET.cat === k ? 'aria-current="page"' : ''}>${ic(i)}<span>${l}</span></button>`).join('');
+  h.textContent = SET_CATS.find(c => c[0] === SET.cat)[1];
+  const ae = document.activeElement, typing = ae && body.contains(ae) && /^(INPUT|SELECT|TEXTAREA)$/.test(ae.tagName);
+  if (!force && (typing || SET.dirty)) { drawIcons(); return; }   // don't throw away what someone is typing
+  const html = setSection(SET.cat);
+  if (html !== SET.body) {
+    const keep = ae && body.contains(ae) ? (ae.id ? '#' + ae.id : ae.dataset.act ? `[data-act="${ae.dataset.act}"]${ae.dataset.v ? `[data-v="${ae.dataset.v}"]` : ''}` : '') : '';
+    const st = force ? 0 : body.scrollTop; body.innerHTML = SET.body = html; body.scrollTop = st;
+    if (keep) { const f = body.querySelector(keep); if (f) f.focus({preventScroll:true}); }
+  }
+  drawIcons();
+}
+async function setDiscardOk(){ return !SET.dirty || await confirmBox('Discard unsaved changes?', 'You changed some settings without saving them. They will be lost.', 'Discard changes'); }
+async function setCat(cat){
+  if (cat === SET.cat) return;
+  if (!await setDiscardOk()) return;
+  SET.cat = cat; SET.dirty = false; setPaint(true);
+  const b = $(`#stm-nav [data-v="${cat}"]`); if (b) { b.focus({preventScroll:true}); b.scrollIntoView({block:'nearest', inline:'nearest'}); }
+}
+async function setClose(force){
+  if (!SET.open) return;
+  if (!force && !await setDiscardOk()) return;
+  SET.open = false; SET.dirty = false; SET.body = '';
+  const el = $('#stm'); if (el) el.remove();
+  document.documentElement.classList.remove('stm-lock');
+  render();
+  const r = SET.ret; SET.ret = null; setTimeout(() => { if (r && document.contains(r)) r.focus({preventScroll:true}); }, 40);
+}
+document.addEventListener('input', e => { if (SET.open && e.target.closest('#stm-body form')) SET.dirty = true; });
+document.addEventListener('click', e => { if (SET.open && e.target.closest('#stm-body .avpick-grid button, #stm-body [data-avpick] button')) SET.dirty = true; });
+document.addEventListener('pointerdown', e => { if (SET.open && e.target.classList && e.target.classList.contains('stm-back') && !$('#modal-root').firstElementChild) setClose(); });
+document.addEventListener('keydown', e => {
+  if (!SET.open || $('#modal-root').firstElementChild) return;
+  if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); setClose(); return; }
+  if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && e.target.closest && e.target.closest('#stm-nav')) {
+    e.preventDefault(); const bs = $$('#stm-nav .stm-cat'), i = bs.indexOf(e.target); const n = bs[(i + (e.key === 'ArrowDown' ? 1 : -1) + bs.length) % bs.length]; n.focus(); return;
+  }
+  if (e.key === 'Tab') {
+    const box = $('#stm .stm'); const fs = $$('button:not([disabled]),input:not([disabled]):not([type=hidden]),select,textarea,a[href],[tabindex="0"]', box).filter(x => x.offsetParent !== null);
+    if (!fs.length) return; const i = fs.indexOf(document.activeElement);
+    if (e.shiftKey && i <= 0) { e.preventDefault(); fs[fs.length - 1].focus(); }
+    else if (!e.shiftKey && (i === -1 || i === fs.length - 1)) { e.preventDefault(); fs[0].focus(); }
+  }
+}, true);
 
 /* ---------- Search */
 
@@ -6851,7 +7050,11 @@ const ACT = {
   'resume': () => { S.ui = {}; S.summary = null; studyOpen(); },
   'c-filter': el => { S.cFilter = el.dataset.v; render(); },
   'lk-test': () => lkTest(),
-  'sign-out': () => webSignOut(),
+  'sign-out': () => { if (SET.open) setClose(true); webSignOut(); },
+  'set-cat': el => setCat(el.dataset.v),
+  'set-close': () => setClose(),
+  'nt-toggle': () => NT.open ? ntClose(true) : ntOpen(),
+  'nt-read': el => notifRead(el.dataset.id),
   'tg-edit': () => { S.tgEdit = true; render(); },
   'tg-cancel': () => { S.tgEdit = false; render(); },
   'vp-range': el => { S.vpRange = el.dataset.v; render(); },
@@ -6971,7 +7174,7 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('keydown', e => {
   const tag = (e.target.tagName || '').toLowerCase(), typing = ['input','textarea','select'].includes(tag) || e.target.isContentEditable;
-  const modal = !!$('#modal-root').firstElementChild || TRM.open;
+  const modal = !!$('#modal-root').firstElementChild || TRM.open || SET.open;
   if (e.key === 'Escape') {
     if (modal) { closeModal(); return; }
     if (S.search) { S.search = ''; $('#gsearch').value = ''; $('#gsearch').blur(); render(); return; }
@@ -7034,11 +7237,18 @@ document.addEventListener('change', e => {
 document.addEventListener('submit', e => {
   if (e.target.id === 'tp-form') { e.preventDefault(); const f = e.target, v = Object.fromEntries(new FormData(f)); topicUpdate(f.dataset.k, f.dataset.id, r => { r.notes = String(v.notes || '').trim(); r.myExamples = String(v.myExamples || '').trim(); r.notesAt = Date.now(); }); toast('Notes saved'); return; }
   if (e.target.id === 'tg-form') { e.preventDefault(); const t = tgFromForm(e.target); S.tgEdit = false; Store.put({...clone(settings()), ieltsTargets:t}); toast('IELTS targets saved'); return; }
-  if (e.target.id === 'dict-form') { e.preventDefault(); const k = new FormData(e.target).get('mwKey') || ''; Store.put({...clone(settings()), mwKey:String(k).trim()}); toast(k ? 'Key saved' : 'Key removed'); return; }
-  if (e.target.id !== 'pref-form') return;
-  e.preventDefault(); const v = Object.fromEntries(new FormData(e.target));
-  Store.put({...clone(settings()), name:v.name.trim(), avatar:String(v.avatar || ''), target:Number(v.target), examDate:v.examDate, accent:v.accent, dailyNew:Number(v.dailyNew)||10, reviewStyle:v.reviewStyle||'mix'});
-  toast('Settings saved');
+  if (e.target.id === 'dict-form') { e.preventDefault(); SET.dirty = false; SET.body = ''; const k = new FormData(e.target).get('mwKey') || ''; Store.put({...clone(settings()), mwKey:String(k).trim()}); toast(k ? 'Key saved' : 'Key removed'); return; }
+  if (e.target.id !== 'pref-form' && e.target.id !== 'prof-form') return;
+  e.preventDefault(); const v = Object.fromEntries(new FormData(e.target)), up = {};
+  if ('name' in v) up.name = v.name.trim();
+  if ('avatar' in v) up.avatar = String(v.avatar || '');
+  if ('target' in v) up.target = Number(v.target);
+  if ('examDate' in v) up.examDate = v.examDate;
+  if ('accent' in v) up.accent = v.accent;
+  if ('dailyNew' in v) up.dailyNew = Number(v.dailyNew) || 10;
+  if ('reviewStyle' in v) up.reviewStyle = v.reviewStyle || 'mix';
+  Store.put({...clone(settings()), ...up}); SET.dirty = false; SET.body = '';
+  toast(e.target.id === 'prof-form' ? 'Profile saved' : 'Preferences saved');
 });
 $('#gsearch').addEventListener('input', e => srQuery(e.target.value));
 $('#gsearch').addEventListener('focus', e => { if (e.target.value.trim() && SR.res && !S.search) srShow(true); });
