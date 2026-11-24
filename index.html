@@ -522,6 +522,15 @@ h1.ih{display:flex;align-items:center;gap:16px}
 
 /* ---------- study session (flashcards) */
 .study{max-width:640px;margin:0 auto}
+/* ---------- Review modal */
+html.svm-lock,html.svm-lock body{overflow:hidden}
+.svm-wrap{position:fixed;inset:0;z-index:94;display:grid;place-items:center;padding:max(14px,3vh) max(14px,3vw)}
+.svm-back{position:absolute;inset:0;background:rgba(18,18,22,.5);backdrop-filter:blur(3px);animation:fade .18s}
+.svm{position:relative;width:min(920px,100%);min-height:min(560px,100%);max-height:min(900px,100%);display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--border);border-radius:24px;box-shadow:0 40px 90px -30px rgba(0,0,0,.55);overflow:hidden;animation:pop .2s ease-out;outline:none}
+.svm-body{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:clamp(18px,3.4vh,34px) clamp(16px,4vw,44px)}
+.svm-body .study{margin:0 auto}
+@media (max-width:640px){.svm-wrap{padding:0}.svm{width:100%;height:100%;border-radius:0;border:0}}
+@media (prefers-reduced-motion:reduce){.svm,.svm-back{animation:none}}
 .sbar{display:flex;align-items:center;gap:12px;margin-bottom:22px;font-size:14px;color:var(--muted)}
 .sbar .track{flex:1;height:8px;background:var(--surface-3);border-radius:999px;overflow:hidden}
 .sbar .track i{display:block;height:100%;background:var(--primary);border-radius:999px}
@@ -2813,6 +2822,15 @@ document.addEventListener('keydown', e => {
   }
 }, true);
 addEventListener('resize', () => { if (TRM.open) { trmPopPlace(); trmTip(null); } });
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Tab' || !S.study || TRM.open || $('#modal-root').firstElementChild) return;
+  const box = $('#svm .svm'); if (!box) return;
+  const fs = $$('button:not([disabled]),input:not([disabled]),select,textarea,a[href],[tabindex="0"]', box).filter(x => x.offsetParent !== null);
+  if (!fs.length) { e.preventDefault(); box.focus(); return; }
+  const i = fs.indexOf(document.activeElement);
+  if (e.shiftKey && i <= 0) { e.preventDefault(); fs[fs.length - 1].focus(); }
+  else if (!e.shiftKey && (i === -1 || i === fs.length - 1)) { e.preventDefault(); fs[0].focus(); }
+}, true);
 /* ---------- My Collections: one filtered list, three views (list, grid, board) — like database views.
    Views only change how the same entries are shown; status changes on the board are ordinary entry updates. */
 /* Entry-type tabs: the same S.kCol filter the #collections-<type> routes set (one source of truth).
@@ -3377,9 +3395,11 @@ function route(){
   else if (v === 'structure' && STRUCTS[sub]) { S.view = 'structure'; S.structId = sub; openStructure(sub); }
   else if (v === 'article') { S.view = 'article'; S.artId = sub; openArticle(sub); }
   else if (v === 'mycol') { S.view = 'ucol'; if (S.ucId !== sub) { S.ucId = sub; S.ucType = ''; S.ucQ = ''; } }
-  else if (['dashboard','review','journal','preferences','reading','sources','study','topik','tarot'].includes(v)) S.view = v;
+  else if (v === 'study') { if (!S.view || S.view === 'study') S.view = 'dashboard'; history.replaceState(null, '', '#' + (S.view === 'knowledge' ? 'collections' : S.view)); if (Store.get('session')) { S.ui = {}; S.summary = null; studyOpen(); } else render(); return; }
+  else if (['dashboard','review','journal','preferences','reading','sources','topik','tarot'].includes(v)) S.view = v;
   else S.view = 'dashboard';
-  if (S.view !== 'study') S.summary = null;
+  if (S.study) studyClose();                 // navigating elsewhere closes the review (progress is already saved)
+  S.summary = null;
   if (S.search) { S.search = ''; $('#gsearch').value = ''; }
   setDrawer(false);
   hideSel();
@@ -3398,11 +3418,12 @@ function render(){
   const a = document.activeElement, id = a && a.id && $('#view').contains(a) ? a.id : null;
   let ss = null, se = null; try { ss = a.selectionStart; se = a.selectionEnd; } catch {}
   renderNav();
+  if (S.study) studyPaint();
   const v = S.search ? vSearch() : ({dashboard:vDashboard, library:vLibrary, collection:vCollection, lesson:vLesson, structure:vStructure, reading:vReading, sources:vSources, topik:vTopik, ucol:vUcol, tarot:vTarot, article:vArticle, study:vStudy, knowledge:vKnowledge, ielts:vIelts, review:vReview, journal:vJournal, preferences:vPrefs}[S.view] || vDashboard)();
   $('#view').innerHTML = v;
   const nm = settings().name;
   if (id) { const n = document.getElementById(id); if (n) { n.focus(); try { if (ss !== null) n.setSelectionRange(ss, se); } catch {} } }
-  else if (S.view === 'study' && !S.search && !$('#modal-root').firstElementChild) { const f = $('#typein:not([disabled])') || $('#s-focus'); if (f) f.focus({preventScroll:true}); }
+  else if (S.study && !$('#modal-root').firstElementChild) { const f = $('#svm #typein:not([disabled])') || $('#svm #s-focus') || (!$('#svm').contains(document.activeElement) && $('#svm .svm')); if (f) f.focus({preventScroll:true}); }
   mountCharts();
   drawIcons();
   if (S.view === 'knowledge' && !S.search) { const t = $('.ktabs'), on = t && $('.tab.on', t); if (on && t.scrollWidth > t.clientWidth) t.scrollLeft = Math.max(0, on.offsetLeft - t.offsetLeft - 24); }
@@ -4709,7 +4730,7 @@ function bdShow(open, min = false){
 }
 function bdVisibility(){
   const l = $('#bd-launch'), p = $('#bd-panel'); if (!l) return;
-  const hide = S.view === 'study' || !Store.mode || Store.mode === 'starting';
+  const hide = S.study || !Store.mode || Store.mode === 'starting';
   document.body.classList.toggle('bd-hide', hide);
   if (hide && BUDDY.open && !BUDDY.min) { BUDDY.min = true; p.classList.add('min'); document.body.classList.remove('bd-on'); }
 }
@@ -5313,7 +5334,33 @@ function startSession(label, steps, meta={}){
   S.ui = {}; S.summary = null;
   Store.put(s); closeModal(true);
   if (S.search) { S.search = ''; $('#gsearch').value = ''; }
-  go('study');
+  studyOpen();
+}
+/* ---------- Review in a modal: the same session and screens (vStudy, sessionAct), shown over the current page.
+   Progress lives in the 'session' record and is saved after every answer, so closing never loses it. */
+function studyOpen(){
+  S.study = true; S.ret = S.ret || document.activeElement;
+  let el = $('#svm');
+  if (!el) {
+    el = document.createElement('div'); el.id = 'svm'; el.className = 'svm-wrap';
+    el.innerHTML = `<div class="svm-back" aria-hidden="true"></div><div class="svm" role="dialog" aria-modal="true" aria-label="Review" tabindex="-1"><div class="svm-body" id="svm-body"></div></div>`;
+    document.body.insertBefore(el, $('#modal-root'));
+  }
+  document.documentElement.classList.add('svm-lock');
+  if (S.search) { S.search = ''; $('#gsearch').value = ''; }
+  render();
+}
+function studyClose(){
+  if (!S.study) return;
+  S.study = false; S.summary = null; S.ui = {};
+  const el = $('#svm'); if (el) el.remove();
+  document.documentElement.classList.remove('svm-lock');
+  render();
+  const r = S.ret; S.ret = null; setTimeout(() => { if (r && document.contains(r)) r.focus({preventScroll:true}); }, 40);
+}
+function studyPaint(){
+  const b = $('#svm-body'); if (!b) return;
+  const st = b.scrollTop; b.innerHTML = vStudy(); b.scrollTop = st;
 }
 function learnSteps(colId, n){
   const c = COLL[colId]; if (!c) return [];
@@ -5368,7 +5415,7 @@ function vStudy(){
   const s = Store.get('session');
   if (!s) {
     const sm = S.summary;
-    if (!sm) return `<div class="study"><div class="empty">${ic('circle-play')}<h3>No session in progress</h3><p>Start from the dashboard, a collection or the review page.</p><a class="btn primary" href="#dashboard">Go to dashboard</a></div></div>`;
+    if (!sm) return `<div class="study"><div class="empty">${ic('circle-play')}<h3>No session in progress</h3><p>Start from the dashboard, a collection or the review page.</p><button class="btn primary" data-act="s-home">Go to dashboard</button></div></div>`;
     const quizN = sm.right + sm.wrong, next = nextNewCollection(), due = dueItems().length;
     return `<div class="study"><div class="scard" style="text-align:center;padding:42px 30px">
       <span class="sbadge static">${ic('check')}</span>
@@ -5377,7 +5424,7 @@ function vStudy(){
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
         ${due ? `<button class="btn hl" data-act="start-review" data-deck="due">${ic('repeat-2')} Review ${due} due</button>` : ''}
         ${next ? `<button class="btn" data-act="learn-col" data-id="${next.id}" data-n="5">${ic('sparkles')} Learn 5 more</button>` : ''}
-        <a class="btn primary" href="#dashboard">${ic('layout-dashboard')} Back to dashboard</a></div>
+        <button class="btn primary" data-act="s-home">${ic('layout-dashboard')} Back to dashboard</button></div>
     </div></div>`;
   }
   const cur = curStep(s);
@@ -6801,7 +6848,7 @@ const ACT = {
   'word-reset': async el => { if (await confirmBox('Reset this word?', 'Its review history will be cleared and it will count as not started.', 'Reset')) { Store.del('c-' + el.dataset.id); toast('Progress reset'); } },
   'learn-col': el => startLearn(el.dataset.id, Number(el.dataset.n) || 10),
   'start-today': () => startToday(),
-  'resume': () => { S.ui = {}; S.summary = null; go('study'); },
+  'resume': () => { S.ui = {}; S.summary = null; studyOpen(); },
   'c-filter': el => { S.cFilter = el.dataset.v; render(); },
   'lk-test': () => lkTest(),
   'sign-out': () => webSignOut(),
@@ -6879,7 +6926,8 @@ const ACT = {
   's-learn': el => sessionAct('learn', el), 's-known': el => sessionAct('known', el), 's-mc': el => sessionAct('mc', el),
   's-next': el => sessionAct('next', el), 's-flip': (el, e) => { if (!e.target.closest('button')) sessionAct('flip', el); }, 's-rate': el => sessionAct('rate', el),
   's-giveup': el => sessionAct('giveup', el), 's-override': el => sessionAct('override', el),
-  's-exit': () => { toast('Session saved — resume it from the dashboard'); go('dashboard'); },
+  's-home': () => { studyClose(); go('dashboard'); },
+  's-exit': () => { const open = !!Store.get('session'); studyClose(); if (open) toast('Session saved — resume it from the dashboard'); },
   's-finish': () => { const s0 = Store.get('session'); if (s0) { S.summary = {...s0.tally, label:s0.label}; Store.del('session'); } },
   'k-pop': el => { const v = el.dataset.v; if (KPOP.open === v) { KPOP.open = ''; $('#kpop').hidden = true; el.setAttribute('aria-expanded', 'false'); } else kPop(v); },
   'k-view': el => { S.kView = el.dataset.v; lsSet('thuverse.kView', S.kView); render(); },
@@ -6927,9 +6975,9 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     if (modal) { closeModal(); return; }
     if (S.search) { S.search = ''; $('#gsearch').value = ''; $('#gsearch').blur(); render(); return; }
-    if (S.view === 'study' && Store.get('session')) { ACT['s-exit'](); return; }
+    if (S.study) { ACT['s-exit'](); return; }
   }
-  const studying = S.view === 'study' && !S.search && !modal && Store.get('session');
+  const studying = S.study && !modal && Store.get('session');
   if (studying && !(typing && e.target.id !== 'typein')) {
     const sess = Store.get('session'), step = sess.steps[curStep(sess)], ui = S.ui || {};
     if (step) {
@@ -6948,7 +6996,7 @@ document.addEventListener('keydown', e => {
     if (e.target.id === 'typein') return;
   }
   if ((e.key === 'Enter' || e.key === ' ') && !typing && e.target.matches('[role=button][data-act]')) { e.preventDefault(); e.target.click(); return; }
-  if (typing || modal || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (typing || modal || S.study || e.metaKey || e.ctrlKey || e.altKey) return;
   if (e.key === '/') { e.preventDefault(); $('#gsearch').focus(); }
   else if (e.key === 'n') { e.preventDefault(); itemForm(null, {col: S.view === 'knowledge' && COLS[S.kCol] ? S.kCol : 'vocabulary'}); }
   else if (e.key === 'r' && dueItems().length && S.view !== 'study') { e.preventDefault(); startReviewDeck('due'); }
