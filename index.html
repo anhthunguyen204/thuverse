@@ -181,6 +181,12 @@ h2.sec{font:700 20px/1.3 var(--f-ui);letter-spacing:-.015em;margin:0}
 .tab .ic{width:16px;height:16px;color:var(--muted)}
 .tab.on .ic{color:var(--text)}
 .tab small{color:var(--muted);font-weight:500;font-size:13px}
+.cbadge{display:inline-flex;align-items:center;gap:4px;max-width:min(180px,100%);min-width:0;font-size:12px;font-weight:600;line-height:1.3;color:var(--primary-ink);background:var(--primary-soft);border-radius:99px;padding:2px 8px 2px 6px;vertical-align:middle;white-space:nowrap}
+.cbadge>span{overflow:hidden;text-overflow:ellipsis;min-width:0}.cbadge .ic{width:12px;height:12px;flex:none}.cbadge em{font-style:normal;opacity:.75;flex:none}
+.cbadge.def{color:var(--text-2);background:var(--surface-3)}
+[data-theme=dark] .cbadge{color:#cfc8ff}[data-theme=dark] .cbadge.def{color:var(--text-2)}
+.kc-tags,.kb-tags{display:flex;flex-wrap:wrap;align-items:center;gap:4px;min-width:0}
+.kb-tags:empty{display:none}
 .ktabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:4px -4px 16px;padding:2px 4px;scroll-padding-inline:24px}.ktabs::-webkit-scrollbar{display:none}
 .ktabs .tab{flex:none;font-size:14.5px;padding:7px 13px}
 .ktabs .tab:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
@@ -1610,6 +1616,8 @@ html.trm-lock,html.trm-lock body{overflow:hidden}
 .kb-grip{color:var(--muted);touch-action:none;padding:2px;cursor:grab}.kb-grip .ic{width:16px;height:16px}
 .kb-body{min-width:0;display:flex;flex-direction:column;gap:3px}.kb-body b{font-size:15px;overflow-wrap:anywhere}.kb-body small{font-size:13px;color:var(--text-2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.kb-body .ctype{align-self:flex-start}
 .kb-empty{display:flex;align-items:center;justify-content:center;gap:6px;margin:0;padding:22px 8px;border:1.5px dashed var(--border);border-radius:12px;color:var(--muted);font-size:13.5px}.kb-empty .ic{width:15px;height:15px}
+.kb-col[data-st=learning]{background:color-mix(in srgb,var(--yellow) 9%,var(--surface-2));border-color:color-mix(in srgb,var(--yellow) 24%,var(--border-2))}
+.kb-col[data-st=mastered]{background:color-mix(in srgb,var(--green) 8%,var(--surface-2));border-color:color-mix(in srgb,var(--green) 22%,var(--border-2))}
 .kb-col.kb-over{background:var(--primary-soft);border-color:var(--primary)}
 .kb-from{opacity:.35}
 .kb-ghost{position:fixed;left:0;top:0;z-index:300;pointer-events:none;box-shadow:0 16px 36px -10px rgba(20,10,60,.45);cursor:grabbing}
@@ -2406,7 +2414,7 @@ function migrateContentTypes(){
   } finally { ctMigrating = false; }
 }
 function ucolNameForm(r, onCreated){
-  openModal(`<form class="form" id="uc-form" style="max-width:420px">
+  openModal(`<form class="form" id="uc-form">
     <div class="form-head"><h3>${r ? 'Rename collection' : 'New collection'}</h3><button type="button" class="icon-btn" data-act="close" aria-label="Close">${ICON.x}</button></div>
     <label class="fld"><span>Name</span><input name="name" value="${esc(r ? r.name : '')}" maxlength="40" required autofocus placeholder="e.g. Environment, IELTS Writing, Daily conversation" dir="auto"></label>
     <label class="fld"><span>Description <em>optional</em></span><input name="desc" value="${esc(r && r.desc || '')}" maxlength="200" placeholder="What goes in this collection?" dir="auto"></label>
@@ -2419,7 +2427,7 @@ function ucolNameForm(r, onCreated){
     const desc = f.desc.value.trim().slice(0, 200);
     if (r) { Store.put({...clone(r), name, desc}); closeModal(); toast('Collection saved'); }
     else { const c = ucolCreate(name, desc); closeModal(); toast(`Created “${c.name}”`); if (onCreated) onCreated(c); else go('mycol-' + c.id); }
-  }); }});
+  }); }, size:'sm'});
 }
 function ucolGridHTML(){
   const cs = ucols();
@@ -2440,7 +2448,7 @@ function vUcol(){
   <div class="uc-head"><h1 class="page" dir="auto">${esc(c.name)}</h1>
     <div class="uc-acts"><button class="btn ghost" data-act="uc-rename" data-id="${esc(c.id)}">${ic('pencil')} Edit</button><button class="btn ghost" data-act="uc-del" data-id="${esc(c.id)}">${ic('trash-2')} Delete</button></div></div>
   ${c.desc ? `<p class="uc-desc" dir="auto">${esc(c.desc)}</p>` : ''}<p class="lede">${plural(its.length, 'entry', 'entries')}${types.length ? ' · ' + types.map(t => CONTENT_TYPES[t].label.toLowerCase() + 's').join(', ') : ''}</p>
-  ${its.length ? `${kToolbarHTML({ucol:c.id})}${kEntriesHTML(list, {empty:`<div class="empty">${ic('search-x')}<h3>No entries match</h3><button class="btn" data-act="k-clear">Reset filters</button></div>`})}`
+  ${its.length ? `${kToolbarHTML({ucol:c.id})}${kEntriesHTML(list, {ucol:c.id, empty:`<div class="empty">${ic('search-x')}<h3>No entries match</h3><button class="btn" data-act="k-clear">Reset filters</button></div>`})}`
   : `<div class="empty">${ic('folder-open')}<h3>This collection is empty</h3><p>Add entries here, or choose “Add to collection” when you save a word anywhere in Thuverse.</p><button class="btn primary" data-act="new" data-type="item" data-ucol="${esc(c.id)}">${ic('plus')} Add entry</button></div>`}`
 }
 
@@ -2844,23 +2852,32 @@ function kToolbarHTML({addCol = 'vocabulary', addLabel = 'Add entry', ucol = ''}
   </div>
   ${st.length || more ? `<div class="kfilters">${st.map(s => `<button class="chip on" data-act="k-st" data-v="${s}" title="Remove filter">${ic(PILLIC[s])} ${cap(s)} ${ic('x')}</button>`).join('')}${S.kTag ? `<button class="chip on" data-act="k-tag" data-v="${esc(S.kTag)}">${ic('tag')} ${esc(S.kTag)} ${ic('x')}</button>` : ''}${S.kLink !== 'any' ? `<button class="chip on" data-act="k-set" data-k="kLink" data-v="any">${ic('list-filter')} ${esc(S.kLink === 'linked' ? 'Linked to IELTS' : S.kLink === 'difficult' ? 'Marked difficult' : (SK[S.kLink] || {}).label || '')} ${ic('x')}</button>` : ''}${S.view === 'ucol' && S.ucType ? `<button class="chip on" data-act="k-set" data-k="ucType" data-v="">${ic(CONTENT_TYPES[S.ucType].icon)} ${CONTENT_TYPES[S.ucType].label} ${ic('x')}</button>` : ''}<button class="link" data-act="k-clear">Reset filters</button></div>` : ''}`;
 }
-function kEntriesHTML(list, {showType = true, empty = ''} = {}){
+function kEntriesHTML(list, {showType = true, empty = '', ucol = ''} = {}){
+  const cb = r => ucolBadgeHTML(r, ucol);
   if (!list.length) return empty;
   const lim = S.kLimit || 150, more = n => n > lim ? `<div class="more"><button class="btn" data-act="k-more">Show ${Math.min(150, n - lim)} more</button></div>` : '';
   const count = `<p class="muted kcount">${plural(list.length, 'entry', 'entries')}</p>`;
-  if (S.kView === 'grid') return `<div class="kgrid">${list.slice(0, lim).map(r => kCardHTML(r, showType)).join('')}</div>${more(list.length)}${count}`;
+  if (S.kView === 'grid') return `<div class="kgrid">${list.slice(0, lim).map(r => kCardHTML(r, showType, cb(r))).join('')}</div>${more(list.length)}${count}`;
   if (S.kView === 'board') return `<div class="kboard" role="list">${STATUSES.map(st => { const col = list.filter(r => (r.status || 'new') === st);
     return `<section class="kb-col" data-st="${st}" role="listitem" aria-label="${cap(st)}"><header>${statusPillOf(st)}<b>${cap(st)}</b><small>${col.length}</small></header>
       <div class="kb-list">${col.slice(0, lim).map(r => `<div class="kb-card" data-act="open-item" data-id="${r.id}" data-st="${st}" role="button" tabindex="0" aria-label="${esc(r.term)}, ${st}. Use left and right arrow keys to move it.">
-        <span class="kb-grip" aria-hidden="true">${ic('grip-vertical')}</span><div class="kb-body"><b dir="auto">${esc(r.term)}</b>${showType ? `<span class="ctype">${CONTENT_TYPES[typeOf(r)].label}</span>` : ''}<small dir="auto">${esc(r.vi || r.def || '')}</small></div></div>`).join('')
+        <span class="kb-grip" aria-hidden="true">${ic('grip-vertical')}</span><div class="kb-body"><b dir="auto">${esc(r.term)}</b><span class="kb-tags">${showType ? `<span class="ctype">${CONTENT_TYPES[typeOf(r)].label}</span>` : ''}${cb(r)}</span><small dir="auto">${esc(r.vi || r.def || '')}</small></div></div>`).join('')
         || `<p class="kb-empty">${ic('inbox')} Drag entries here</p>`}${col.length > lim ? `<button class="btn sm ghost" data-act="k-more">Show more</button>` : ''}</div></section>`; }).join('')}</div>${count}`;
-  return `<div class="dict">${list.slice(0, lim).map(r => entryRow(r, showType)).join('')}</div>${more(list.length)}${count}`;
+  return `<div class="dict">${list.slice(0, lim).map(r => entryRow(r, showType, cb(r))).join('')}</div>${more(list.length)}${count}`;
+}
+/* Which collection an entry belongs to, from its collectionIds. No collection = "Default".
+   Inside a collection (ctx) that collection is left out, so only other collections are named. */
+function ucolBadgeHTML(r, ctx){
+  const cs = (r.collectionIds || []).map(ucolById).filter(Boolean).filter(c => c.id !== ctx);
+  if (!cs.length) return ctx ? '' : `<span class="cbadge def" title="Not in any of your collections">${ic('inbox')}<span>Default</span></span>`;
+  const names = cs.map(c => c.name), lbl = ctx ? 'Also in' : 'Collection';
+  return `<span class="cbadge" title="${esc(lbl + ': ' + names.join(', '))}">${ic('folder')}<span dir="auto">${esc(names[0])}</span>${names.length > 1 ? `<em>+${names.length - 1}</em>` : ''}</span>`;
 }
 const statusPillOf = st => `<span class="kb-dot ${st}">${ic(PILLIC[st])}</span>`;
-function kCardHTML(r, showType){
+function kCardHTML(r, showType, badge = ''){
   const ex = lines(r.examples)[0];
   return `<div class="kcard" data-act="open-item" data-id="${r.id}" role="button" tabindex="0">
-    <div class="kc-top">${showType ? `<span class="ctype">${CONTENT_TYPES[typeOf(r)].label}</span>` : '<span></span>'}${statusPill(r)}</div>
+    <div class="kc-top"><span class="kc-tags">${showType ? `<span class="ctype">${CONTENT_TYPES[typeOf(r)].label}</span>` : ''}${badge}</span>${statusPill(r)}</div>
     <b class="kc-term" dir="auto">${esc(r.term)}</b>${phonOf(r) ? `<span class="ipa">${esc(phonOf(r))}</span>` : ''}
     <p class="kc-mean" dir="auto">${r.vi ? `<span class="vi">${esc(r.vi)}</span>` : ''}${r.vi && r.def ? ' — ' : ''}${esc(r.def || '')}</p>
     ${ex && r.col !== 'mistakes' ? `<p class="kc-ex">${hl(ex, r.term)}</p>` : ''}
@@ -3426,13 +3443,13 @@ const statusPill = r => `<button class="pill ${r.status||'new'}" data-act="cycle
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 const skChips = r => (r.ielts||[]).filter(k => SK[k]).map(k => `<span class="chip sk">${ic(SK[k].icon)} ${SK[k].short}</span>`).join('');
 
-function entryRow(r, showCol){
+function entryRow(r, showCol, badge = ''){
   const c = COLS[r.col] || COLS.vocabulary;
   const ex = lines(r.examples)[0];
   const mistake = r.col === 'mistakes';
   return `<div class="entry ${mistake?'mistake':''}" data-act="open-item" data-id="${r.id}" role="button" tabindex="0">
     <div style="min-width:0">
-      <div class="hw"><span>${esc(r.term)}</span>${phonOf(r)?`<span class="ipa">${esc(phonOf(r))}</span>`:''}${showCol?`<span class="ctype">${CONTENT_TYPES[typeOf(r)].label}</span>`:''}${r.func?`<span class="ctype">${esc(linkFuncLabel(r.func))}</span>`:''}</div>
+      <div class="hw"><span>${esc(r.term)}</span>${phonOf(r)?`<span class="ipa">${esc(phonOf(r))}</span>`:''}${showCol?`<span class="ctype">${CONTENT_TYPES[typeOf(r)].label}</span>`:''}${badge}${r.func?`<span class="ctype">${esc(linkFuncLabel(r.func))}</span>`:''}</div>
       <div class="gloss">${mistake ? (r.def?`<span class="fix">✓ ${esc(r.def)}</span>`:'') : `${r.vi?`<span class="vi">${esc(r.vi)}</span>`:''}${r.vi&&r.def?' — ':''}${esc(r.def||'')}`}</div>
       ${ex && !mistake ? `<div class="ex">${hl(ex, r.term)}</div>` : ''}
     </div>
